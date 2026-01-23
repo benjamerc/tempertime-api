@@ -1,5 +1,7 @@
 package com.tempertime.tempertime_api.security.config;
 
+import com.tempertime.tempertime_api.security.token.JwtAuthenticationFilter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -9,6 +11,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 /**
  * Spring Security configuration.
@@ -18,7 +21,10 @@ import org.springframework.security.web.SecurityFilterChain;
  * - SecurityFilterChain with stateless session and request authorization
  */
 @Configuration
+@RequiredArgsConstructor
 public class SecurityConfig {
+
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -44,7 +50,8 @@ public class SecurityConfig {
                         session.sessionCreationPolicy(
                                 org.springframework.security.config.http.SessionCreationPolicy.STATELESS
                         )
-                );
+                )
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
