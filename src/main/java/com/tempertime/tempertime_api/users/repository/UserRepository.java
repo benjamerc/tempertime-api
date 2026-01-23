@@ -1,0 +1,17 @@
+package com.tempertime.tempertime_api.users.repository;
+
+import com.tempertime.tempertime_api.users.model.User;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
+
+/**
+ * Repository interface for User entity.
+ * Provides CRUD operations and custom queries.
+ */
+@Repository
+public interface UserRepository extends JpaRepository<User, Long> {
+
+    Optional<User> findByEmail(String email);
+}
