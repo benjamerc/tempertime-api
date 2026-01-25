@@ -1,6 +1,7 @@
 package com.tempertime.tempertime_api.security.token;
 
 import com.tempertime.tempertime_api.security.core.CustomUserDetails;
+import com.tempertime.tempertime_api.security.jwt.AccessTokenService;
 import com.tempertime.tempertime_api.users.model.User;
 import com.tempertime.tempertime_api.users.model.UserRole;
 import io.jsonwebtoken.Claims;
