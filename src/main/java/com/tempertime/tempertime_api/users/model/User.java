@@ -3,12 +3,9 @@ package com.tempertime.tempertime_api.users.model;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
-/**
- * Represents a system user.
- * Stores email, name, hashed password, role, and creation timestamp.
- */
+/** System user entity */
 @Entity
 @Table(name = "users")
 @Getter
@@ -38,6 +35,7 @@ public class User {
     @Column(nullable = false, length = 20)
     private UserRole role;
 
-    @Column(name = "created_at", nullable = false, updatable = false, insertable = false)
-    private LocalDateTime createdAt;
+    @Column(name = "created_at", nullable = false, updatable = false, insertable = false,
+            columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
+    private Instant createdAt;
 }
