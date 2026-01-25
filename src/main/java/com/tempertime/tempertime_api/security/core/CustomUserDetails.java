@@ -10,10 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.List;
 
-/**
- * Wraps the User entity for Spring Security.
- * Provides authorities and credentials to SecurityContext.
- */
+/** Spring Security UserDetails implementation */
 @RequiredArgsConstructor
 @Getter
 public class CustomUserDetails implements UserDetails {
