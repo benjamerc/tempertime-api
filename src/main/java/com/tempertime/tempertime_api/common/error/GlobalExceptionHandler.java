@@ -9,6 +9,7 @@ import com.tempertime.tempertime_api.security.exception.HashingException;
 import com.tempertime.tempertime_api.security.exception.RefreshTokenExpiredException;
 import com.tempertime.tempertime_api.security.exception.RefreshTokenNotFoundException;
 import com.tempertime.tempertime_api.security.exception.RefreshTokenRevokedException;
+import com.tempertime.tempertime_api.security.util.SecurityUtil;
 import com.tempertime.tempertime_api.users.exception.InvalidPasswordException;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
@@ -47,7 +48,7 @@ public class GlobalExceptionHandler {
     ) {
         return buildErrorResponse(
                 ErrorCode.INVALID_PASSWORD,
-                "Invalid password",
+                ErrorCode.INVALID_PASSWORD.getDefaultMessage(),
                 HttpStatus.FORBIDDEN,
                 request
         );
@@ -62,7 +63,7 @@ public class GlobalExceptionHandler {
     ) {
         return buildErrorResponse(
                 ErrorCode.EMAIL_ALREADY_EXISTS,
-                ex.getMessage(),
+                ErrorCode.EMAIL_ALREADY_EXISTS.getDefaultMessage(),
                 HttpStatus.CONFLICT,
                 request
         );
@@ -75,7 +76,7 @@ public class GlobalExceptionHandler {
     ) {
         return buildErrorResponse(
                 ErrorCode.BAD_CREDENTIALS,
-                "Invalid email or password",
+                ErrorCode.BAD_CREDENTIALS.getDefaultMessage(),
                 HttpStatus.UNAUTHORIZED,
                 request
         );
@@ -90,7 +91,7 @@ public class GlobalExceptionHandler {
     ) {
         return buildErrorResponse(
                 ErrorCode.EMAIL_NOT_FOUND,
-                ex.getMessage(),
+                ErrorCode.EMAIL_NOT_FOUND.getDefaultMessage(),
                 HttpStatus.UNAUTHORIZED,
                 request
         );
@@ -107,7 +108,7 @@ public class GlobalExceptionHandler {
 
         return buildErrorResponse(
                 ErrorCode.INTERNAL_ERROR,
-                "Internal security error",
+                ErrorCode.INTERNAL_ERROR.getDefaultMessage(),
                 HttpStatus.INTERNAL_SERVER_ERROR,
                 request
         );
@@ -120,7 +121,7 @@ public class GlobalExceptionHandler {
     ) {
         return buildErrorResponse(
                 ErrorCode.REFRESH_TOKEN_EXPIRED,
-                ex.getMessage(),
+                ErrorCode.REFRESH_TOKEN_EXPIRED.getDefaultMessage(),
                 HttpStatus.UNAUTHORIZED,
                 request
         );
@@ -133,7 +134,7 @@ public class GlobalExceptionHandler {
     ) {
         return buildErrorResponse(
                 ErrorCode.REFRESH_TOKEN_NOT_FOUND,
-                ex.getMessage(),
+                ErrorCode.REFRESH_TOKEN_NOT_FOUND.getDefaultMessage(),
                 HttpStatus.UNAUTHORIZED,
                 request
         );
@@ -146,7 +147,7 @@ public class GlobalExceptionHandler {
     ) {
         return buildErrorResponse(
                 ErrorCode.REFRESH_TOKEN_REVOKED,
-                ex.getMessage(),
+                ErrorCode.REFRESH_TOKEN_REVOKED.getDefaultMessage(),
                 HttpStatus.FORBIDDEN,
                 request
         );
@@ -161,7 +162,7 @@ public class GlobalExceptionHandler {
     ) {
         return buildErrorResponse(
                 ErrorCode.VALIDATION_ERROR,
-                "Validation failed",
+                ErrorCode.VALIDATION_ERROR.getDefaultMessage(),
                 HttpStatus.BAD_REQUEST,
                 request,
                 FieldErrorMapper.from(ex.getBindingResult())
@@ -179,7 +180,7 @@ public class GlobalExceptionHandler {
 
         return buildErrorResponse(
                 ErrorCode.INTERNAL_ERROR,
-                "Unexpected error",
+                ErrorCode.INTERNAL_ERROR.getDefaultMessage(),
                 HttpStatus.INTERNAL_SERVER_ERROR,
                 request
         );
@@ -192,7 +193,7 @@ public class GlobalExceptionHandler {
             HttpServletRequest request
     ) {
         return ResponseEntity.status(status)
-                .body(apiErrorBuilder.build(code, message, request.getRequestURI()));
+                .body(apiErrorBuilder.build(code, message, SecurityUtil.resolveRequestPath(request)));
     }
 
     private ResponseEntity<ApiError> buildErrorResponse(
@@ -203,6 +204,6 @@ public class GlobalExceptionHandler {
             List<FieldError> details
     ) {
         return ResponseEntity.status(status)
-                .body(apiErrorBuilder.build(code, message, request.getRequestURI(), details));
+                .body(apiErrorBuilder.build(code, message, SecurityUtil.resolveRequestPath(request), details));
     }
 }
