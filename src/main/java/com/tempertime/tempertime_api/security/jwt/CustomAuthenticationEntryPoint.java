@@ -6,6 +6,7 @@ import com.tempertime.tempertime_api.common.error.model.ApiError;
 import com.tempertime.tempertime_api.common.error.model.ErrorCode;
 import com.tempertime.tempertime_api.security.exception.AccessTokenExpiredException;
 import com.tempertime.tempertime_api.security.util.SecurityAttributes;
+import com.tempertime.tempertime_api.security.util.SecurityUtil;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -41,30 +42,16 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
                         ? (ErrorCode) authError
                         : ErrorCode.ACCESS_TOKEN_INVALID;
 
-        String message =
-                errorCode == ErrorCode.ACCESS_TOKEN_EXPIRED
-                        ? "Access token expired"
-                        : "Invalid access token";
-
-        String path = (String) request.getAttribute(
-                RequestDispatcher.ERROR_REQUEST_URI
-        );
-
-        if (path == null) {
-            path = request.getRequestURI();
-        }
+        String path = SecurityUtil.resolveRequestPath(request);
 
         ApiError apiError = apiErrorBuilder.build(
                 errorCode,
-                message,
+                errorCode.getDefaultMessage(),
                 path
         );
 
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setContentType("application/json;charset=UTF-8");
-
-        response.getWriter().write(
-                objectMapper.writeValueAsString(apiError)
-        );
+        response.getWriter().write(objectMapper.writeValueAsString(apiError));
     }
 }
