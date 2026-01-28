@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tempertime.tempertime_api.common.error.ApiErrorBuilder;
 import com.tempertime.tempertime_api.common.error.model.ApiError;
 import com.tempertime.tempertime_api.common.error.model.ErrorCode;
+import com.tempertime.tempertime_api.security.util.SecurityUtil;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -29,25 +30,16 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
             AccessDeniedException ex
     ) throws IOException {
 
-        String path = (String) request.getAttribute(
-                RequestDispatcher.ERROR_REQUEST_URI
-        );
-
-        if (path == null) {
-            path = request.getRequestURI();
-        }
+        String path = SecurityUtil.resolveRequestPath(request);
 
         ApiError apiError = apiErrorBuilder.build(
                 ErrorCode.ACCESS_DENIED,
-                "You do not have permission to access this resource",
+                ErrorCode.ACCESS_DENIED.getDefaultMessage(),
                 path
         );
 
         response.setStatus(HttpServletResponse.SC_FORBIDDEN);
         response.setContentType("application/json;charset=UTF-8");
-
-        response.getWriter().write(
-                objectMapper.writeValueAsString(apiError)
-        );
+        response.getWriter().write(objectMapper.writeValueAsString(apiError));
     }
 }
