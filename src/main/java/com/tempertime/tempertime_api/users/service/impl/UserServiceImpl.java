@@ -1,0 +1,96 @@
+package com.tempertime.tempertime_api.users.service.impl;
+
+import com.tempertime.tempertime_api.security.refresh.RefreshTokenService;
+import com.tempertime.tempertime_api.users.dto.request.UserDeleteAccountRequest;
+import com.tempertime.tempertime_api.users.dto.request.UserUpdatePasswordRequest;
+import com.tempertime.tempertime_api.users.dto.request.UserUpdateProfileRequest;
+import com.tempertime.tempertime_api.users.dto.response.UserProfileResponse;
+import com.tempertime.tempertime_api.users.exception.InvalidPasswordException;
+import com.tempertime.tempertime_api.users.exception.UserNotFoundException;
+import com.tempertime.tempertime_api.users.mapper.UserMapper;
+import com.tempertime.tempertime_api.users.model.User;
+import com.tempertime.tempertime_api.users.repository.UserRepository;
+import com.tempertime.tempertime_api.users.service.UserService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
+
+@Service
+@RequiredArgsConstructor
+public class UserServiceImpl implements UserService {
+
+    private final UserRepository userRepository;
+    private final UserMapper userMapper;
+    private final PasswordEncoder passwordEncoder;
+    private final RefreshTokenService refreshTokenService;
+
+    @Override
+    public UserProfileResponse getProfile(Long userId) {
+
+        User user = loadUserOrThrow(userId);
+
+        return userMapper.toUserProfileResponse(user);
+    }
+
+    @Override
+    public UserProfileResponse updateProfile(Long userId, UserUpdateProfileRequest request) {
+
+        User user = loadUserOrThrow(userId);
+
+        Optional.ofNullable(request.firstName())
+                .filter(f -> !f.isBlank())
+                .ifPresent(user::setFirstName);
+
+        Optional.ofNullable(request.lastName())
+                .filter(l -> !l.isBlank())
+                .ifPresent(user::setLastName);
+
+        return userMapper.toUserProfileResponse(userRepository.save(user));
+    }
+
+    /** Updates user's password and revokes all active refresh tokens */
+    @Override
+    public void updatePassword(Long userId, UserUpdatePasswordRequest request) {
+
+        User user = loadUserOrThrow(userId);
+
+        validateCurrentPassword(user, request.currentPassword());
+
+        user.setPasswordHash(passwordEncoder.encode(request.newPassword()));
+        userRepository.save(user);
+
+        refreshTokenService.revokeAllRefreshTokensForUser(user);
+    }
+
+    /** Deletes user's account and revokes all active refresh tokens */
+    @Transactional
+    @Override
+    public void deleteAccount(Long userId, UserDeleteAccountRequest request) {
+
+        User user = loadUserOrThrow(userId);
+
+        validateCurrentPassword(user, request.currentPassword());
+
+        user.getRefreshTokens().clear();
+
+        userRepository.delete(user);
+    }
+
+    private User loadUserOrThrow(Long userId) {
+
+        return userRepository.findById(userId)
+                .orElseThrow(() ->
+                        new UserNotFoundException("User not found with id: " + userId)
+                );
+    }
+
+    private void validateCurrentPassword(User user, String currentPassword) {
+
+        if (!passwordEncoder.matches(currentPassword, user.getPasswordHash())) {
+            throw new InvalidPasswordException("The current password is incorrect");
+        }
+    }
+}
