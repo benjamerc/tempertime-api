@@ -3,6 +3,7 @@ package com.tempertime.tempertime_api.security.config;
 import com.tempertime.tempertime_api.security.jwt.CustomAccessDeniedHandler;
 import com.tempertime.tempertime_api.security.jwt.CustomAuthenticationEntryPoint;
 import com.tempertime.tempertime_api.security.jwt.JwtAuthenticationFilter;
+import com.tempertime.tempertime_api.users.model.UserRole;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -47,6 +48,7 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/api/users/**").hasRole(UserRole.USER.name())
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session ->
