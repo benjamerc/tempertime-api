@@ -1,9 +1,12 @@
 package com.tempertime.tempertime_api.users.model;
 
+import com.tempertime.tempertime_api.security.refresh.RefreshToken;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 
 /** System user entity */
 @Entity
@@ -34,6 +37,9 @@ public class User {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
     private UserRole role;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<RefreshToken> refreshTokens = new ArrayList<>();
 
     @Column(name = "created_at", nullable = false, updatable = false, insertable = false,
             columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
