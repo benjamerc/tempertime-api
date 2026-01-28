@@ -65,7 +65,7 @@ public class UserServiceImpl implements UserService {
         refreshTokenService.revokeAllRefreshTokensForUser(user);
     }
 
-    /** Deletes user's account and revokes all active refresh tokens */
+    /** Deletes user's account and all associated refresh tokens via cascade */
     @Transactional
     @Override
     public void deleteAccount(Long userId, UserDeleteAccountRequest request) {
@@ -73,8 +73,6 @@ public class UserServiceImpl implements UserService {
         User user = loadUserOrThrow(userId);
 
         validateCurrentPassword(user, request.currentPassword());
-
-        user.getRefreshTokens().clear();
 
         userRepository.delete(user);
     }
