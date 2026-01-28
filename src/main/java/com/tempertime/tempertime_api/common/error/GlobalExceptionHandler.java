@@ -9,6 +9,11 @@ import com.tempertime.tempertime_api.security.exception.HashingException;
 import com.tempertime.tempertime_api.security.exception.RefreshTokenExpiredException;
 import com.tempertime.tempertime_api.security.exception.RefreshTokenNotFoundException;
 import com.tempertime.tempertime_api.security.exception.RefreshTokenRevokedException;
+import com.tempertime.tempertime_api.users.exception.InvalidPasswordException;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.UnsupportedJwtException;
+import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,13 +27,31 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.List;
 
-/** Handles API exceptions and maps them to standard ApiError responses */
+/**
+ * Maps exceptions to standardized ApiError responses.
+ * Handlers are grouped by exception origin.
+ */
 @RestControllerAdvice
 @RequiredArgsConstructor
 @Slf4j
 public class GlobalExceptionHandler {
 
     private final ApiErrorBuilder apiErrorBuilder;
+
+    // ===================== User =====================
+
+    @ExceptionHandler(InvalidPasswordException.class)
+    public ResponseEntity<ApiError> handleInvalidPassword(
+            InvalidPasswordException ex,
+            HttpServletRequest request
+    ) {
+        return buildErrorResponse(
+                ErrorCode.INVALID_PASSWORD,
+                "Invalid password",
+                HttpStatus.FORBIDDEN,
+                request
+        );
+    }
 
     // ===================== Auth =====================
 
@@ -72,6 +95,8 @@ public class GlobalExceptionHandler {
                 request
         );
     }
+
+    // ===================== Security / Refresh Tokens =====================
 
     @ExceptionHandler(HashingException.class)
     public ResponseEntity<ApiError> handleHashingFailed(
@@ -127,7 +152,7 @@ public class GlobalExceptionHandler {
         );
     }
 
-    // ===================== Validation =====================
+    // ===================== Validation Exceptions =====================
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiError> handleValidation(
@@ -143,7 +168,7 @@ public class GlobalExceptionHandler {
         );
     }
 
-    // ===================== Generic / Unexpected =====================
+    // ===================== Generic Exceptions =====================
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiError> handleUnexpected(
