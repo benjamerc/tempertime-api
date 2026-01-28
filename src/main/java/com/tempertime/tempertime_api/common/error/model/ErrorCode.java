@@ -1,25 +1,32 @@
 package com.tempertime.tempertime_api.common.error.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
 /** API error codes grouped by origin */
+@AllArgsConstructor
+@Getter
 public enum ErrorCode {
 
     // User
-    INVALID_PASSWORD,
+    INVALID_PASSWORD("Invalid password"),
 
     // Auth
-    BAD_CREDENTIALS,
-    EMAIL_ALREADY_EXISTS,
+    BAD_CREDENTIALS("Invalid email or password"),
+    EMAIL_ALREADY_EXISTS("Email already exists"),
 
     // Security
-    ACCESS_DENIED,
-    ACCESS_TOKEN_INVALID,
-    ACCESS_TOKEN_EXPIRED,
-    REFRESH_TOKEN_EXPIRED,
-    REFRESH_TOKEN_NOT_FOUND,
-    REFRESH_TOKEN_REVOKED,
-    EMAIL_NOT_FOUND,
+    ACCESS_DENIED("Access denied"),
+    ACCESS_TOKEN_INVALID("Invalid access token"),
+    ACCESS_TOKEN_EXPIRED("Access token expired"),
+    REFRESH_TOKEN_EXPIRED("Refresh token expired"),
+    REFRESH_TOKEN_NOT_FOUND("Refresh token not found"),
+    REFRESH_TOKEN_REVOKED("Refresh token revoked"),
+    EMAIL_NOT_FOUND("Email not found"),
 
     // Generic
-    VALIDATION_ERROR,
-    INTERNAL_ERROR
+    VALIDATION_ERROR("Validation error"),
+    INTERNAL_ERROR("Internal server error");
+
+    private final String defaultMessage;
 }
