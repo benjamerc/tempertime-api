@@ -1,9 +1,15 @@
 package com.tempertime.tempertime_api.security.jwt;
 
+import com.tempertime.tempertime_api.common.error.model.ErrorCode;
 import com.tempertime.tempertime_api.security.core.CustomUserDetails;
+import com.tempertime.tempertime_api.security.exception.AccessTokenExpiredException;
+import com.tempertime.tempertime_api.security.exception.AccessTokenInvalidException;
+import com.tempertime.tempertime_api.security.util.SecurityAttributes;
 import com.tempertime.tempertime_api.users.model.User;
 import com.tempertime.tempertime_api.users.model.UserRole;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -46,10 +52,20 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         Claims claims;
         try {
             claims = accessTokenService.validateAccessToken(token);
-        } catch (Exception ex) {
-            log.warn("Invalid or expired JWT token: {}", ex.getMessage());
-            filterChain.doFilter(request, response);
-            return;
+        }
+        catch (ExpiredJwtException ex) {
+            // Mark request as having an expired token
+            SecurityContextHolder.clearContext();
+            request.setAttribute(SecurityAttributes.SECURITY_ERROR_CODE.name(),
+                    ErrorCode.ACCESS_TOKEN_EXPIRED);
+            throw new AccessTokenExpiredException("Access token expired", ex);
+        }
+        catch (JwtException | IllegalArgumentException ex) {
+            // Mark request as having an invalid token
+            SecurityContextHolder.clearContext();
+            request.setAttribute(SecurityAttributes.SECURITY_ERROR_CODE.name(),
+                    ErrorCode.ACCESS_TOKEN_INVALID);
+            throw new AccessTokenInvalidException("Invalid access token", ex);
         }
 
         // Build User from token claims
@@ -57,10 +73,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         Long userId = claims.get("id", Long.class);
         String role = claims.get("role", String.class);
 
+        UserRole userRole;
+        try {
+            userRole = UserRole.valueOf(role);
+        } catch (IllegalArgumentException ex) {
+            throw new AccessTokenInvalidException("Invalid role in access token", ex);
+        }
+
         User userFromToken = User.builder()
                 .id(userId)
                 .email(email)
-                .role(UserRole.valueOf(role))
+                .role(userRole)
                 .build();
 
         CustomUserDetails userDetails = new CustomUserDetails(userFromToken);
