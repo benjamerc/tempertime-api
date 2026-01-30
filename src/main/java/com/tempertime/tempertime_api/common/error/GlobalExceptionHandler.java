@@ -11,6 +11,7 @@ import com.tempertime.tempertime_api.security.exception.RefreshTokenNotFoundExce
 import com.tempertime.tempertime_api.security.exception.RefreshTokenRevokedException;
 import com.tempertime.tempertime_api.security.util.SecurityUtil;
 import com.tempertime.tempertime_api.users.exception.InvalidPasswordException;
+import com.tempertime.tempertime_api.workspaces.exception.*;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
@@ -39,7 +40,74 @@ public class GlobalExceptionHandler {
 
     private final ApiErrorBuilder apiErrorBuilder;
 
-    // ===================== User =====================
+    // ===================== Workspace Exceptions =====================
+
+    @ExceptionHandler(InvalidColorFormatException.class)
+    public ResponseEntity<ApiError> handleInvalidColorFormat(
+            InvalidColorFormatException ex,
+            HttpServletRequest request
+    ) {
+        return buildErrorResponse(
+                ErrorCode.INVALID_COLOR_FORMAT,
+                ErrorCode.INVALID_COLOR_FORMAT.getDefaultMessage(),
+                HttpStatus.BAD_REQUEST,
+                request
+        );
+    }
+
+    @ExceptionHandler(WorkspaceAccessDeniedException.class)
+    public ResponseEntity<ApiError> handleWorkspaceAccessDenied(
+            WorkspaceAccessDeniedException ex,
+            HttpServletRequest request
+    ) {
+        return buildErrorResponse(
+                ErrorCode.WORKSPACE_ACCESS_DENIED,
+                ErrorCode.WORKSPACE_ACCESS_DENIED.getDefaultMessage(),
+                HttpStatus.FORBIDDEN,
+                request
+        );
+    }
+
+    @ExceptionHandler(WorkspaceNotArchivedException.class)
+    public ResponseEntity<ApiError> handleWorkspaceNotArchived(
+            WorkspaceNotArchivedException ex,
+            HttpServletRequest request
+    ) {
+        return buildErrorResponse(
+                ErrorCode.WORKSPACE_NOT_ARCHIVED,
+                ErrorCode.WORKSPACE_NOT_ARCHIVED.getDefaultMessage(),
+                HttpStatus.CONFLICT,
+                request
+        );
+    }
+
+    @ExceptionHandler(WorkspaceNotFoundException.class)
+    public ResponseEntity<ApiError> handleWorkspaceNotFound(
+            WorkspaceNotFoundException ex,
+            HttpServletRequest request
+    ) {
+        return buildErrorResponse(
+                ErrorCode.WORKSPACE_NOT_FOUND,
+                ErrorCode.WORKSPACE_NOT_FOUND.getDefaultMessage(),
+                HttpStatus.NOT_FOUND,
+                request
+        );
+    }
+
+    @ExceptionHandler(WorkspaceRoleDeniedException.class)
+    public ResponseEntity<ApiError> handleWorkspaceRoleDenied(
+            WorkspaceRoleDeniedException ex,
+            HttpServletRequest request
+    ) {
+        return buildErrorResponse(
+                ErrorCode.WORKSPACE_ROLE_DENIED,
+                ErrorCode.WORKSPACE_ROLE_DENIED.getDefaultMessage(),
+                HttpStatus.FORBIDDEN,
+                request
+        );
+    }
+
+    // ===================== User Exceptions =====================
 
     @ExceptionHandler(InvalidPasswordException.class)
     public ResponseEntity<ApiError> handleInvalidPassword(
@@ -54,7 +122,7 @@ public class GlobalExceptionHandler {
         );
     }
 
-    // ===================== Auth =====================
+    // ===================== Auth Exceptions =====================
 
     @ExceptionHandler(EmailAlreadyExistsException.class)
     public ResponseEntity<ApiError> handleEmailAlreadyExists(
@@ -82,7 +150,7 @@ public class GlobalExceptionHandler {
         );
     }
 
-    // ===================== Security =====================
+    // ===================== Security Exceptions =====================
 
     @ExceptionHandler(UsernameNotFoundException.class)
     public ResponseEntity<ApiError> handleEmailNotFound(
@@ -97,7 +165,7 @@ public class GlobalExceptionHandler {
         );
     }
 
-    // ===================== Security / Refresh Tokens =====================
+    // ===================== Security / Refresh Tokens Exceptions =====================
 
     @ExceptionHandler(HashingException.class)
     public ResponseEntity<ApiError> handleHashingFailed(
