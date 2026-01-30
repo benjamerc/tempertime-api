@@ -1,6 +1,7 @@
 package com.tempertime.tempertime_api.users.model;
 
 import com.tempertime.tempertime_api.security.refresh.RefreshToken;
+import com.tempertime.tempertime_api.workspaces.model.WorkspaceUser;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -40,6 +41,9 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RefreshToken> refreshTokens = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<WorkspaceUser> workspaceMemberships = new ArrayList<>();
 
     @Column(name = "created_at", nullable = false, updatable = false, insertable = false,
             columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
