@@ -8,6 +8,13 @@ import lombok.Getter;
 @Getter
 public enum ErrorCode {
 
+    // Workspace
+    INVALID_COLOR_FORMAT("Invalid color format"),
+    WORKSPACE_ACCESS_DENIED("Access denied to workspace"),
+    WORKSPACE_NOT_ARCHIVED("Workspace must be archived before deletion"),
+    WORKSPACE_NOT_FOUND("Workspace not found"),
+    WORKSPACE_ROLE_DENIED("User does not have sufficient permissions"),
+
     // User
     INVALID_PASSWORD("Invalid password"),
 
