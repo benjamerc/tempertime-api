@@ -4,7 +4,6 @@ import com.tempertime.tempertime_api.common.error.model.ErrorCode;
 import com.tempertime.tempertime_api.security.core.CustomUserDetails;
 import com.tempertime.tempertime_api.security.exception.AccessTokenExpiredException;
 import com.tempertime.tempertime_api.security.exception.AccessTokenInvalidException;
-import com.tempertime.tempertime_api.security.util.SecurityAttributes;
 import com.tempertime.tempertime_api.users.model.User;
 import com.tempertime.tempertime_api.users.model.UserRole;
 import io.jsonwebtoken.Claims;
