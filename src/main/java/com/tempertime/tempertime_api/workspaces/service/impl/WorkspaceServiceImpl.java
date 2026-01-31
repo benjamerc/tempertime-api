@@ -1,17 +1,13 @@
 package com.tempertime.tempertime_api.workspaces.service.impl;
 
-import com.tempertime.tempertime_api.users.exception.UserNotFoundException;
 import com.tempertime.tempertime_api.users.model.User;
-import com.tempertime.tempertime_api.users.repository.UserRepository;
+import com.tempertime.tempertime_api.users.service.UserLoader;
 import com.tempertime.tempertime_api.workspaces.dto.request.WorkspaceCreateRequest;
 import com.tempertime.tempertime_api.workspaces.dto.request.WorkspaceUpdateRequest;
 import com.tempertime.tempertime_api.workspaces.dto.response.WorkspaceDetailResponse;
 import com.tempertime.tempertime_api.workspaces.dto.response.WorkspaceListItemResponse;
 import com.tempertime.tempertime_api.workspaces.dto.response.WorkspaceResponse;
-import com.tempertime.tempertime_api.workspaces.exception.WorkspaceAccessDeniedException;
 import com.tempertime.tempertime_api.workspaces.exception.WorkspaceNotArchivedException;
-import com.tempertime.tempertime_api.workspaces.exception.WorkspaceNotFoundException;
-import com.tempertime.tempertime_api.workspaces.exception.WorkspaceRoleDeniedException;
 import com.tempertime.tempertime_api.workspaces.mapper.WorkspaceMapper;
 import com.tempertime.tempertime_api.workspaces.mapper.WorkspaceUserMapper;
 import com.tempertime.tempertime_api.workspaces.model.Workspace;
@@ -19,6 +15,8 @@ import com.tempertime.tempertime_api.workspaces.model.WorkspaceRole;
 import com.tempertime.tempertime_api.workspaces.model.WorkspaceUser;
 import com.tempertime.tempertime_api.workspaces.repository.WorkspaceRepository;
 import com.tempertime.tempertime_api.workspaces.repository.WorkspaceUserRepository;
+import com.tempertime.tempertime_api.workspaces.service.WorkspaceAuthorizationService;
+import com.tempertime.tempertime_api.workspaces.service.WorkspaceLoader;
 import com.tempertime.tempertime_api.workspaces.service.WorkspaceService;
 import com.tempertime.tempertime_api.workspaces.support.WorkspaceColorGenerator;
 import com.tempertime.tempertime_api.workspaces.support.WorkspaceColorUtil;
@@ -40,7 +38,9 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     private final WorkspaceUserMapper workspaceUserMapper;
     private final WorkspaceColorValidator workspaceColorValidator;
     private final WorkspaceColorGenerator workspaceColorGenerator;
-    private final UserRepository userRepository;
+    private final UserLoader userLoader;
+    private final WorkspaceLoader workspaceLoader;
+    private final WorkspaceAuthorizationService workspaceAuthorizationService;
 
     /**
      * Creates a new workspace and assigns the creator as OWNER.
@@ -61,7 +61,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
                 .color(color)
                 .build();
 
-        User user = loadUserOrThrow(userId);
+        User user = userLoader.loadUserOrThrow(userId);
 
         Workspace savedWorkspace = workspaceRepository.save(workspace);
 
@@ -92,14 +92,10 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     @Override
     public WorkspaceDetailResponse getWorkspaceById(Long workspaceId, Long userId) {
 
-        workspaceRepository.findById(workspaceId)
-                .orElseThrow(() -> new WorkspaceNotFoundException("Workspace not found"));
+        workspaceLoader.loadOrThrow(workspaceId);
 
-        // Throws 403 if user is not a member
-        WorkspaceUser membership = workspaceUserRepository
-                .findByWorkspaceIdAndUserId(workspaceId, userId)
-                .orElseThrow(() ->
-                        new WorkspaceAccessDeniedException("Workspace not accessible"));
+        WorkspaceUser membership =
+                workspaceAuthorizationService.requireMemberAndGet(workspaceId, userId);
 
         return workspaceUserMapper.toWorkspaceDetailResponse(membership);
     }
@@ -160,38 +156,21 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
         Workspace workspace = loadWorkspaceForOwner(workspaceId, userId);
 
-        if (Boolean.FALSE.equals(workspace.getArchived())) {
+        if (!workspace.getArchived()) {
             throw new WorkspaceNotArchivedException("Workspace must be archived before deletion");
         }
 
         workspaceRepository.delete(workspace);
     }
 
-    /** Loads a workspace if the user exists and is OWNER, otherwise throws relevant exception */
+    /** Loads a workspace with OWNER authorization */
     private Workspace loadWorkspaceForOwner(Long workspaceId, Long userId) {
 
-        Workspace workspace = workspaceRepository.findById(workspaceId)
-                .orElseThrow(() -> new WorkspaceNotFoundException("Workspace not found"));
+        Workspace workspace = workspaceLoader.loadOrThrow(workspaceId);
 
-        boolean userInWorkspace = workspaceUserRepository.existsByWorkspaceIdAndUserId(workspaceId, userId);
-        if (!userInWorkspace) {
-            throw new WorkspaceAccessDeniedException("Workspace not accessible");
-        }
-
-        boolean isOwner = workspaceUserRepository
-                .existsByWorkspaceIdAndUserIdAndRole(workspaceId, userId, WorkspaceRole.OWNER);
-        if (!isOwner) {
-            throw new WorkspaceRoleDeniedException("User does not have sufficient permissions");
-        }
+        workspaceAuthorizationService.requireMember(workspaceId, userId);
+        workspaceAuthorizationService.requireOwner(workspaceId, userId);
 
         return workspace;
-    }
-
-    private User loadUserOrThrow(Long userId) {
-
-        return userRepository.findById(userId)
-                .orElseThrow(() ->
-                        new UserNotFoundException("User not found with id: " + userId)
-                );
     }
 }
