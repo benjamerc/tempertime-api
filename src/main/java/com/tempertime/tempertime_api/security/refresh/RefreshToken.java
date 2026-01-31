@@ -3,6 +3,7 @@ package com.tempertime.tempertime_api.security.refresh;
 import com.tempertime.tempertime_api.users.model.User;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -37,15 +38,16 @@ public class RefreshToken {
     @Column(name = "expiration_date", nullable = false)
     private Instant expirationDate;
 
+    @Builder.Default
     @Column(nullable = false)
-    private boolean revoked;
+    private Boolean revoked = false;
 
     /** The user to whom this token belongs */
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "id_user", nullable = false)
     private User user;
 
-    @Column(name = "created_at", nullable = false, updatable = false, insertable = false,
-            columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
+    @CreationTimestamp
+    @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
 }
