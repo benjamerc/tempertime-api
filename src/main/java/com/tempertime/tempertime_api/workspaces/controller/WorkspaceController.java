@@ -1,5 +1,6 @@
 package com.tempertime.tempertime_api.workspaces.controller;
 
+import com.tempertime.tempertime_api.security.core.CurrentUserProvider;
 import com.tempertime.tempertime_api.security.core.CustomUserDetails;
 import com.tempertime.tempertime_api.workspaces.dto.request.WorkspaceCreateRequest;
 import com.tempertime.tempertime_api.workspaces.dto.request.WorkspaceUpdateRequest;
@@ -23,6 +24,7 @@ import java.util.List;
 public class WorkspaceController {
 
     private final WorkspaceService workspaceService;
+    private final CurrentUserProvider  currentUserProvider;
 
     @PostMapping
     @PreAuthorize("hasRole('USER')")
@@ -32,7 +34,10 @@ public class WorkspaceController {
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(workspaceService.createWorkspace(request, userDetails.getUser().getId()));
+                .body(workspaceService.createWorkspace(
+                        request,
+                        currentUserProvider.getUserId(userDetails)
+                ));
     }
 
     @GetMapping
@@ -40,7 +45,7 @@ public class WorkspaceController {
     public ResponseEntity<List<WorkspaceListItemResponse>> getUserWorkspaces(
             @AuthenticationPrincipal CustomUserDetails userDetails) {
 
-        return ResponseEntity.ok(workspaceService.getUserWorkspaces(userDetails.getUser().getId()));
+        return ResponseEntity.ok(workspaceService.getUserWorkspaces(currentUserProvider.getUserId(userDetails)));
     }
 
     @GetMapping("/{workspaceId}")
@@ -49,7 +54,10 @@ public class WorkspaceController {
             @PathVariable Long workspaceId,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
 
-        return ResponseEntity.ok(workspaceService.getWorkspaceById(workspaceId, userDetails.getUser().getId()));
+        return ResponseEntity.ok(workspaceService.getWorkspaceById(
+                workspaceId,
+                currentUserProvider.getUserId(userDetails)
+        ));
     }
 
     @PatchMapping("/{workspaceId}")
@@ -59,7 +67,11 @@ public class WorkspaceController {
             @AuthenticationPrincipal CustomUserDetails userDetails,
             @Valid @RequestBody WorkspaceUpdateRequest request) {
 
-        return ResponseEntity.ok(workspaceService.updateWorkspace(workspaceId, userDetails.getUser().getId(), request));
+        return ResponseEntity.ok(workspaceService.updateWorkspace(
+                workspaceId,
+                currentUserProvider.getUserId(userDetails),
+                request
+        ));
     }
 
     @PatchMapping("/{workspaceId}/archive")
@@ -68,7 +80,11 @@ public class WorkspaceController {
             @PathVariable Long workspaceId,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
 
-        workspaceService.archiveWorkspace(workspaceId, userDetails.getUser().getId());
+        workspaceService.archiveWorkspace(
+                workspaceId,
+                currentUserProvider.getUserId(userDetails)
+        );
+
         return ResponseEntity.noContent().build();
     }
 
@@ -78,7 +94,11 @@ public class WorkspaceController {
             @PathVariable Long workspaceId,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
 
-        workspaceService.unarchiveWorkspace(workspaceId, userDetails.getUser().getId());
+        workspaceService.unarchiveWorkspace(
+                workspaceId,
+                currentUserProvider.getUserId(userDetails)
+        );
+
         return ResponseEntity.noContent().build();
     }
 
@@ -88,7 +108,11 @@ public class WorkspaceController {
             @PathVariable Long workspaceId,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
 
-        workspaceService.deleteWorkspace(workspaceId, userDetails.getUser().getId());
+        workspaceService.deleteWorkspace(
+                workspaceId,
+                currentUserProvider.getUserId(userDetails)
+        );
+
         return ResponseEntity.noContent().build();
     }
 }
