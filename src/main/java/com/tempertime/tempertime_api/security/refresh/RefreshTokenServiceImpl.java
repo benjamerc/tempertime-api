@@ -33,7 +33,6 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
         RefreshToken refreshToken = RefreshToken.builder()
                 .tokenHash(hashedToken)
                 .user(user)
-                .revoked(false)
                 .expirationDate(Instant.now().plusMillis(expirationMillis))
                 .build();
 
@@ -52,7 +51,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
 
         RefreshToken refreshToken = getRefreshTokenOrThrow(RefreshTokenUtil.hashSHA256(rawToken));
 
-        if (refreshToken.isRevoked()) {
+        if (refreshToken.getRevoked()) {
             throw new RefreshTokenRevokedException("Refresh token revoked");
         }
 
