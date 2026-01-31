@@ -46,7 +46,6 @@ public class AuthServiceImpl implements AuthService {
                 .firstName(request.firstName())
                 .lastName(request.lastName())
                 .passwordHash(passwordEncoder.encode(request.password()))
-                .role(UserRole.USER)
                 .build();
 
         return authMapper.toAuthRegisterResponse(userRepository.save(user));
