@@ -6,15 +6,15 @@ import com.tempertime.tempertime_api.users.dto.request.UserUpdatePasswordRequest
 import com.tempertime.tempertime_api.users.dto.request.UserUpdateProfileRequest;
 import com.tempertime.tempertime_api.users.dto.response.UserProfileResponse;
 import com.tempertime.tempertime_api.users.exception.InvalidPasswordException;
-import com.tempertime.tempertime_api.users.exception.UserNotFoundException;
 import com.tempertime.tempertime_api.users.mapper.UserMapper;
 import com.tempertime.tempertime_api.users.model.User;
 import com.tempertime.tempertime_api.users.repository.UserRepository;
+import com.tempertime.tempertime_api.users.service.UserLoader;
 import com.tempertime.tempertime_api.users.service.UserService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -26,11 +26,12 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
     private final RefreshTokenService refreshTokenService;
+    private final UserLoader userLoader;
 
     @Override
     public UserProfileResponse getProfile(Long userId) {
 
-        User user = loadUserOrThrow(userId);
+        User user = userLoader.loadUserOrThrow(userId);
 
         return userMapper.toUserProfileResponse(user);
     }
@@ -38,7 +39,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserProfileResponse updateProfile(Long userId, UserUpdateProfileRequest request) {
 
-        User user = loadUserOrThrow(userId);
+        User user = userLoader.loadUserOrThrow(userId);
 
         Optional.ofNullable(request.firstName())
                 .filter(f -> !f.isBlank())
@@ -55,7 +56,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void updatePassword(Long userId, UserUpdatePasswordRequest request) {
 
-        User user = loadUserOrThrow(userId);
+        User user = userLoader.loadUserOrThrow(userId);
 
         validateCurrentPassword(user, request.currentPassword());
 
@@ -70,19 +71,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteAccount(Long userId, UserDeleteAccountRequest request) {
 
-        User user = loadUserOrThrow(userId);
+        User user = userLoader.loadUserOrThrow(userId);
 
         validateCurrentPassword(user, request.currentPassword());
 
         userRepository.delete(user);
-    }
-
-    private User loadUserOrThrow(Long userId) {
-
-        return userRepository.findById(userId)
-                .orElseThrow(() ->
-                        new UserNotFoundException("User not found with id: " + userId)
-                );
     }
 
     private void validateCurrentPassword(User user, String currentPassword) {
