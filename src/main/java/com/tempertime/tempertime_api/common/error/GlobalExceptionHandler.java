@@ -107,6 +107,75 @@ public class GlobalExceptionHandler {
         );
     }
 
+    // ===================== Workspace Invite Code Exceptions =====================
+
+    @ExceptionHandler(WorkspaceInviteCodeGenerationException.class)
+    public ResponseEntity<ApiError> handleWorkspaceInviteCodeGeneration(
+            WorkspaceInviteCodeGenerationException ex,
+            HttpServletRequest request
+    ) {
+        log.error("Workspace invite code generation failed", ex);
+
+        return buildErrorResponse(
+                ErrorCode.INTERNAL_ERROR,
+                ErrorCode.INTERNAL_ERROR.getDefaultMessage(),
+                HttpStatus.INTERNAL_SERVER_ERROR,
+                request
+        );
+    }
+
+    @ExceptionHandler(InvalidWorkspaceInviteCodeException.class)
+    public ResponseEntity<ApiError> handleInvalidWorkspaceInviteCode(
+            InvalidWorkspaceInviteCodeException ex,
+            HttpServletRequest request
+    ) {
+        return buildErrorResponse(
+                ErrorCode.INVALID_WORKSPACE_INVITE_CODE,
+                ErrorCode.INVALID_WORKSPACE_INVITE_CODE.getDefaultMessage(),
+                HttpStatus.BAD_REQUEST,
+                request
+        );
+    }
+
+    @ExceptionHandler(WorkspaceInviteCodeNotFoundException.class)
+    public ResponseEntity<ApiError> handleWorkspaceInviteCodeNotFound(
+            WorkspaceInviteCodeNotFoundException ex,
+            HttpServletRequest request
+    ) {
+        return buildErrorResponse(
+                ErrorCode.WORKSPACE_INVITE_CODE_NOT_FOUND,
+                ErrorCode.WORKSPACE_INVITE_CODE_NOT_FOUND.getDefaultMessage(),
+                HttpStatus.NOT_FOUND,
+                request
+        );
+    }
+
+    @ExceptionHandler(WorkspaceInviteCodeDisabledException.class)
+    public ResponseEntity<ApiError> handleWorkspaceInviteCodeDisabled(
+            WorkspaceInviteCodeDisabledException ex,
+            HttpServletRequest request
+    ) {
+        return buildErrorResponse(
+                ErrorCode.WORKSPACE_INVITE_CODE_DISABLED,
+                ErrorCode.WORKSPACE_INVITE_CODE_DISABLED.getDefaultMessage(),
+                HttpStatus.CONFLICT,
+                request
+        );
+    }
+
+    @ExceptionHandler(UserAlreadyInWorkspaceException.class)
+    public ResponseEntity<ApiError> handleUserAlreadyInWorkspace(
+            UserAlreadyInWorkspaceException ex,
+            HttpServletRequest request
+    ) {
+        return buildErrorResponse(
+                ErrorCode.USER_ALREADY_IN_WORKSPACE,
+                ErrorCode.USER_ALREADY_IN_WORKSPACE.getDefaultMessage(),
+                HttpStatus.CONFLICT,
+                request
+        );
+    }
+
     // ===================== User Exceptions =====================
 
     @ExceptionHandler(InvalidPasswordException.class)
