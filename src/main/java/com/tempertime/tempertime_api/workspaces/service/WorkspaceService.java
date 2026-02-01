@@ -2,9 +2,7 @@ package com.tempertime.tempertime_api.workspaces.service;
 
 import com.tempertime.tempertime_api.workspaces.dto.request.WorkspaceCreateRequest;
 import com.tempertime.tempertime_api.workspaces.dto.request.WorkspaceUpdateRequest;
-import com.tempertime.tempertime_api.workspaces.dto.response.WorkspaceDetailResponse;
-import com.tempertime.tempertime_api.workspaces.dto.response.WorkspaceListItemResponse;
-import com.tempertime.tempertime_api.workspaces.dto.response.WorkspaceResponse;
+import com.tempertime.tempertime_api.workspaces.dto.response.*;
 
 import java.util.List;
 
@@ -26,4 +24,16 @@ public interface WorkspaceService {
     void unarchiveWorkspace(Long workspaceId, Long userId);
 
     void deleteWorkspace(Long workspaceId, Long userId);
+
+    /** Returns the current invitation code for a workspace */
+    WorkspaceCodeResponse getInviteCode(Long workspaceId, Long userId);
+
+    WorkspaceCodeResponse enableInviteCode(Long workspaceId, Long userId);
+
+    WorkspaceCodeResponse disableInviteCode(Long workspaceId, Long userId);
+
+    WorkspaceCodeResponse regenerateInviteCode(Long workspaceId, Long userId);
+
+    /** Joins a workspace using a valid invitation code */
+    WorkspaceJoinResponse joinWorkspace(String inviteCode, Long userId);
 }
