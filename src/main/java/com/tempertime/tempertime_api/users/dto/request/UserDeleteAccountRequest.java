@@ -7,5 +7,6 @@ import jakarta.validation.constraints.Size;
 public record UserDeleteAccountRequest(
 
         @NotBlank(message = "Current password is required")
+        @Size(max = 255, message = "Password must be at most 255 characters")
         String currentPassword
 ) {}
