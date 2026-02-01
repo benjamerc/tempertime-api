@@ -3,10 +3,9 @@ package com.tempertime.tempertime_api.workspaces.controller;
 import com.tempertime.tempertime_api.security.core.CurrentUserProvider;
 import com.tempertime.tempertime_api.security.core.CustomUserDetails;
 import com.tempertime.tempertime_api.workspaces.dto.request.WorkspaceCreateRequest;
+import com.tempertime.tempertime_api.workspaces.dto.request.WorkspaceJoinRequest;
 import com.tempertime.tempertime_api.workspaces.dto.request.WorkspaceUpdateRequest;
-import com.tempertime.tempertime_api.workspaces.dto.response.WorkspaceDetailResponse;
-import com.tempertime.tempertime_api.workspaces.dto.response.WorkspaceListItemResponse;
-import com.tempertime.tempertime_api.workspaces.dto.response.WorkspaceResponse;
+import com.tempertime.tempertime_api.workspaces.dto.response.*;
 import com.tempertime.tempertime_api.workspaces.service.WorkspaceService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -114,5 +113,75 @@ public class WorkspaceController {
         );
 
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{workspaceId}/invite-code")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<WorkspaceCodeResponse> getInviteCode(
+            @PathVariable Long workspaceId,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        return ResponseEntity.ok(
+                workspaceService.getInviteCode(
+                        workspaceId,
+                        currentUserProvider.getUserId(userDetails)
+                )
+        );
+    }
+
+    @PatchMapping("/{workspaceId}/invite-code/enable")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<WorkspaceCodeResponse> enableInviteCode(
+            @PathVariable Long workspaceId,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        return ResponseEntity.ok(
+                workspaceService.enableInviteCode(
+                        workspaceId,
+                        currentUserProvider.getUserId(userDetails)
+                )
+        );
+    }
+
+    @PatchMapping("/{workspaceId}/invite-code/disable")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<WorkspaceCodeResponse> disableInviteCode(
+            @PathVariable Long workspaceId,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        return ResponseEntity.ok(
+                workspaceService.disableInviteCode(
+                        workspaceId,
+                        currentUserProvider.getUserId(userDetails)
+                )
+        );
+    }
+
+    @PatchMapping("/{workspaceId}/invite-code/regenerate")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<WorkspaceCodeResponse> regenerateInviteCode(
+            @PathVariable Long workspaceId,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        return ResponseEntity.ok(
+                workspaceService.regenerateInviteCode(
+                        workspaceId,
+                        currentUserProvider.getUserId(userDetails)
+                )
+        );
+    }
+
+    @PostMapping("/join")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<WorkspaceJoinResponse> joinWorkspace(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @Valid @RequestBody WorkspaceJoinRequest request
+    ) {
+        return ResponseEntity.ok(
+                workspaceService.joinWorkspace(
+                        request.inviteCode(),
+                        currentUserProvider.getUserId(userDetails)
+                )
+        );
     }
 }
