@@ -14,6 +14,10 @@ public enum ErrorCode {
     WORKSPACE_NOT_ARCHIVED("Workspace must be archived before deletion"),
     WORKSPACE_NOT_FOUND("Workspace not found"),
     WORKSPACE_ROLE_DENIED("User does not have sufficient permissions"),
+    INVALID_WORKSPACE_INVITE_CODE("Invalid workspace invite code"),
+    WORKSPACE_INVITE_CODE_NOT_FOUND("Workspace invite code not found"),
+    WORKSPACE_INVITE_CODE_DISABLED("Workspace invite code is disabled"),
+    USER_ALREADY_IN_WORKSPACE("User is already in workspace"),
 
     // User
     INVALID_PASSWORD("Invalid password"),
