@@ -265,6 +265,53 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         return workspaceUserMapper.toWorkspaceJoinResponse(workspaceUser);
     }
 
+    @Override
+    public List<WorkspaceMemberResponse> getWorkspaceMembers(Long workspaceId, Long userId) {
+
+        loadWorkspaceForMember(workspaceId, userId);
+
+        return workspaceUserRepository.findByWorkspaceId(workspaceId)
+                .stream()
+                .map(workspaceUserMapper::toWorkspaceMemberResponse)
+                .toList();
+    }
+
+    @Transactional
+    @Override
+    public void removeWorkspaceMember(Long workspaceId, Long memberId, Long userId) {
+
+        loadWorkspaceForOwner(workspaceId, userId);
+
+        WorkspaceUser member = workspaceUserRepository
+                .findByWorkspaceIdAndUserId(workspaceId, memberId)
+                .orElseThrow(() -> new WorkspaceMemberNotFoundException(
+                        "Workspace member not found"
+                ));
+
+        // Prevent removing the workspace owner
+        if (member.getRole() == WorkspaceRole.OWNER) {
+            throw new WorkspaceRoleDeniedException("Only members can be removed from the workspace");
+        }
+
+        workspaceUserRepository.delete(member);
+    }
+
+    @Override
+    public void leaveWorkspace(Long workspaceId, Long userId) {
+
+        loadWorkspaceForMember(workspaceId, userId);
+
+        WorkspaceUser member = workspaceAuthorizationService
+                .requireMemberAndGet(workspaceId, userId);
+
+        // Prevent the workspace owner from leaving the workspace
+        if (member.getRole() == WorkspaceRole.OWNER) {
+            throw new WorkspaceRoleDeniedException("Only members can leave the workspace");
+        }
+
+        workspaceUserRepository.delete(member);
+    }
+
     /** Loads a workspace with OWNER authorization */
     private Workspace loadWorkspaceForOwner(Long workspaceId, Long userId) {
 
@@ -272,6 +319,16 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
         workspaceAuthorizationService.requireMember(workspaceId, userId);
         workspaceAuthorizationService.requireOwner(workspaceId, userId);
+
+        return workspace;
+    }
+
+    /** Loads a workspace and ensures the user is a member */
+    private Workspace loadWorkspaceForMember(Long workspaceId, Long userId) {
+
+        Workspace workspace = workspaceLoader.loadOrThrow(workspaceId);
+
+        workspaceAuthorizationService.requireMember(workspaceId, userId);
 
         return workspace;
     }
