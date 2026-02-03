@@ -120,6 +120,19 @@ public class GlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler(WorkspaceOperationNotAllowedException.class)
+    public ResponseEntity<ApiError> handleWorkspaceOperationNotAllowed(
+            WorkspaceOperationNotAllowedException ex,
+            HttpServletRequest request
+    ) {
+        return buildErrorResponse(
+                ErrorCode.WORKSPACE_OPERATION_NOT_ALLOWED,
+                ErrorCode.WORKSPACE_OPERATION_NOT_ALLOWED.getDefaultMessage(),
+                HttpStatus.FORBIDDEN,
+                request
+        );
+    }
+
     // ===================== Workspace Invite Code Exceptions =====================
 
     @ExceptionHandler(WorkspaceInviteCodeGenerationException.class)
