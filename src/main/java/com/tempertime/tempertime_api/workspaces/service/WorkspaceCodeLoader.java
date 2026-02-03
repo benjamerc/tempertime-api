@@ -40,24 +40,12 @@ public class WorkspaceCodeLoader {
     }
 
     /**
-     * Loads a workspace invite code by its value.
-     * Throws a domain exception if the code does not exist.
-     */
-    public WorkspaceCode loadByCodeOrThrow(String code) {
-        return workspaceCodeRepository.findByCode(code)
-                .orElseThrow(() ->
-                        new InvalidWorkspaceInviteCodeException(
-                                "Invalid workspace invite code"
-                        ));
-    }
-
-    /**
      * Loads a workspace invite code by its value and ensures it is enabled.
      * Throws a domain exception if the code is invalid or disabled.
      */
-    public WorkspaceCode loadEnabledByCodeOrThrow(String code) {
+    public WorkspaceCode loadEnabledByCodeOrThrow(String inviteCode) {
 
-        WorkspaceCode workspaceCode = loadByCodeOrThrow(code);
+        WorkspaceCode workspaceCode = loadByCodeOrThrow(inviteCode);
 
         if (!workspaceCode.getEnabled()) {
             throw new WorkspaceInviteCodeDisabledException(
@@ -66,5 +54,23 @@ public class WorkspaceCodeLoader {
         }
 
         return workspaceCode;
+    }
+
+    /**
+     * Loads a workspace invite code by its value.
+     * Throws a domain exception if the code does not exist.
+     */
+    public WorkspaceCode loadByCodeOrThrow(String inviteCode) {
+
+        return workspaceCodeRepository.findByCode(normalizeCode(inviteCode))
+                .orElseThrow(() ->
+                        new InvalidWorkspaceInviteCodeException(
+                                "Invalid workspace invite code"
+                        ));
+    }
+
+    /** Normalizes the invite code for consistent handling */
+    private String normalizeCode(String code) {
+        return code.toUpperCase();
     }
 }
