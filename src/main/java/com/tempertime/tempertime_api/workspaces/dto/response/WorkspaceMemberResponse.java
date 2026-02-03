@@ -2,7 +2,10 @@ package com.tempertime.tempertime_api.workspaces.dto.response;
 
 import com.tempertime.tempertime_api.workspaces.model.WorkspaceRole;
 
-/** Represents a member of a workspace with basic user information and role */
+/**
+ * Represents a workspace member with basic user information
+ * and their role within the workspace.
+ */
 public record WorkspaceMemberResponse(
 
         Long id,
