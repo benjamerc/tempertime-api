@@ -3,6 +3,7 @@ package com.tempertime.tempertime_api.workspaces.mapper;
 import com.tempertime.tempertime_api.workspaces.dto.response.WorkspaceDetailResponse;
 import com.tempertime.tempertime_api.workspaces.dto.response.WorkspaceJoinResponse;
 import com.tempertime.tempertime_api.workspaces.dto.response.WorkspaceListItemResponse;
+import com.tempertime.tempertime_api.workspaces.dto.response.WorkspaceMemberResponse;
 import com.tempertime.tempertime_api.workspaces.model.WorkspaceUser;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -31,4 +32,10 @@ public interface WorkspaceUserMapper {
     @Mapping(target = "userId", source = "user.id")
     @Mapping(target = "role", source = "role")
     WorkspaceJoinResponse toWorkspaceJoinResponse(WorkspaceUser workspaceUser);
+
+    @Mapping(target = "id", source = "user.id")
+    @Mapping(target = "firstName", source = "user.firstName")
+    @Mapping(target = "lastName", source = "user.lastName")
+    @Mapping(target = "role", source = "role")
+    WorkspaceMemberResponse toWorkspaceMemberResponse(WorkspaceUser workspaceUser);
 }
