@@ -15,26 +15,26 @@ public class WorkspaceAuthorizationService {
 
     private final WorkspaceUserRepository workspaceUserRepository;
 
-    /** Ensures the user is a member of the workspace */
-    public void requireMember(Long workspaceId, Long userId) {
-        if (!workspaceUserRepository.existsByWorkspaceIdAndUserId(workspaceId, userId)) {
-            throw new WorkspaceAccessDeniedException("Workspace not accessible");
-        }
-    }
-
-    /** Ensures the user is a member of the workspace and returns the membership */
-    public WorkspaceUser requireMemberAndGet(Long workspaceId, Long userId) {
+    /** Ensures the user belongs to the workspace */
+    public WorkspaceUser requireMembership(Long workspaceId, Long userId) {
         return workspaceUserRepository
                 .findByWorkspaceIdAndUserId(workspaceId, userId)
                 .orElseThrow(() ->
                         new WorkspaceAccessDeniedException("Workspace not accessible"));
     }
 
-    /** Ensures the user has OWNER role in the workspace */
-    public void requireOwner(Long workspaceId, Long userId) {
-        if (!workspaceUserRepository
-                .existsByWorkspaceIdAndUserIdAndRole(workspaceId, userId, WorkspaceRole.OWNER)) {
-            throw new WorkspaceRoleDeniedException("User does not have sufficient permissions");
+    /** Ensures the user has the required role within the workspace */
+    public void requireRole(
+            Long workspaceId,
+            Long userId,
+            WorkspaceRole requiredRole
+    ) {
+        WorkspaceUser membership = requireMembership(workspaceId, userId);
+
+        if (membership.getRole() != requiredRole) {
+            throw new WorkspaceRoleDeniedException(
+                    "User does not have sufficient permissions"
+            );
         }
     }
 }
