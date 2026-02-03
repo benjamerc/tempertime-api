@@ -187,12 +187,12 @@ public class WorkspaceController {
 
     @GetMapping("/{workspaceId}/members")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<List<WorkspaceMemberResponse>> getWorkspaceMembers(
+    public ResponseEntity<List<WorkspaceMemberResponse>> getWorkspaceUsers(
             @PathVariable Long workspaceId,
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
         return ResponseEntity.ok(
-                workspaceService.getWorkspaceMembers(
+                workspaceService.getWorkspaceUsers(
                         workspaceId,
                         currentUserProvider.getUserId(userDetails)
                 )
@@ -201,12 +201,12 @@ public class WorkspaceController {
 
     @DeleteMapping("/{workspaceId}/members/{userId}")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<Void> removeWorkspaceMember(
+    public ResponseEntity<Void> removeWorkspaceUser(
             @PathVariable Long workspaceId,
             @PathVariable Long userId,
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
-        workspaceService.removeWorkspaceMember(
+        workspaceService.removeWorkspaceUser(
                 workspaceId,
                 userId,
                 currentUserProvider.getUserId(userDetails)
