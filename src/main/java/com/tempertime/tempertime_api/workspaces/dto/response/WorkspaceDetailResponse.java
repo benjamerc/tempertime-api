@@ -4,7 +4,7 @@ import com.tempertime.tempertime_api.workspaces.model.WorkspaceRole;
 
 import java.time.Instant;
 
-/** Detailed workspace view for a member accessing a specific workspace */
+/** Detailed workspace view for a user with membership in the workspace */
 public record WorkspaceDetailResponse(
 
         Long id,
