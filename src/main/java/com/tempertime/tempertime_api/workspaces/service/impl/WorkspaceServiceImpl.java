@@ -16,10 +16,7 @@ import com.tempertime.tempertime_api.workspaces.model.WorkspaceUser;
 import com.tempertime.tempertime_api.workspaces.repository.WorkspaceCodeRepository;
 import com.tempertime.tempertime_api.workspaces.repository.WorkspaceRepository;
 import com.tempertime.tempertime_api.workspaces.repository.WorkspaceUserRepository;
-import com.tempertime.tempertime_api.workspaces.service.WorkspaceAuthorizationService;
-import com.tempertime.tempertime_api.workspaces.service.WorkspaceLoader;
-import com.tempertime.tempertime_api.workspaces.service.WorkspaceService;
-import com.tempertime.tempertime_api.workspaces.service.WorkspaceCodeGenerator;
+import com.tempertime.tempertime_api.workspaces.service.*;
 import com.tempertime.tempertime_api.workspaces.support.WorkspaceColorGenerator;
 import com.tempertime.tempertime_api.workspaces.support.WorkspaceColorUtil;
 import com.tempertime.tempertime_api.workspaces.support.WorkspaceColorValidator;
@@ -46,6 +43,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     private final WorkspaceCodeGenerator  workspaceCodeGenerator;
     private final WorkspaceCodeRepository  workspaceCodeRepository;
     private final WorkspaceCodeMapper workspaceCodeMapper;
+    private final WorkspaceCodeLoader workspaceCodeLoader;
 
     /**
      * Creates a new workspace and assigns the creator as OWNER.
@@ -101,14 +99,14 @@ public class WorkspaceServiceImpl implements WorkspaceService {
                 .toList();
     }
 
-    /** Returns workspace details only if the user is a member */
+    /** Returns workspace details only if the user belongs to the workspace */
     @Override
     public WorkspaceDetailResponse getWorkspaceById(Long workspaceId, Long userId) {
 
         workspaceLoader.loadOrThrow(workspaceId);
 
         WorkspaceUser membership =
-                workspaceAuthorizationService.requireMemberAndGet(workspaceId, userId);
+                workspaceAuthorizationService.requireMembership(workspaceId, userId);
 
         return workspaceUserMapper.toWorkspaceDetailResponse(membership);
     }
@@ -118,13 +116,14 @@ public class WorkspaceServiceImpl implements WorkspaceService {
      * Only the OWNER is allowed to perform this operation.
      */
     @Override
-    public WorkspaceResponse updateWorkspace(Long workspaceId,
-                                             Long userId,
-                                             WorkspaceUpdateRequest request) {
+    public WorkspaceResponse updateWorkspace(
+            Long workspaceId,
+            Long userId,
+            WorkspaceUpdateRequest request) {
 
         WorkspaceColorUtil.validateIfPresent(request.color(),  workspaceColorValidator);
 
-        Workspace workspace = loadWorkspaceForOwner(workspaceId, userId);
+        Workspace workspace = loadWorkspaceWithOwnerAccess(workspaceId, userId);
 
         Optional.ofNullable(request.name())
                 .filter(n -> !n.isBlank())
@@ -144,7 +143,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     @Override
     public void archiveWorkspace(Long workspaceId, Long userId) {
 
-        Workspace workspace = loadWorkspaceForOwner(workspaceId, userId);
+        Workspace workspace = loadWorkspaceWithOwnerAccess(workspaceId, userId);
 
         workspace.setArchived(true);
         workspaceRepository.save(workspace);
@@ -154,7 +153,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     @Override
     public void unarchiveWorkspace(Long workspaceId, Long userId) {
 
-        Workspace workspace = loadWorkspaceForOwner(workspaceId, userId);
+        Workspace workspace = loadWorkspaceWithOwnerAccess(workspaceId, userId);
 
         workspace.setArchived(false);
         workspaceRepository.save(workspace);
@@ -167,7 +166,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     @Override
     public void deleteWorkspace(Long workspaceId, Long userId) {
 
-        Workspace workspace = loadWorkspaceForOwner(workspaceId, userId);
+        Workspace workspace = loadWorkspaceWithOwnerAccess(workspaceId, userId);
 
         if (!workspace.getArchived()) {
             throw new WorkspaceNotArchivedException("Workspace must be archived before deletion");
@@ -179,19 +178,16 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     @Override
     public WorkspaceCodeResponse getInviteCode(Long workspaceId, Long userId) {
 
-        loadWorkspaceForOwner(workspaceId, userId);
-
-        WorkspaceCode workspaceCode = loadWorkspaceCodeByWorkspaceIdOrThrow(workspaceId);
+        WorkspaceCode workspaceCode = loadWorkspaceCodeWithOwnerAccess(workspaceId, userId);
 
         return workspaceCodeMapper.toWorkspaceCodeResponse(workspaceCode);
     }
 
+    @Transactional
     @Override
     public WorkspaceCodeResponse enableInviteCode(Long workspaceId, Long userId) {
 
-        loadWorkspaceForOwner(workspaceId, userId);
-
-        WorkspaceCode workspaceCode = loadWorkspaceCodeByWorkspaceIdOrThrow(workspaceId);
+        WorkspaceCode workspaceCode = loadWorkspaceCodeWithOwnerAccess(workspaceId, userId);
 
         workspaceCode.setEnabled(true);
         workspaceCodeRepository.save(workspaceCode);
@@ -199,12 +195,11 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         return workspaceCodeMapper.toWorkspaceCodeResponse(workspaceCode);
     }
 
+    @Transactional
     @Override
     public WorkspaceCodeResponse disableInviteCode(Long workspaceId, Long userId) {
 
-        loadWorkspaceForOwner(workspaceId, userId);
-
-        WorkspaceCode workspaceCode = loadWorkspaceCodeByWorkspaceIdOrThrow(workspaceId);
+        WorkspaceCode workspaceCode = loadWorkspaceCodeWithOwnerAccess(workspaceId, userId);
 
         workspaceCode.setEnabled(false);
         workspaceCodeRepository.save(workspaceCode);
@@ -216,9 +211,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     @Override
     public WorkspaceCodeResponse regenerateInviteCode(Long workspaceId, Long userId) {
 
-        loadWorkspaceForOwner(workspaceId, userId);
-
-        WorkspaceCode workspaceCode = loadWorkspaceCodeByWorkspaceIdOrThrow(workspaceId);
+        WorkspaceCode workspaceCode = loadWorkspaceCodeWithOwnerAccess(workspaceId, userId);
 
         workspaceCode.setCode(workspaceCodeGenerator.generate());
         workspaceCodeRepository.save(workspaceCode);
@@ -234,16 +227,8 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     @Override
     public WorkspaceJoinResponse joinWorkspace(String inviteCode, Long userId) {
 
-        WorkspaceCode workspaceCode = workspaceCodeRepository.findByCode(inviteCode)
-                .orElseThrow(() -> new InvalidWorkspaceInviteCodeException(
-                        "Invalid workspace invite code"
-                ));
-
-        if (!workspaceCode.getEnabled()) {
-            throw new WorkspaceInviteCodeDisabledException(
-                    "Workspace invite code is disabled"
-            );
-        }
+        WorkspaceCode workspaceCode =
+                workspaceCodeLoader.loadEnabledByCodeOrThrow(inviteCode);
 
         Workspace workspace = workspaceCode.getWorkspace();
         User user = userLoader.loadUserOrThrow(userId);
@@ -266,9 +251,9 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     }
 
     @Override
-    public List<WorkspaceMemberResponse> getWorkspaceMembers(Long workspaceId, Long userId) {
+    public List<WorkspaceMemberResponse> getWorkspaceUsers(Long workspaceId, Long userId) {
 
-        loadWorkspaceForMember(workspaceId, userId);
+        requireAccessibleWorkspace(workspaceId, userId);
 
         return workspaceUserRepository.findByWorkspaceId(workspaceId)
                 .stream()
@@ -278,9 +263,9 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
     @Transactional
     @Override
-    public void removeWorkspaceMember(Long workspaceId, Long memberId, Long userId) {
+    public void removeWorkspaceUser(Long workspaceId, Long memberId, Long userId) {
 
-        loadWorkspaceForOwner(workspaceId, userId);
+        loadWorkspaceWithOwnerAccess(workspaceId, userId);
 
         WorkspaceUser member = workspaceUserRepository
                 .findByWorkspaceIdAndUserId(workspaceId, memberId)
@@ -290,7 +275,9 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
         // Prevent removing the workspace owner
         if (member.getRole() == WorkspaceRole.OWNER) {
-            throw new WorkspaceRoleDeniedException("Only members can be removed from the workspace");
+            throw new WorkspaceOperationNotAllowedException(
+                    "Workspace operation not allowed"
+            );
         }
 
         workspaceUserRepository.delete(member);
@@ -299,46 +286,52 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     @Override
     public void leaveWorkspace(Long workspaceId, Long userId) {
 
-        loadWorkspaceForMember(workspaceId, userId);
+        requireAccessibleWorkspace(workspaceId, userId);
 
         WorkspaceUser member = workspaceAuthorizationService
-                .requireMemberAndGet(workspaceId, userId);
+                .requireMembership(workspaceId, userId);
 
         // Prevent the workspace owner from leaving the workspace
         if (member.getRole() == WorkspaceRole.OWNER) {
-            throw new WorkspaceRoleDeniedException("Only members can leave the workspace");
+            throw new WorkspaceOperationNotAllowedException(
+                    "Workspace operation not allowed"
+            );
         }
 
         workspaceUserRepository.delete(member);
     }
 
-    /** Loads a workspace with OWNER authorization */
-    private Workspace loadWorkspaceForOwner(Long workspaceId, Long userId) {
+    /**
+     * Verifies that the workspace exists and that the user belongs to it.
+     * Does not return the workspace entity.
+     */
+    private void  requireAccessibleWorkspace(Long workspaceId, Long userId) {
+
+        workspaceLoader.loadOrThrow(workspaceId);
+
+        workspaceAuthorizationService.requireMembership(workspaceId, userId);
+    }
+
+    /**
+     * Loads a workspace and verifies that the user belongs to it
+     * and has OWNER permissions.
+     */
+    private Workspace loadWorkspaceWithOwnerAccess(Long workspaceId, Long userId) {
 
         Workspace workspace = workspaceLoader.loadOrThrow(workspaceId);
 
-        workspaceAuthorizationService.requireMember(workspaceId, userId);
-        workspaceAuthorizationService.requireOwner(workspaceId, userId);
+        workspaceAuthorizationService.requireRole(workspaceId, userId, WorkspaceRole.OWNER);
 
         return workspace;
     }
 
-    /** Loads a workspace and ensures the user is a member */
-    private Workspace loadWorkspaceForMember(Long workspaceId, Long userId) {
+    /**
+     * Loads the invite code for a workspace and verifies that the user
+     * belongs to the workspace and has OWNER permissions.
+     */
+    private WorkspaceCode loadWorkspaceCodeWithOwnerAccess(Long workspaceId, Long userId) {
 
-        Workspace workspace = workspaceLoader.loadOrThrow(workspaceId);
-
-        workspaceAuthorizationService.requireMember(workspaceId, userId);
-
-        return workspace;
-    }
-
-    /** Loads the workspace invite code using the workspace ID */
-    private WorkspaceCode loadWorkspaceCodeByWorkspaceIdOrThrow(Long workspaceId) {
-
-        return workspaceCodeRepository.findByWorkspaceId(workspaceId)
-                .orElseThrow(() -> new WorkspaceInviteCodeNotFoundException(
-                        "Workspace invite code not found"
-                ));
+        Workspace workspace = loadWorkspaceWithOwnerAccess(workspaceId, userId);
+        return workspaceCodeLoader.loadByWorkspaceOrThrow(workspace);
     }
 }
