@@ -184,4 +184,48 @@ public class WorkspaceController {
                 )
         );
     }
+
+    @GetMapping("/{workspaceId}/members")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<List<WorkspaceMemberResponse>> getWorkspaceMembers(
+            @PathVariable Long workspaceId,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        return ResponseEntity.ok(
+                workspaceService.getWorkspaceMembers(
+                        workspaceId,
+                        currentUserProvider.getUserId(userDetails)
+                )
+        );
+    }
+
+    @DeleteMapping("/{workspaceId}/members/{userId}")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<Void> removeWorkspaceMember(
+            @PathVariable Long workspaceId,
+            @PathVariable Long userId,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        workspaceService.removeWorkspaceMember(
+                workspaceId,
+                userId,
+                currentUserProvider.getUserId(userDetails)
+        );
+
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/{workspaceId}/members/me")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<Void> leaveWorkspace(
+            @PathVariable Long workspaceId,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        workspaceService.leaveWorkspace(
+                workspaceId,
+                currentUserProvider.getUserId(userDetails)
+        );
+
+        return ResponseEntity.noContent().build();
+    }
 }
