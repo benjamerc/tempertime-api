@@ -94,6 +94,19 @@ public class GlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler(WorkspaceMemberNotFoundException.class)
+    public ResponseEntity<ApiError> handleWorkspaceMemberNotFound(
+            WorkspaceMemberNotFoundException ex,
+            HttpServletRequest request
+    ) {
+        return buildErrorResponse(
+                ErrorCode.WORKSPACE_MEMBER_NOT_FOUND,
+                ErrorCode.WORKSPACE_MEMBER_NOT_FOUND.getDefaultMessage(),
+                HttpStatus.NOT_FOUND,
+                request
+        );
+    }
+
     @ExceptionHandler(WorkspaceRoleDeniedException.class)
     public ResponseEntity<ApiError> handleWorkspaceRoleDenied(
             WorkspaceRoleDeniedException ex,
