@@ -5,8 +5,6 @@ import java.time.Instant;
 /** Workspace invitation code */
 public record WorkspaceCodeResponse(
 
-        Long id,
-        String code,
-        Boolean enabled,
+        Boolean invitationsEnabled,
         Instant createdAt
 ) {}
