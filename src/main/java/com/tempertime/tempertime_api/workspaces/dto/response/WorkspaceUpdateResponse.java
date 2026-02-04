@@ -2,8 +2,8 @@ package com.tempertime.tempertime_api.workspaces.dto.response;
 
 import java.time.Instant;
 
-/** Workspace representation returned after create or update operations */
-public record WorkspaceResponse(
+/** Workspace representation returned after update operation */
+public record WorkspaceUpdateResponse(
 
         Long id,
         String name,
