@@ -28,7 +28,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
         long expirationMillis = jwtProperties.getRefreshToken().getExpiration();
 
         String rawToken = UUID.randomUUID().toString();
-        String hashedToken = RefreshTokenUtil.hashSHA256(rawToken);
+        String hashedToken = hash(rawToken);
 
         RefreshToken refreshToken = RefreshToken.builder()
                 .tokenHash(hashedToken)
@@ -49,7 +49,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     @Override
     public RefreshToken validateRefreshToken(String rawToken) {
 
-        RefreshToken refreshToken = getRefreshTokenOrThrow(RefreshTokenUtil.hashSHA256(rawToken));
+        RefreshToken refreshToken = getRefreshTokenOrThrow(hash(rawToken));
 
         if (refreshToken.getRevoked()) {
             throw new RefreshTokenRevokedException("Refresh token revoked");
@@ -66,17 +66,12 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
      * Rotates a refresh token: revokes the current one and creates a new token for the same user.
      */
     @Override
-    public String rotateRefreshToken(String rawToken) {
+    public String rotateRefreshToken(RefreshToken refreshToken) {
 
-        RefreshToken oldRefreshToken = validateRefreshToken(rawToken);
-        User user = oldRefreshToken.getUser();
+        refreshToken.setRevoked(true);
+        refreshTokenRepository.save(refreshToken);
 
-        // Revoke the old token
-        oldRefreshToken.setRevoked(true);
-        refreshTokenRepository.save(oldRefreshToken);
-
-        // Create a new one
-        return createRefreshToken(user);
+        return createRefreshToken(refreshToken.getUser());
     }
 
     @Override
@@ -106,5 +101,10 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
 
         return refreshTokenRepository.findByTokenHash(hashedToken)
                 .orElseThrow(() -> new RefreshTokenNotFoundException("Refresh token not found"));
+    }
+
+    /** Hashes the raw token using SHA-256 */
+    private String hash(String rawToken) {
+        return RefreshTokenUtil.hashSHA256(rawToken);
     }
 }
