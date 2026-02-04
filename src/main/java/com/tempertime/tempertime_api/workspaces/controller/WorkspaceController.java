@@ -27,7 +27,7 @@ public class WorkspaceController {
 
     @PostMapping
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<WorkspaceResponse> createWorkspace(
+    public ResponseEntity<WorkspaceCreateResponse> createWorkspace(
             @AuthenticationPrincipal CustomUserDetails userDetails,
             @Valid @RequestBody WorkspaceCreateRequest request) {
 
@@ -61,7 +61,7 @@ public class WorkspaceController {
 
     @PatchMapping("/{workspaceId}")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<WorkspaceResponse> updateWorkspace(
+    public ResponseEntity<WorkspaceUpdateResponse> updateWorkspace(
             @PathVariable Long workspaceId,
             @AuthenticationPrincipal CustomUserDetails userDetails,
             @Valid @RequestBody WorkspaceUpdateRequest request) {
@@ -159,7 +159,7 @@ public class WorkspaceController {
 
     @PatchMapping("/{workspaceId}/invite-code/regenerate")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<WorkspaceCodeResponse> regenerateInviteCode(
+    public ResponseEntity<WorkspaceCodeRegenerateResponse> regenerateInviteCode(
             @PathVariable Long workspaceId,
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
