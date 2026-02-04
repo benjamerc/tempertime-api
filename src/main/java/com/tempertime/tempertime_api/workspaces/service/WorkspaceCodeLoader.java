@@ -1,6 +1,6 @@
 package com.tempertime.tempertime_api.workspaces.service;
 
-import com.tempertime.tempertime_api.security.util.RefreshTokenUtil;
+import com.tempertime.tempertime_api.common.util.HashUtil;
 import com.tempertime.tempertime_api.workspaces.exception.InvalidWorkspaceInviteCodeException;
 import com.tempertime.tempertime_api.workspaces.exception.WorkspaceInviteCodeDisabledException;
 import com.tempertime.tempertime_api.workspaces.exception.WorkspaceInviteCodeNotFoundException;
@@ -80,6 +80,6 @@ public class WorkspaceCodeLoader {
 
     /** Hashes the normalized invite code using SHA-256 */
     private String hash(String normalizedCode) {
-        return RefreshTokenUtil.hashSHA256(normalizedCode);
+        return HashUtil.hashSHA256(normalizedCode);
     }
 }

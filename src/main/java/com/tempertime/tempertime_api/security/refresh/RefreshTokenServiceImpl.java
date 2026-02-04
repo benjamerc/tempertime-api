@@ -4,7 +4,7 @@ import com.tempertime.tempertime_api.security.config.JwtProperties;
 import com.tempertime.tempertime_api.security.exception.RefreshTokenExpiredException;
 import com.tempertime.tempertime_api.security.exception.RefreshTokenNotFoundException;
 import com.tempertime.tempertime_api.security.exception.RefreshTokenRevokedException;
-import com.tempertime.tempertime_api.security.util.RefreshTokenUtil;
+import com.tempertime.tempertime_api.common.util.HashUtil;
 import com.tempertime.tempertime_api.users.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -105,6 +105,6 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
 
     /** Hashes the raw token using SHA-256 */
     private String hash(String rawToken) {
-        return RefreshTokenUtil.hashSHA256(rawToken);
+        return HashUtil.hashSHA256(rawToken);
     }
 }

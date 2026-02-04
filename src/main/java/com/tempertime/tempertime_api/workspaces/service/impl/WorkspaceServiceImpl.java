@@ -1,6 +1,6 @@
 package com.tempertime.tempertime_api.workspaces.service.impl;
 
-import com.tempertime.tempertime_api.security.util.RefreshTokenUtil;
+import com.tempertime.tempertime_api.common.util.HashUtil;
 import com.tempertime.tempertime_api.users.model.User;
 import com.tempertime.tempertime_api.users.service.UserLoader;
 import com.tempertime.tempertime_api.workspaces.dto.request.WorkspaceCreateRequest;
@@ -353,6 +353,6 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     }
 
     private String hashInviteCode(String normalizedCode) {
-        return RefreshTokenUtil.hashSHA256(normalizedCode);
+        return HashUtil.hashSHA256(normalizedCode);
     }
 }
