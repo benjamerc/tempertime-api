@@ -20,12 +20,12 @@ public class WorkspaceCode {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 8, unique = true)
-    private String code;
+    @Column(name = "code_hash", nullable = false, length = 64, unique = true)
+    private String codeHash;
 
-    @Column(nullable = false)
+    @Column(name = "invitations_enabled", nullable = false)
     @Builder.Default
-    private Boolean enabled = true;
+    private Boolean invitationsEnabled = true;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     @CreationTimestamp
