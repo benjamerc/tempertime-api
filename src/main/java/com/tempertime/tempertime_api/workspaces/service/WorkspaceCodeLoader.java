@@ -1,5 +1,6 @@
 package com.tempertime.tempertime_api.workspaces.service;
 
+import com.tempertime.tempertime_api.security.util.RefreshTokenUtil;
 import com.tempertime.tempertime_api.workspaces.exception.InvalidWorkspaceInviteCodeException;
 import com.tempertime.tempertime_api.workspaces.exception.WorkspaceInviteCodeDisabledException;
 import com.tempertime.tempertime_api.workspaces.exception.WorkspaceInviteCodeNotFoundException;
@@ -11,7 +12,8 @@ import org.springframework.stereotype.Service;
 
 /**
  * Loads WorkspaceCode entities and enforces invite code invariants.
- * Throws domain-specific exceptions when the code is not found or invalid.
+ * Works exclusively with raw invite codes (normalized + hashed internally).
+ * Throws domain-specific exceptions if code is invalid, disabled, or not found.
  */
 @Service
 @RequiredArgsConstructor
@@ -40,14 +42,13 @@ public class WorkspaceCodeLoader {
     }
 
     /**
-     * Loads a workspace invite code by its value and ensures it is enabled.
-     * Throws a domain exception if the code is invalid or disabled.
+     * Loads a workspace invite code by its raw value and ensures it is enabled.
      */
-    public WorkspaceCode loadEnabledByCodeOrThrow(String inviteCode) {
+    public WorkspaceCode loadEnabledByCodeOrThrow(String rawInviteCode) {
 
-        WorkspaceCode workspaceCode = loadByCodeOrThrow(inviteCode);
+        WorkspaceCode workspaceCode = loadByCodeOrThrow(rawInviteCode);
 
-        if (!workspaceCode.getEnabled()) {
+        if (!workspaceCode.getInvitationsEnabled()) {
             throw new WorkspaceInviteCodeDisabledException(
                     "Workspace invite code is disabled"
             );
@@ -57,12 +58,15 @@ public class WorkspaceCodeLoader {
     }
 
     /**
-     * Loads a workspace invite code by its value.
-     * Throws a domain exception if the code does not exist.
+     * Loads a workspace invite code by its raw value.
+     * The raw code is normalized and hashed before lookup.
      */
-    public WorkspaceCode loadByCodeOrThrow(String inviteCode) {
+    public WorkspaceCode loadByCodeOrThrow(String rawInviteCode) {
 
-        return workspaceCodeRepository.findByCode(normalizeCode(inviteCode))
+        String normalizedCode = normalize(rawInviteCode);
+        String codeHash = hash(normalizedCode);
+
+        return workspaceCodeRepository.findByCodeHash(codeHash)
                 .orElseThrow(() ->
                         new InvalidWorkspaceInviteCodeException(
                                 "Invalid workspace invite code"
@@ -70,7 +74,12 @@ public class WorkspaceCodeLoader {
     }
 
     /** Normalizes the invite code for consistent handling */
-    private String normalizeCode(String code) {
-        return code.toUpperCase();
+    private String normalize(String code) {
+        return code.trim().toUpperCase();
+    }
+
+    /** Hashes the normalized invite code using SHA-256 */
+    private String hash(String normalizedCode) {
+        return RefreshTokenUtil.hashSHA256(normalizedCode);
     }
 }
