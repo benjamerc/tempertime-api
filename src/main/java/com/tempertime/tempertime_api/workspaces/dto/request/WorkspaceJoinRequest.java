@@ -7,6 +7,6 @@ import jakarta.validation.constraints.Size;
 public record WorkspaceJoinRequest(
 
         @NotBlank(message = "Code is required")
-        @Size(max = 8, message = "Code must be at most 8 characters")
+        @Size(max = 12, message = "Code must be at most 12 characters")
         String inviteCode
 ) {}
