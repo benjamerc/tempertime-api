@@ -1,12 +1,20 @@
 package com.tempertime.tempertime_api.workspaces.mapper;
 
-import com.tempertime.tempertime_api.workspaces.dto.response.WorkspaceResponse;
+import com.tempertime.tempertime_api.workspaces.dto.response.WorkspaceCreateResponse;
+import com.tempertime.tempertime_api.workspaces.dto.response.WorkspaceUpdateResponse;
 import com.tempertime.tempertime_api.workspaces.model.Workspace;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 /** Maps Workspace domain models to API response DTOs */
 @Mapper(componentModel = "spring")
 public interface WorkspaceMapper {
 
-    WorkspaceResponse toWorkspaceResponse(Workspace workspace);
+    WorkspaceUpdateResponse toWorkspaceUpdateResponse(Workspace workspace);
+
+    @Mapping(target = "inviteCode", source = "inviteCode")
+    WorkspaceCreateResponse toWorkspaceCreateResponse(
+            Workspace workspace,
+            String inviteCode
+    );
 }
