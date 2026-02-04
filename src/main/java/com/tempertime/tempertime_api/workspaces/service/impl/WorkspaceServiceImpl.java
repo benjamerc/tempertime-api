@@ -82,7 +82,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
         // Invite code
         String rawCode = workspaceCodeGenerator.generate();
-        String codeHash = hashInviteCode(rawCode);
+        String codeHash = hash(rawCode);
 
         WorkspaceCode workspaceCode = WorkspaceCode.builder()
                 .workspace(savedWorkspace)
@@ -227,7 +227,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
                 loadWorkspaceCodeWithOwnerAccess(workspaceId, userId);
 
         String rawCode = workspaceCodeGenerator.generate();
-        String codeHash = hashInviteCode(rawCode);
+        String codeHash = hash(rawCode);
 
         workspaceCode.setCodeHash(codeHash);
         workspaceCodeRepository.save(workspaceCode);
@@ -352,7 +352,8 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         return workspaceCodeLoader.loadByWorkspaceOrThrow(workspace);
     }
 
-    private String hashInviteCode(String normalizedCode) {
-        return HashUtil.hashSHA256(normalizedCode);
+    /** Hashes the raw invite code using SHA-256 */
+    private String hash(String rawCode) {
+        return HashUtil.hashSHA256(rawCode);
     }
 }
