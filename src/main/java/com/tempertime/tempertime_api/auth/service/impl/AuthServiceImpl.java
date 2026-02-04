@@ -81,7 +81,8 @@ public class AuthServiceImpl implements AuthService {
         String newAccessToken = accessTokenService.createAccessToken(user);
 
         // Rotates refresh token to prevent reuse
-        String newRefreshToken = refreshTokenService.rotateRefreshToken(request.refreshToken());
+        String newRefreshToken =
+                refreshTokenService.rotateRefreshToken(refreshToken);
 
         return new AuthTokenResponse(newAccessToken, newRefreshToken);
     }
