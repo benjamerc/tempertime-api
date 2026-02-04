@@ -12,6 +12,6 @@ public interface WorkspaceCodeRepository extends JpaRepository<WorkspaceCode, Lo
     /** Finds the invite code for a given workspace */
     Optional<WorkspaceCode> findByWorkspaceId(Long workspaceId);
 
-    /** Finds a workspace code by the invite code string */
-    Optional<WorkspaceCode> findByCode(String code);
+    /** Finds a WorkspaceCode by the invite code hash string */
+    Optional<WorkspaceCode> findByCodeHash(String codeHash);
 }
