@@ -1,10 +1,12 @@
 package com.tempertime.tempertime_api.common.error;
 
 import com.tempertime.tempertime_api.auth.exception.EmailAlreadyExistsException;
+import com.tempertime.tempertime_api.common.color.InvalidColorFormatException;
 import com.tempertime.tempertime_api.common.error.mapper.FieldErrorMapper;
 import com.tempertime.tempertime_api.common.error.model.ApiError;
 import com.tempertime.tempertime_api.common.error.model.ErrorCode;
 import com.tempertime.tempertime_api.common.error.model.FieldError;
+import com.tempertime.tempertime_api.events.exception.InvalidEventDateFormatException;
 import com.tempertime.tempertime_api.security.exception.HashingException;
 import com.tempertime.tempertime_api.security.exception.RefreshTokenExpiredException;
 import com.tempertime.tempertime_api.security.exception.RefreshTokenNotFoundException;
@@ -37,19 +39,6 @@ public class GlobalExceptionHandler {
     private final ApiErrorBuilder apiErrorBuilder;
 
     // ===================== Workspace Exceptions =====================
-
-    @ExceptionHandler(InvalidColorFormatException.class)
-    public ResponseEntity<ApiError> handleInvalidColorFormat(
-            InvalidColorFormatException ex,
-            HttpServletRequest request
-    ) {
-        return buildErrorResponse(
-                ErrorCode.INVALID_COLOR_FORMAT,
-                ErrorCode.INVALID_COLOR_FORMAT.getDefaultMessage(),
-                HttpStatus.BAD_REQUEST,
-                request
-        );
-    }
 
     @ExceptionHandler(WorkspaceAccessDeniedException.class)
     public ResponseEntity<ApiError> handleWorkspaceAccessDenied(
@@ -198,6 +187,21 @@ public class GlobalExceptionHandler {
         );
     }
 
+    // ===================== Event Exceptions =====================
+
+    @ExceptionHandler(InvalidEventDateFormatException.class)
+    public ResponseEntity<ApiError> handleInvalidEventDateFormat(
+            InvalidEventDateFormatException ex,
+            HttpServletRequest request
+    ) {
+        return buildErrorResponse(
+                ErrorCode.INVALID_EVENT_DATE_FORMAT,
+                ErrorCode.INVALID_EVENT_DATE_FORMAT.getDefaultMessage(),
+                HttpStatus.BAD_REQUEST,
+                request
+        );
+    }
+
     // ===================== User Exceptions =====================
 
     @ExceptionHandler(InvalidPasswordException.class)
@@ -308,6 +312,21 @@ public class GlobalExceptionHandler {
                 ErrorCode.REFRESH_TOKEN_REVOKED,
                 ErrorCode.REFRESH_TOKEN_REVOKED.getDefaultMessage(),
                 HttpStatus.FORBIDDEN,
+                request
+        );
+    }
+
+    // ===================== Common Exceptions =====================
+
+    @ExceptionHandler(InvalidColorFormatException.class)
+    public ResponseEntity<ApiError> handleInvalidColorFormat(
+            InvalidColorFormatException ex,
+            HttpServletRequest request
+    ) {
+        return buildErrorResponse(
+                ErrorCode.INVALID_COLOR_FORMAT,
+                ErrorCode.INVALID_COLOR_FORMAT.getDefaultMessage(),
+                HttpStatus.BAD_REQUEST,
                 request
         );
     }
