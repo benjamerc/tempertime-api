@@ -96,8 +96,8 @@ public class GlobalExceptionHandler {
             HttpServletRequest request
     ) {
         return buildErrorResponse(
-                ErrorCode.WORKSPACE_MEMBER_NOT_FOUND,
-                ErrorCode.WORKSPACE_MEMBER_NOT_FOUND.getDefaultMessage(),
+                ErrorCode.WORKSPACE_USER_NOT_FOUND,
+                ErrorCode.WORKSPACE_USER_NOT_FOUND.getDefaultMessage(),
                 HttpStatus.NOT_FOUND,
                 request
         );

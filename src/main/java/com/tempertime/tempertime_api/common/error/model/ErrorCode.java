@@ -18,7 +18,7 @@ public enum ErrorCode {
     WORKSPACE_INVITE_CODE_NOT_FOUND("Workspace invite code not found"),
     WORKSPACE_INVITE_CODE_DISABLED("Workspace invite code is disabled"),
     USER_ALREADY_IN_WORKSPACE("User is already in workspace"),
-    WORKSPACE_MEMBER_NOT_FOUND("Workspace member not found"),
+    WORKSPACE_USER_NOT_FOUND("Workspace user not found"),
     WORKSPACE_OPERATION_NOT_ALLOWED("Workspace operation not allowed"),
 
     // User
