@@ -1,16 +1,15 @@
-package com.tempertime.tempertime_api.workspaces.support;
+package com.tempertime.tempertime_api.common.color;
 
-import com.tempertime.tempertime_api.workspaces.exception.InvalidColorFormatException;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
-public class WorkspaceColorUtil {
+public class ColorUtil {
 
     /** Returns a valid color: generates one if missing, otherwise validates hexadecimal format */
     public static String resolveColor(
             String color,
-            WorkspaceColorValidator validator,
-            WorkspaceColorGenerator generator
+            ColorValidator validator,
+            ColorGenerator generator
     ) {
         if (validator.isColorMissing(color)) {
             return generator.generate();
@@ -21,7 +20,7 @@ public class WorkspaceColorUtil {
     }
 
     /** Validates a color only if present; does not generate */
-    public static void validateIfPresent(String color, WorkspaceColorValidator validator) {
+    public static void validateIfPresent(String color, ColorValidator validator) {
         if (!validator.isColorMissing(color) && !validator.isHexColor(color)) {
             throw new InvalidColorFormatException("Color must be hexadecimal");
         }

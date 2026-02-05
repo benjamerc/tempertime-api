@@ -1,13 +1,13 @@
-package com.tempertime.tempertime_api.workspaces.support;
+package com.tempertime.tempertime_api.common.color;
 
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Random;
 
-/** Generates a default color for workspaces when none is provided */
+/** Generates a default color when none is provided */
 @Component
-public class WorkspaceColorGenerator {
+public class ColorGenerator {
 
     private static final List<String> COLORS = List.of(
             "#1ABC9C",
