@@ -3,6 +3,7 @@ package com.tempertime.tempertime_api.workspaces.service.impl;
 import com.tempertime.tempertime_api.common.util.HashUtil;
 import com.tempertime.tempertime_api.users.model.User;
 import com.tempertime.tempertime_api.users.service.UserLoader;
+import com.tempertime.tempertime_api.workspaces.access.WorkspaceAccessService;
 import com.tempertime.tempertime_api.workspaces.dto.request.WorkspaceCreateRequest;
 import com.tempertime.tempertime_api.workspaces.dto.request.WorkspaceUpdateRequest;
 import com.tempertime.tempertime_api.workspaces.dto.response.*;
@@ -18,9 +19,9 @@ import com.tempertime.tempertime_api.workspaces.repository.WorkspaceInviteCodeRe
 import com.tempertime.tempertime_api.workspaces.repository.WorkspaceRepository;
 import com.tempertime.tempertime_api.workspaces.repository.WorkspaceUserRepository;
 import com.tempertime.tempertime_api.workspaces.service.*;
-import com.tempertime.tempertime_api.workspaces.support.WorkspaceColorGenerator;
-import com.tempertime.tempertime_api.workspaces.support.WorkspaceColorUtil;
-import com.tempertime.tempertime_api.workspaces.support.WorkspaceColorValidator;
+import com.tempertime.tempertime_api.common.color.ColorGenerator;
+import com.tempertime.tempertime_api.common.color.ColorUtil;
+import com.tempertime.tempertime_api.common.color.ColorValidator;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -41,6 +42,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     private final UserLoader userLoader;
     private final WorkspaceLoader workspaceLoader;
     private final WorkspaceAuthorizationService workspaceAuthorizationService;
+    private final WorkspaceAccessService workspaceAccessService;
     private final WorkspaceInviteCodeLoader workspaceInviteCodeLoader;
 
     // Mappers
@@ -49,9 +51,9 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     private final WorkspaceInviteCodeMapper workspaceInviteCodeMapper;
 
     // Generators / Validators
-    private final WorkspaceColorGenerator workspaceColorGenerator;
+    private final ColorGenerator colorGenerator;
+    private final ColorValidator colorValidator;
     private final WorkspaceInviteCodeGenerator workspaceInviteCodeGenerator;
-    private final WorkspaceColorValidator workspaceColorValidator;
 
     /**
      * Creates a new workspace and assigns the creator as OWNER.
@@ -65,10 +67,10 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
         User user = userLoader.loadUserOrThrow(userId);
 
-        String color = WorkspaceColorUtil.resolveColor(
+        String color = ColorUtil.resolveColor(
                 request.color(),
-                workspaceColorValidator,
-                workspaceColorGenerator
+                colorValidator,
+                colorGenerator
         );
 
         Workspace workspace = Workspace.builder()
@@ -137,9 +139,10 @@ public class WorkspaceServiceImpl implements WorkspaceService {
             Long userId,
             WorkspaceUpdateRequest request) {
 
-        WorkspaceColorUtil.validateIfPresent(request.color(), workspaceColorValidator);
+        ColorUtil.validateIfPresent(request.color(), colorValidator);
 
-        Workspace workspace = loadWorkspaceWithOwnerAccess(workspaceId, userId);
+        Workspace workspace =
+                workspaceAccessService.loadWorkspaceWithOwnerAccess(workspaceId, userId);
 
         Optional.ofNullable(request.name())
                 .filter(n -> !n.isBlank())
@@ -159,7 +162,8 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     @Override
     public void archiveWorkspace(Long workspaceId, Long userId) {
 
-        Workspace workspace = loadWorkspaceWithOwnerAccess(workspaceId, userId);
+        Workspace workspace =
+                workspaceAccessService.loadWorkspaceWithOwnerAccess(workspaceId, userId);
 
         workspace.setArchived(true);
         workspaceRepository.save(workspace);
@@ -171,7 +175,8 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     @Override
     public void unarchiveWorkspace(Long workspaceId, Long userId) {
 
-        Workspace workspace = loadWorkspaceWithOwnerAccess(workspaceId, userId);
+        Workspace workspace =
+                workspaceAccessService.loadWorkspaceWithOwnerAccess(workspaceId, userId);
 
         workspace.setArchived(false);
         workspaceRepository.save(workspace);
@@ -184,7 +189,8 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     @Override
     public void deleteWorkspace(Long workspaceId, Long userId) {
 
-        Workspace workspace = loadWorkspaceWithOwnerAccess(workspaceId, userId);
+        Workspace workspace =
+                workspaceAccessService.loadWorkspaceWithOwnerAccess(workspaceId, userId);
 
         if (!workspace.getArchived()) {
             throw new WorkspaceNotArchivedException("Workspace must be archived before deletion");
@@ -283,7 +289,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     @Override
     public List<WorkspaceUserResponse> getWorkspaceUsers(Long workspaceId, Long userId) {
 
-        requireAccessibleWorkspace(workspaceId, userId);
+        workspaceAccessService.requireAccessibleWorkspace(workspaceId, userId);
 
         return workspaceUserRepository.findByWorkspaceId(workspaceId)
                 .stream()
@@ -299,7 +305,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     @Override
     public void removeWorkspaceUser(Long workspaceId, Long targetUserId, Long userId) {
 
-        loadWorkspaceWithOwnerAccess(workspaceId, userId);
+        workspaceAccessService.loadWorkspaceWithOwnerAccess(workspaceId, userId);
 
         WorkspaceUser workspaceUser = workspaceUserRepository
                 .findByWorkspaceIdAndUserId(workspaceId, targetUserId)
@@ -324,7 +330,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     @Override
     public void leaveWorkspace(Long workspaceId, Long userId) {
 
-        requireAccessibleWorkspace(workspaceId, userId);
+        workspaceAccessService.requireAccessibleWorkspace(workspaceId, userId);
 
         WorkspaceUser workspaceUser = workspaceAuthorizationService
                 .requireMembership(workspaceId, userId);
@@ -340,30 +346,6 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     }
 
     /**
-     * Verifies that the workspace exists and that the user belongs to it.
-     * Does not return the workspace entity.
-     */
-    private void  requireAccessibleWorkspace(Long workspaceId, Long userId) {
-
-        workspaceLoader.loadOrThrow(workspaceId);
-
-        workspaceAuthorizationService.requireMembership(workspaceId, userId);
-    }
-
-    /**
-     * Loads a workspace and verifies that the user belongs to it
-     * and has OWNER permissions.
-     */
-    private Workspace loadWorkspaceWithOwnerAccess(Long workspaceId, Long userId) {
-
-        Workspace workspace = workspaceLoader.loadOrThrow(workspaceId);
-
-        workspaceAuthorizationService.requireRole(workspaceId, userId, WorkspaceRole.OWNER);
-
-        return workspace;
-    }
-
-    /**
      * Loads the workspace invite code and verifies that the user
      * belongs to the workspace and has OWNER permissions.
      * Throws a domain-specific exception if the workspace does not exist
@@ -371,7 +353,8 @@ public class WorkspaceServiceImpl implements WorkspaceService {
      */
     private WorkspaceInviteCode loadWorkspaceInviteCodeWithOwnerAccess(Long workspaceId, Long userId) {
 
-        Workspace workspace = loadWorkspaceWithOwnerAccess(workspaceId, userId);
+        Workspace workspace =
+                workspaceAccessService.loadWorkspaceWithOwnerAccess(workspaceId, userId);
         return workspaceInviteCodeLoader.loadByWorkspaceOrThrow(workspace);
     }
 
