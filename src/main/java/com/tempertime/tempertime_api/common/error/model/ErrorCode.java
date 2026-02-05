@@ -9,7 +9,6 @@ import lombok.Getter;
 public enum ErrorCode {
 
     // Workspace
-    INVALID_COLOR_FORMAT("Invalid color format"),
     WORKSPACE_ACCESS_DENIED("Access denied to workspace"),
     WORKSPACE_NOT_ARCHIVED("Workspace must be archived before deletion"),
     WORKSPACE_NOT_FOUND("Workspace not found"),
@@ -20,6 +19,9 @@ public enum ErrorCode {
     USER_ALREADY_IN_WORKSPACE("User is already in workspace"),
     WORKSPACE_USER_NOT_FOUND("Workspace user not found"),
     WORKSPACE_OPERATION_NOT_ALLOWED("Workspace operation not allowed"),
+
+    // Event
+    INVALID_EVENT_DATE_FORMAT("Invalid event date format"),
 
     // User
     INVALID_PASSWORD("Invalid password"),
@@ -36,6 +38,9 @@ public enum ErrorCode {
     REFRESH_TOKEN_NOT_FOUND("Refresh token not found"),
     REFRESH_TOKEN_REVOKED("Refresh token revoked"),
     EMAIL_NOT_FOUND("Email not found"),
+
+    // Common
+    INVALID_COLOR_FORMAT("Invalid color format"),
 
     // Generic
     VALIDATION_ERROR("Validation error"),
