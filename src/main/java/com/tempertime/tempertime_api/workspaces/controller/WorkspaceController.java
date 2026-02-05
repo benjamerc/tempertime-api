@@ -185,7 +185,7 @@ public class WorkspaceController {
         );
     }
 
-    @GetMapping("/{workspaceId}/members")
+    @GetMapping("/{workspaceId}/users")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<List<WorkspaceUserResponse>> getWorkspaceUsers(
             @PathVariable Long workspaceId,
@@ -199,7 +199,7 @@ public class WorkspaceController {
         );
     }
 
-    @DeleteMapping("/{workspaceId}/members/{userId}")
+    @DeleteMapping("/{workspaceId}/users/{userId}")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Void> removeWorkspaceUser(
             @PathVariable Long workspaceId,
@@ -215,7 +215,7 @@ public class WorkspaceController {
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("/{workspaceId}/members/me")
+    @DeleteMapping("/{workspaceId}/users/me")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Void> leaveWorkspace(
             @PathVariable Long workspaceId,
