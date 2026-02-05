@@ -30,6 +30,7 @@ public class WorkspaceUser {
     @JoinColumn(name = "id_user", nullable = false, foreignKey = @ForeignKey(name = "fk_workspace_user_user"))
     private User user;
 
+    @Builder.Default
     @Enumerated(EnumType.STRING)
     @Column(name = "workspace_role", nullable = false, length = 20)
     private WorkspaceRole role = WorkspaceRole.MEMBER;
