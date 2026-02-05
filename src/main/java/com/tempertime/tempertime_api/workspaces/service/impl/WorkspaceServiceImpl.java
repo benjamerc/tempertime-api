@@ -273,7 +273,6 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         WorkspaceUser workspaceUser = WorkspaceUser.builder()
                 .workspace(workspace)
                 .user(user)
-                .role(WorkspaceRole.MEMBER)
                 .build();
 
         workspaceUserRepository.save(workspaceUser);
