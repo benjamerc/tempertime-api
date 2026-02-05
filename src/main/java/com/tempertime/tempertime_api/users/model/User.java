@@ -41,11 +41,13 @@ public class User {
     @Column(nullable = false, length = 20)
     private UserRole role = UserRole.USER;
 
+    @Builder.Default
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RefreshToken> refreshTokens = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<WorkspaceUser> workspaceMemberships = new ArrayList<>();
+    private List<WorkspaceUser> workspaces = new ArrayList<>();
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
