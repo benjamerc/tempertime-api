@@ -4,11 +4,14 @@ import org.springframework.stereotype.Component;
 
 import java.security.SecureRandom;
 
-/** Generates invitation codes for workspaces */
+/** Generates workspace invite codes */
 @Component
-public class WorkspaceCodeGenerator {
+public class WorkspaceInviteCodeGenerator {
 
+    // Length of the workspace invite code
     private static final int CODE_LENGTH = 12;
+
+    // Characters allowed in the invite code
     private static final String CHARSET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
     private final SecureRandom random = new SecureRandom();

@@ -7,14 +7,14 @@ import com.tempertime.tempertime_api.workspaces.dto.request.WorkspaceCreateReque
 import com.tempertime.tempertime_api.workspaces.dto.request.WorkspaceUpdateRequest;
 import com.tempertime.tempertime_api.workspaces.dto.response.*;
 import com.tempertime.tempertime_api.workspaces.exception.*;
-import com.tempertime.tempertime_api.workspaces.mapper.WorkspaceCodeMapper;
+import com.tempertime.tempertime_api.workspaces.mapper.WorkspaceInviteCodeMapper;
 import com.tempertime.tempertime_api.workspaces.mapper.WorkspaceMapper;
 import com.tempertime.tempertime_api.workspaces.mapper.WorkspaceUserMapper;
 import com.tempertime.tempertime_api.workspaces.model.Workspace;
-import com.tempertime.tempertime_api.workspaces.model.WorkspaceCode;
+import com.tempertime.tempertime_api.workspaces.model.WorkspaceInviteCode;
 import com.tempertime.tempertime_api.workspaces.model.WorkspaceRole;
 import com.tempertime.tempertime_api.workspaces.model.WorkspaceUser;
-import com.tempertime.tempertime_api.workspaces.repository.WorkspaceCodeRepository;
+import com.tempertime.tempertime_api.workspaces.repository.WorkspaceInviteCodeRepository;
 import com.tempertime.tempertime_api.workspaces.repository.WorkspaceRepository;
 import com.tempertime.tempertime_api.workspaces.repository.WorkspaceUserRepository;
 import com.tempertime.tempertime_api.workspaces.service.*;
@@ -41,16 +41,16 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     private final UserLoader userLoader;
     private final WorkspaceLoader workspaceLoader;
     private final WorkspaceAuthorizationService workspaceAuthorizationService;
-    private final WorkspaceCodeGenerator  workspaceCodeGenerator;
-    private final WorkspaceCodeRepository  workspaceCodeRepository;
-    private final WorkspaceCodeMapper workspaceCodeMapper;
-    private final WorkspaceCodeLoader workspaceCodeLoader;
+    private final WorkspaceInviteCodeGenerator workspaceInviteCodeGenerator;
+    private final WorkspaceInviteCodeRepository workspaceInviteCodeRepository;
+    private final WorkspaceInviteCodeMapper workspaceInviteCodeMapper;
+    private final WorkspaceInviteCodeLoader workspaceInviteCodeLoader;
 
     /**
      * Creates a new workspace and assigns the creator as OWNER.
-     * If no color is provided, one is automatically resolved.
+     * If no color is provided, it is automatically resolved.
      * Generates an initial workspace invite code.
-     * The raw code is returned once in the response; only the hashed value is persisted.
+     * The raw invite code is returned in the response only once; only the hashed value is persisted.
      */
     @Transactional
     @Override
@@ -80,19 +80,19 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
         workspaceUserRepository.save(workspaceUser);
 
-        // Invite code
-        String rawCode = workspaceCodeGenerator.generate();
-        String codeHash = hash(rawCode);
+        // Generate initial workspace invite code (raw code returned only once)
+        String rawInviteCode = workspaceInviteCodeGenerator.generate();
+        String inviteCodeHash = hash(rawInviteCode);
 
-        WorkspaceCode workspaceCode = WorkspaceCode.builder()
+        WorkspaceInviteCode workspaceInviteCode = WorkspaceInviteCode.builder()
                 .workspace(savedWorkspace)
-                .codeHash(codeHash)
+                .inviteCodeHash(inviteCodeHash)
                 .build();
 
-        workspaceCodeRepository.save(workspaceCode);
+        workspaceInviteCodeRepository.save(workspaceInviteCode);
 
         // Return raw code ONLY here
-        return workspaceMapper.toWorkspaceCreateResponse(savedWorkspace, rawCode);
+        return workspaceMapper.toWorkspaceCreateResponse(savedWorkspace, rawInviteCode);
     }
 
     @Override
@@ -182,58 +182,61 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         workspaceRepository.delete(workspace);
     }
 
+    /**
+     * Returns workspace invite code metadata (enabled status and creation time).
+     * The raw invite code is not exposed for security reasons.
+     */
     @Override
-    public WorkspaceCodeResponse getInviteCode(Long workspaceId, Long userId) {
+    public WorkspaceInviteCodeResponse getInviteCode(Long workspaceId, Long userId) {
 
-        WorkspaceCode workspaceCode = loadWorkspaceCodeWithOwnerAccess(workspaceId, userId);
+        WorkspaceInviteCode workspaceInviteCode = loadWorkspaceInviteCodeWithOwnerAccess(workspaceId, userId);
 
-        return workspaceCodeMapper.toWorkspaceCodeResponse(workspaceCode);
+        return workspaceInviteCodeMapper.toWorkspaceInviteCodeResponse(workspaceInviteCode);
     }
 
     @Transactional
     @Override
-    public WorkspaceCodeResponse enableInviteCode(Long workspaceId, Long userId) {
+    public WorkspaceInviteCodeResponse activateInviteCode(Long workspaceId, Long userId) {
 
-        WorkspaceCode workspaceCode = loadWorkspaceCodeWithOwnerAccess(workspaceId, userId);
+        WorkspaceInviteCode workspaceInviteCode = loadWorkspaceInviteCodeWithOwnerAccess(workspaceId, userId);
 
-        workspaceCode.setInvitationsEnabled(true);
-        workspaceCodeRepository.save(workspaceCode);
+        workspaceInviteCode.setInviteEnabled(true);
+        workspaceInviteCodeRepository.save(workspaceInviteCode);
 
-        return workspaceCodeMapper.toWorkspaceCodeResponse(workspaceCode);
+        return workspaceInviteCodeMapper.toWorkspaceInviteCodeResponse(workspaceInviteCode);
     }
 
     @Transactional
     @Override
-    public WorkspaceCodeResponse disableInviteCode(Long workspaceId, Long userId) {
+    public WorkspaceInviteCodeResponse deactivateInviteCode(Long workspaceId, Long userId) {
 
-        WorkspaceCode workspaceCode = loadWorkspaceCodeWithOwnerAccess(workspaceId, userId);
+        WorkspaceInviteCode workspaceInviteCode = loadWorkspaceInviteCodeWithOwnerAccess(workspaceId, userId);
 
-        workspaceCode.setInvitationsEnabled(false);
-        workspaceCodeRepository.save(workspaceCode);
+        workspaceInviteCode.setInviteEnabled(false);
+        workspaceInviteCodeRepository.save(workspaceInviteCode);
 
-        return workspaceCodeMapper.toWorkspaceCodeResponse(workspaceCode);
+        return workspaceInviteCodeMapper.toWorkspaceInviteCodeResponse(workspaceInviteCode);
     }
 
     /**
      * Regenerates the workspace invite code.
-     * The raw invite code is returned only once in the response and is never persisted.
-     * Only the hashed value is stored in the database.
+     * The raw invite code is returned in the response only once; only the hashed value is persisted.
      */
     @Transactional
     @Override
-    public WorkspaceCodeRegenerateResponse regenerateInviteCode(Long workspaceId, Long userId) {
+    public WorkspaceInviteCodeRegenerateResponse regenerateInviteCode(Long workspaceId, Long userId) {
 
-        WorkspaceCode workspaceCode =
-                loadWorkspaceCodeWithOwnerAccess(workspaceId, userId);
+        WorkspaceInviteCode workspaceInviteCode =
+                loadWorkspaceInviteCodeWithOwnerAccess(workspaceId, userId);
 
-        String rawCode = workspaceCodeGenerator.generate();
-        String codeHash = hash(rawCode);
+        String rawInviteCode = workspaceInviteCodeGenerator.generate();
+        String inviteCodeHash = hash(rawInviteCode);
 
-        workspaceCode.setCodeHash(codeHash);
-        workspaceCodeRepository.save(workspaceCode);
+        workspaceInviteCode.setInviteCodeHash(inviteCodeHash);
+        workspaceInviteCodeRepository.save(workspaceInviteCode);
 
-        return workspaceCodeMapper
-                .toWorkspaceCodeRegenerateResponse(workspaceCode, rawCode);
+        return workspaceInviteCodeMapper
+                .toWorkspaceInviteCodeRegenerateResponse(workspaceInviteCode, rawInviteCode);
     }
 
     /**
@@ -244,10 +247,10 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     @Override
     public WorkspaceJoinResponse joinWorkspace(String inviteCode, Long userId) {
 
-        WorkspaceCode workspaceCode =
-                workspaceCodeLoader.loadEnabledByCodeOrThrow(inviteCode);
+        WorkspaceInviteCode workspaceInviteCode =
+                workspaceInviteCodeLoader.loadEnabledByCodeOrThrow(inviteCode);
 
-        Workspace workspace = workspaceCode.getWorkspace();
+        Workspace workspace = workspaceInviteCode.getWorkspace();
         User user = userLoader.loadUserOrThrow(userId);
 
         if (workspaceUserRepository.existsByWorkspaceIdAndUserId(workspace.getId(), userId)) {
@@ -343,17 +346,20 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     }
 
     /**
-     * Loads the invite code for a workspace and verifies that the user
+     * Loads the workspace invite code and verifies that the user
      * belongs to the workspace and has OWNER permissions.
+     * Throws a domain-specific exception if the workspace does not exist
+     * or the user is not an OWNER.
      */
-    private WorkspaceCode loadWorkspaceCodeWithOwnerAccess(Long workspaceId, Long userId) {
+    private WorkspaceInviteCode loadWorkspaceInviteCodeWithOwnerAccess(Long workspaceId, Long userId) {
 
         Workspace workspace = loadWorkspaceWithOwnerAccess(workspaceId, userId);
-        return workspaceCodeLoader.loadByWorkspaceOrThrow(workspace);
+        return workspaceInviteCodeLoader.loadByWorkspaceOrThrow(workspace);
     }
 
     /** Hashes the raw invite code using SHA-256 */
-    private String hash(String rawCode) {
-        return HashUtil.hashSHA256(rawCode);
+    private String hash(String rawInviteCode) {
+
+        return HashUtil.hashSHA256(rawInviteCode);
     }
 }

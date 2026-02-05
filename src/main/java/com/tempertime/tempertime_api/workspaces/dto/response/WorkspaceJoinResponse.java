@@ -2,7 +2,7 @@ package com.tempertime.tempertime_api.workspaces.dto.response;
 
 import com.tempertime.tempertime_api.workspaces.model.WorkspaceRole;
 
-/** Response after joining a workspace with an invitation code */
+/** Response returned after joining a workspace using an invite code */
 public record WorkspaceJoinResponse(
 
         Long workspaceId,

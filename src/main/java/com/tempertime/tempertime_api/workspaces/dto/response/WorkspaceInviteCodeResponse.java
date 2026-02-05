@@ -2,9 +2,9 @@ package com.tempertime.tempertime_api.workspaces.dto.response;
 
 import java.time.Instant;
 
-/** Workspace invitation code */
-public record WorkspaceCodeResponse(
+/** Represents a workspace invite code */
+public record WorkspaceInviteCodeResponse(
 
-        Boolean invitationsEnabled,
+        Boolean inviteEnabled,
         Instant createdAt
 ) {}

@@ -6,7 +6,7 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.Instant;
 
-/** Represents an invitation code tied to a workspace for user joining */
+/** Represents a workspace invite code that allows users to join a workspace */
 @Entity
 @Table(name = "workspace_code")
 @Getter
@@ -14,23 +14,26 @@ import java.time.Instant;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class WorkspaceCode {
+public class WorkspaceInviteCode {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "code_hash", nullable = false, length = 64, unique = true)
-    private String codeHash;
+    /** Hashed value of the invite code */
+    @Column(name = "invite_code_hash", nullable = false, length = 64, unique = true)
+    private String inviteCodeHash;
 
+    /** Whether the invite is currently active */
     @Column(name = "invitations_enabled", nullable = false)
     @Builder.Default
-    private Boolean invitationsEnabled = true;
+    private Boolean inviteEnabled = true;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     @CreationTimestamp
     private Instant createdAt;
 
+    /** Workspace associated with this invite code */
     @OneToOne
     @JoinColumn(name = "id_workspace", nullable = false, unique = true,
             foreignKey = @ForeignKey(name = "fk_workspace_code_workspace"))

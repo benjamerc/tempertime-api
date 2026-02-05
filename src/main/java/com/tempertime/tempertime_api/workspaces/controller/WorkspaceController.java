@@ -117,7 +117,7 @@ public class WorkspaceController {
 
     @GetMapping("/{workspaceId}/invite-code")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<WorkspaceCodeResponse> getInviteCode(
+    public ResponseEntity<WorkspaceInviteCodeResponse> getInviteCode(
             @PathVariable Long workspaceId,
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
@@ -131,12 +131,12 @@ public class WorkspaceController {
 
     @PatchMapping("/{workspaceId}/invite-code/enable")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<WorkspaceCodeResponse> enableInviteCode(
+    public ResponseEntity<WorkspaceInviteCodeResponse> activateInviteCode(
             @PathVariable Long workspaceId,
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
         return ResponseEntity.ok(
-                workspaceService.enableInviteCode(
+                workspaceService.activateInviteCode(
                         workspaceId,
                         currentUserProvider.getUserId(userDetails)
                 )
@@ -145,12 +145,12 @@ public class WorkspaceController {
 
     @PatchMapping("/{workspaceId}/invite-code/disable")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<WorkspaceCodeResponse> disableInviteCode(
+    public ResponseEntity<WorkspaceInviteCodeResponse> deactivateInviteCode(
             @PathVariable Long workspaceId,
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
         return ResponseEntity.ok(
-                workspaceService.disableInviteCode(
+                workspaceService.deactivateInviteCode(
                         workspaceId,
                         currentUserProvider.getUserId(userDetails)
                 )
@@ -159,7 +159,7 @@ public class WorkspaceController {
 
     @PatchMapping("/{workspaceId}/invite-code/regenerate")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<WorkspaceCodeRegenerateResponse> regenerateInviteCode(
+    public ResponseEntity<WorkspaceInviteCodeRegenerateResponse> regenerateInviteCode(
             @PathVariable Long workspaceId,
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
