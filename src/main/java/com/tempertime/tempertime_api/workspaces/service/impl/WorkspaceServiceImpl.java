@@ -32,19 +32,26 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class WorkspaceServiceImpl implements WorkspaceService {
 
+    // Repositories
     private final WorkspaceRepository workspaceRepository;
     private final WorkspaceUserRepository workspaceUserRepository;
-    private final WorkspaceMapper workspaceMapper;
-    private final WorkspaceUserMapper workspaceUserMapper;
-    private final WorkspaceColorValidator workspaceColorValidator;
-    private final WorkspaceColorGenerator workspaceColorGenerator;
+    private final WorkspaceInviteCodeRepository workspaceInviteCodeRepository;
+
+    // Loaders / Services
     private final UserLoader userLoader;
     private final WorkspaceLoader workspaceLoader;
     private final WorkspaceAuthorizationService workspaceAuthorizationService;
-    private final WorkspaceInviteCodeGenerator workspaceInviteCodeGenerator;
-    private final WorkspaceInviteCodeRepository workspaceInviteCodeRepository;
-    private final WorkspaceInviteCodeMapper workspaceInviteCodeMapper;
     private final WorkspaceInviteCodeLoader workspaceInviteCodeLoader;
+
+    // Mappers
+    private final WorkspaceMapper workspaceMapper;
+    private final WorkspaceUserMapper workspaceUserMapper;
+    private final WorkspaceInviteCodeMapper workspaceInviteCodeMapper;
+
+    // Generators / Validators
+    private final WorkspaceColorGenerator workspaceColorGenerator;
+    private final WorkspaceInviteCodeGenerator workspaceInviteCodeGenerator;
+    private final WorkspaceColorValidator workspaceColorValidator;
 
     /**
      * Creates a new workspace and assigns the creator as OWNER.
