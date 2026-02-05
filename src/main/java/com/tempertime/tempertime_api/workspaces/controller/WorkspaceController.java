@@ -187,7 +187,7 @@ public class WorkspaceController {
 
     @GetMapping("/{workspaceId}/members")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<List<WorkspaceMemberResponse>> getWorkspaceUsers(
+    public ResponseEntity<List<WorkspaceUserResponse>> getWorkspaceUsers(
             @PathVariable Long workspaceId,
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {

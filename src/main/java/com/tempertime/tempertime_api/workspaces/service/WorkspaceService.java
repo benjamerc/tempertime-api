@@ -46,11 +46,12 @@ public interface WorkspaceService {
     /** Joins a workspace using a valid invitation code */
     WorkspaceJoinResponse joinWorkspace(String inviteCode, Long userId);
 
-    List<WorkspaceMemberResponse> getWorkspaceUsers(Long workspaceId, Long userId);
+    /** Returns all users of the workspace along with their roles */
+    List<WorkspaceUserResponse> getWorkspaceUsers(Long workspaceId, Long userId);
 
-    /** Removes a MEMBER from a workspace. The action must be performed by the OWNER */
+    /** Removes a user from a workspace. Must be performed by the OWNER */
     void removeWorkspaceUser(Long workspaceId, Long memberId, Long userId);
 
-    /** Allows a MEMBER to leave a workspace. Owners cannot remove themselves */
+    /** Allows a workspace user to leave the workspace. Owners cannot leave themselves. */
     void leaveWorkspace(Long workspaceId, Long userId);
 }

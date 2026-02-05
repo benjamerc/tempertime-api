@@ -3,13 +3,13 @@ package com.tempertime.tempertime_api.workspaces.mapper;
 import com.tempertime.tempertime_api.workspaces.dto.response.WorkspaceDetailResponse;
 import com.tempertime.tempertime_api.workspaces.dto.response.WorkspaceJoinResponse;
 import com.tempertime.tempertime_api.workspaces.dto.response.WorkspaceListItemResponse;
-import com.tempertime.tempertime_api.workspaces.dto.response.WorkspaceMemberResponse;
+import com.tempertime.tempertime_api.workspaces.dto.response.WorkspaceUserResponse;
 import com.tempertime.tempertime_api.workspaces.model.WorkspaceUser;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 
-/** Maps WorkspaceUser domain models to user-scoped workspace DTOs */
+/** Maps WorkspaceUser domain models to workspace DTOs scoped to a user */
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.ERROR)
 public interface WorkspaceUserMapper {
 
@@ -37,5 +37,5 @@ public interface WorkspaceUserMapper {
     @Mapping(target = "firstName", source = "user.firstName")
     @Mapping(target = "lastName", source = "user.lastName")
     @Mapping(target = "role", source = "role")
-    WorkspaceMemberResponse toWorkspaceMemberResponse(WorkspaceUser workspaceUser);
+    WorkspaceUserResponse toWorkspaceUserResponse(WorkspaceUser workspaceUser);
 }

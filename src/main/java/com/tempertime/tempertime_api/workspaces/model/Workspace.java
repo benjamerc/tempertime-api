@@ -8,7 +8,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
-/** Workspace entity and its members (via WorkspaceUser) */
+/** Workspace entity and its users (via WorkspaceUser) */
 @Entity
 @Table(name = "workspaces")
 @Getter
@@ -37,5 +37,5 @@ public class Workspace {
     private Boolean archived = false;
 
     @OneToMany(mappedBy = "workspace", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<WorkspaceUser> members = new ArrayList<>();
+    private List<WorkspaceUser> users = new ArrayList<>();
 }

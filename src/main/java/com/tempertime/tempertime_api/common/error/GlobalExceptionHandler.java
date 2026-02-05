@@ -12,10 +12,6 @@ import com.tempertime.tempertime_api.security.exception.RefreshTokenRevokedExcep
 import com.tempertime.tempertime_api.security.util.SecurityUtil;
 import com.tempertime.tempertime_api.users.exception.InvalidPasswordException;
 import com.tempertime.tempertime_api.workspaces.exception.*;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.UnsupportedJwtException;
-import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -94,9 +90,9 @@ public class GlobalExceptionHandler {
         );
     }
 
-    @ExceptionHandler(WorkspaceMemberNotFoundException.class)
+    @ExceptionHandler(WorkspaceUserNotFoundException.class)
     public ResponseEntity<ApiError> handleWorkspaceMemberNotFound(
-            WorkspaceMemberNotFoundException ex,
+            WorkspaceUserNotFoundException ex,
             HttpServletRequest request
     ) {
         return buildErrorResponse(

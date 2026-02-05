@@ -106,7 +106,9 @@ public class WorkspaceServiceImpl implements WorkspaceService {
                 .toList();
     }
 
-    /** Returns workspace details only if the user belongs to the workspace */
+    /**
+     * Returns workspace details only if the user belongs to the workspace
+     */
     @Override
     public WorkspaceDetailResponse getWorkspaceById(Long workspaceId, Long userId) {
 
@@ -128,7 +130,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
             Long userId,
             WorkspaceUpdateRequest request) {
 
-        WorkspaceColorUtil.validateIfPresent(request.color(),  workspaceColorValidator);
+        WorkspaceColorUtil.validateIfPresent(request.color(), workspaceColorValidator);
 
         Workspace workspace = loadWorkspaceWithOwnerAccess(workspaceId, userId);
 
@@ -156,7 +158,9 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         workspaceRepository.save(workspace);
     }
 
-    /** Restores an archived workspace to active state */
+    /**
+     * Restores an archived workspace to active state
+     */
     @Override
     public void unarchiveWorkspace(Long workspaceId, Long userId) {
 
@@ -271,54 +275,62 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     }
 
     @Override
-    public List<WorkspaceMemberResponse> getWorkspaceUsers(Long workspaceId, Long userId) {
+    public List<WorkspaceUserResponse> getWorkspaceUsers(Long workspaceId, Long userId) {
 
         requireAccessibleWorkspace(workspaceId, userId);
 
         return workspaceUserRepository.findByWorkspaceId(workspaceId)
                 .stream()
-                .map(workspaceUserMapper::toWorkspaceMemberResponse)
+                .map(workspaceUserMapper::toWorkspaceUserResponse)
                 .toList();
     }
 
+    /**
+     * Removes a user from a workspace. Must be performed by the OWNER.
+     * Owners cannot remove themselves.
+     */
     @Transactional
     @Override
-    public void removeWorkspaceUser(Long workspaceId, Long memberId, Long userId) {
+    public void removeWorkspaceUser(Long workspaceId, Long targetUserId, Long userId) {
 
         loadWorkspaceWithOwnerAccess(workspaceId, userId);
 
-        WorkspaceUser member = workspaceUserRepository
-                .findByWorkspaceIdAndUserId(workspaceId, memberId)
-                .orElseThrow(() -> new WorkspaceMemberNotFoundException(
+        WorkspaceUser workspaceUser = workspaceUserRepository
+                .findByWorkspaceIdAndUserId(workspaceId, targetUserId)
+                .orElseThrow(() -> new WorkspaceUserNotFoundException(
                         "Workspace member not found"
                 ));
 
         // Prevent removing the workspace owner
-        if (member.getRole() == WorkspaceRole.OWNER) {
+        if (workspaceUser.getRole() == WorkspaceRole.OWNER) {
             throw new WorkspaceOperationNotAllowedException(
                     "Workspace operation not allowed"
             );
         }
 
-        workspaceUserRepository.delete(member);
+        workspaceUserRepository.delete(workspaceUser);
     }
 
+    /**
+     * Allows a workspace user to leave the workspace.
+     * Owners cannot leave themselves.
+     */
     @Override
     public void leaveWorkspace(Long workspaceId, Long userId) {
 
         requireAccessibleWorkspace(workspaceId, userId);
 
-        WorkspaceUser member = workspaceAuthorizationService
+        WorkspaceUser workspaceUser = workspaceAuthorizationService
                 .requireMembership(workspaceId, userId);
 
         // Prevent the workspace owner from leaving the workspace
-        if (member.getRole() == WorkspaceRole.OWNER) {
+        if (workspaceUser.getRole() == WorkspaceRole.OWNER) {
             throw new WorkspaceOperationNotAllowedException(
                     "Workspace operation not allowed"
             );
         }
 
-        workspaceUserRepository.delete(member);
+        workspaceUserRepository.delete(workspaceUser);
     }
 
     /**

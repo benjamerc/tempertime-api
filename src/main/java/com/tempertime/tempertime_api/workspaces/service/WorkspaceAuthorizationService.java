@@ -15,7 +15,7 @@ public class WorkspaceAuthorizationService {
 
     private final WorkspaceUserRepository workspaceUserRepository;
 
-    /** Ensures the user belongs to the workspace */
+    /** Ensures the user has a membership in the workspace (any role) */
     public WorkspaceUser requireMembership(Long workspaceId, Long userId) {
         return workspaceUserRepository
                 .findByWorkspaceIdAndUserId(workspaceId, userId)
