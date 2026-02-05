@@ -36,6 +36,7 @@ public class Workspace {
     @Builder.Default
     private Boolean archived = false;
 
+    @Builder.Default
     @OneToMany(mappedBy = "workspace", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<WorkspaceUser> users = new ArrayList<>();
 }
