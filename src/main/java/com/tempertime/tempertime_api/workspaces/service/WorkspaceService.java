@@ -50,7 +50,7 @@ public interface WorkspaceService {
     List<WorkspaceUserResponse> getWorkspaceUsers(Long workspaceId, Long userId);
 
     /** Removes a user from a workspace. Must be performed by the OWNER */
-    void removeWorkspaceUser(Long workspaceId, Long memberId, Long userId);
+    void removeWorkspaceUser(Long workspaceId, Long targetUserId, Long userId);
 
     /** Allows a workspace user to leave the workspace. Owners cannot leave themselves. */
     void leaveWorkspace(Long workspaceId, Long userId);
