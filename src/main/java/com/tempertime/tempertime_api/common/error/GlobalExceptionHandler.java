@@ -19,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -29,7 +30,7 @@ import java.util.List;
 
 /**
  * Maps exceptions to standardized ApiError responses.
- * Handlers are grouped by exception origin.
+ * Handlers are organized primarily by exception origin.
  */
 @RestControllerAdvice
 @RequiredArgsConstructor
@@ -187,21 +188,6 @@ public class GlobalExceptionHandler {
         );
     }
 
-    // ===================== Event Exceptions =====================
-
-    @ExceptionHandler(InvalidEventDateFormatException.class)
-    public ResponseEntity<ApiError> handleInvalidEventDateFormat(
-            InvalidEventDateFormatException ex,
-            HttpServletRequest request
-    ) {
-        return buildErrorResponse(
-                ErrorCode.INVALID_EVENT_DATE_FORMAT,
-                ErrorCode.INVALID_EVENT_DATE_FORMAT.getDefaultMessage(),
-                HttpStatus.BAD_REQUEST,
-                request
-        );
-    }
-
     // ===================== User Exceptions =====================
 
     @ExceptionHandler(InvalidPasswordException.class)
@@ -326,6 +312,36 @@ public class GlobalExceptionHandler {
         return buildErrorResponse(
                 ErrorCode.INVALID_COLOR_FORMAT,
                 ErrorCode.INVALID_COLOR_FORMAT.getDefaultMessage(),
+                HttpStatus.BAD_REQUEST,
+                request
+        );
+    }
+
+    // ===================== Request Deserialization Exceptions =====================
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ApiError> handleHttpMessageNotReadable(
+            HttpMessageNotReadableException ex,
+            HttpServletRequest request
+    ) {
+        Throwable cause = ex.getCause();
+
+        while (cause != null && !(cause instanceof InvalidEventDateFormatException)) {
+            cause = cause.getCause();
+        }
+
+        if (cause instanceof InvalidEventDateFormatException invalidEx) {
+            return buildErrorResponse(
+                    ErrorCode.INVALID_EVENT_DATE_FORMAT,
+                    invalidEx.getMessage(),
+                    HttpStatus.BAD_REQUEST,
+                    request
+            );
+        }
+
+        return buildErrorResponse(
+                ErrorCode.INVALID_REQUEST_BODY,
+                ErrorCode.INVALID_REQUEST_BODY.getDefaultMessage(),
                 HttpStatus.BAD_REQUEST,
                 request
         );

@@ -43,6 +43,7 @@ public enum ErrorCode {
     INVALID_COLOR_FORMAT("Invalid color format"),
 
     // Generic
+    INVALID_REQUEST_BODY("Malformed JSON request"),
     VALIDATION_ERROR("Validation error"),
     INTERNAL_ERROR("Internal server error");
 
