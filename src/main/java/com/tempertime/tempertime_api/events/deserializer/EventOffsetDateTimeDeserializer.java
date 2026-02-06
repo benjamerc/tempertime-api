@@ -10,31 +10,43 @@ import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.format.ResolverStyle;
-import java.util.Locale;
+import java.util.regex.Pattern;
 
 /**
- * Jackson deserializer for Event date.
- * Enforces ISO-8601 format with explicit offset: YYYY-MM-DDTHH:mm±HH:MM.
+ * Custom deserializer for event date-time.
+ * Accepts only ISO-8601 with explicit offset: yyyy-MM-dd'T'HH:mm±HH:mm.
+ * Seconds and 'Z' are intentionally not allowed.
  */
 public class EventOffsetDateTimeDeserializer extends JsonDeserializer<OffsetDateTime> {
 
-    /**
-     * Strict formatter that accepts only ISO-8601 date-time with offset (±HH:MM).
-     * Seconds and 'Z' (UTC designator) are not allowed.
-     */
-    private static final DateTimeFormatter FORMATTER =
-            DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mmXXX", Locale.ROOT)
+    // Enforces exact structure: yyyy-MM-dd'T'HH:mm±HH:mm
+    private static final Pattern FORMAT_PATTERN =
+            Pattern.compile("^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}[+-]\\d{2}:\\d{2}$");
+
+    // Strict parsing to reject invalid calendar dates
+    private static final DateTimeFormatter ISO_STRICT =
+            DateTimeFormatter.ISO_OFFSET_DATE_TIME
                     .withResolverStyle(ResolverStyle.STRICT);
 
     @Override
-    public OffsetDateTime deserialize(JsonParser p, DeserializationContext deserializationContext)
+    public OffsetDateTime deserialize(JsonParser jsonParser, DeserializationContext deserializationContext)
             throws IOException {
 
+        String value = jsonParser.getText();
+
+        // Fast structural validation
+        if (!FORMAT_PATTERN.matcher(value).matches()) {
+            throw new InvalidEventDateFormatException(
+                    "Invalid event date format"
+            );
+        }
+
         try {
-            return OffsetDateTime.parse(p.getText(), FORMATTER);
+            // Semantic validation
+            return OffsetDateTime.parse(value, ISO_STRICT);
         } catch (DateTimeParseException ex) {
             throw new InvalidEventDateFormatException(
-                    "Invalid event date format", ex
+                    "Invalid event date value", ex
             );
         }
     }

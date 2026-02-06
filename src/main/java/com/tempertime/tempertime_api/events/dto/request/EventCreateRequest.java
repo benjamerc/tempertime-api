@@ -17,7 +17,7 @@ public record EventCreateRequest(
         @Size(min = 3, max = 150, message = "Title must be between 3 and 150 characters")
         String title,
 
-        // Strict ISO-8601 date-time with explicit offset (YYYY-MM-DDTHH:mm±HH:MM)
+        // Strict ISO-8601 date-time with explicit offset (yyyy-MM-dd'T'HH:mm±HH:mm)
         @JsonDeserialize(using = EventOffsetDateTimeDeserializer.class)
         @NotNull(message = "Event date is required")
         @FutureOrPresent(message = "Event date must be in the present or future")
