@@ -22,6 +22,7 @@ public enum ErrorCode {
 
     // Event
     INVALID_EVENT_DATE_FORMAT("Invalid event date format"),
+    EVENT_NOT_FOUND("Event not found"),
 
     // User
     INVALID_PASSWORD("Invalid password"),
