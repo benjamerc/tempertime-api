@@ -6,6 +6,7 @@ import com.tempertime.tempertime_api.common.error.mapper.FieldErrorMapper;
 import com.tempertime.tempertime_api.common.error.model.ApiError;
 import com.tempertime.tempertime_api.common.error.model.ErrorCode;
 import com.tempertime.tempertime_api.common.error.model.FieldError;
+import com.tempertime.tempertime_api.events.exception.EventAccessDeniedException;
 import com.tempertime.tempertime_api.events.exception.EventNotFoundException;
 import com.tempertime.tempertime_api.events.exception.InvalidEventDateFormatException;
 import com.tempertime.tempertime_api.security.exception.HashingException;
@@ -190,6 +191,19 @@ public class GlobalExceptionHandler {
     }
 
     // ===================== Event Exceptions =====================
+
+    @ExceptionHandler(EventAccessDeniedException.class)
+    public ResponseEntity<ApiError> handleEventAccessDenied(
+            EventAccessDeniedException ex,
+            HttpServletRequest request
+    ) {
+        return buildErrorResponse(
+                ErrorCode.EVENT_ACCESS_DENIED,
+                ErrorCode.EVENT_ACCESS_DENIED.getDefaultMessage(),
+                HttpStatus.FORBIDDEN,
+                request
+        );
+    }
 
     @ExceptionHandler(EventNotFoundException.class)
     public ResponseEntity<ApiError> handleEventNotFound(
