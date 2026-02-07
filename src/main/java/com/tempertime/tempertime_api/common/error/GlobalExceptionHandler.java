@@ -6,6 +6,7 @@ import com.tempertime.tempertime_api.common.error.mapper.FieldErrorMapper;
 import com.tempertime.tempertime_api.common.error.model.ApiError;
 import com.tempertime.tempertime_api.common.error.model.ErrorCode;
 import com.tempertime.tempertime_api.common.error.model.FieldError;
+import com.tempertime.tempertime_api.events.exception.EventNotFoundException;
 import com.tempertime.tempertime_api.events.exception.InvalidEventDateFormatException;
 import com.tempertime.tempertime_api.security.exception.HashingException;
 import com.tempertime.tempertime_api.security.exception.RefreshTokenExpiredException;
@@ -184,6 +185,21 @@ public class GlobalExceptionHandler {
                 ErrorCode.USER_ALREADY_IN_WORKSPACE,
                 ErrorCode.USER_ALREADY_IN_WORKSPACE.getDefaultMessage(),
                 HttpStatus.CONFLICT,
+                request
+        );
+    }
+
+    // ===================== Event Exceptions =====================
+
+    @ExceptionHandler(EventNotFoundException.class)
+    public ResponseEntity<ApiError> handleEventNotFound(
+            EventNotFoundException ex,
+            HttpServletRequest request
+    ) {
+        return buildErrorResponse(
+                ErrorCode.EVENT_NOT_FOUND,
+                ErrorCode.EVENT_NOT_FOUND.getDefaultMessage(),
+                HttpStatus.NOT_FOUND,
                 request
         );
     }
