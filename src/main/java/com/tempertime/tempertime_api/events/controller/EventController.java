@@ -3,6 +3,7 @@ package com.tempertime.tempertime_api.events.controller;
 import com.tempertime.tempertime_api.events.dto.request.EventCreateRequest;
 import com.tempertime.tempertime_api.events.dto.request.EventUpdateRequest;
 import com.tempertime.tempertime_api.events.dto.response.EventCreateResponse;
+import com.tempertime.tempertime_api.events.dto.response.EventListItemResponse;
 import com.tempertime.tempertime_api.events.dto.response.EventResponse;
 import com.tempertime.tempertime_api.events.service.EventService;
 import com.tempertime.tempertime_api.security.core.CurrentUserProvider;
@@ -13,6 +14,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/workspaces/{workspaceId}/events")
@@ -37,6 +40,33 @@ public class EventController {
                 ));
     }
 
+    @GetMapping
+    public ResponseEntity<List<EventListItemResponse>> getEvents(
+            @PathVariable Long workspaceId,
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
+
+        return ResponseEntity.ok(
+                eventService.getEvents(
+                        workspaceId,
+                        currentUserProvider.getUserId(userDetails)
+                ));
+    }
+
+    @GetMapping("/{eventId}")
+    public ResponseEntity<EventResponse> getEvent(
+            @PathVariable Long workspaceId,
+            @PathVariable Long eventId,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+
+        return ResponseEntity.ok(
+                eventService.getEvent(
+                        workspaceId,
+                        eventId,
+                        currentUserProvider.getUserId(userDetails)
+                ));
+    }
+
     @PatchMapping("/{eventId}")
     public ResponseEntity<EventResponse> updateEvent(
             @PathVariable Long workspaceId,
@@ -44,13 +74,28 @@ public class EventController {
             @AuthenticationPrincipal CustomUserDetails userDetails,
             @Valid @RequestBody EventUpdateRequest request) {
 
-        EventResponse updatedEvent = eventService.updateEvent(
+        return ResponseEntity.ok(
+                eventService.updateEvent(
+                        workspaceId,
+                        eventId,
+                        currentUserProvider.getUserId(userDetails),
+                        request
+                ));
+    }
+
+    @DeleteMapping("/{eventId}")
+    public ResponseEntity<Void> deleteEvent(
+            @PathVariable Long workspaceId,
+            @PathVariable Long eventId,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+
+        eventService.deleteEvent(
                 workspaceId,
                 eventId,
-                currentUserProvider.getUserId(userDetails),
-                request
+                currentUserProvider.getUserId(userDetails)
         );
 
-        return ResponseEntity.ok(updatedEvent);
+        return ResponseEntity.noContent().build();
     }
 }
