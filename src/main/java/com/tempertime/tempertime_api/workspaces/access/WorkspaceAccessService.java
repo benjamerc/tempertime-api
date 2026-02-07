@@ -2,6 +2,7 @@ package com.tempertime.tempertime_api.workspaces.access;
 
 import com.tempertime.tempertime_api.workspaces.model.Workspace;
 import com.tempertime.tempertime_api.workspaces.model.WorkspaceRole;
+import com.tempertime.tempertime_api.workspaces.model.WorkspaceUser;
 import com.tempertime.tempertime_api.workspaces.service.WorkspaceAuthorizationService;
 import com.tempertime.tempertime_api.workspaces.service.WorkspaceLoader;
 import lombok.RequiredArgsConstructor;
@@ -17,9 +18,9 @@ public class WorkspaceAccessService {
     /**
      * Ensures the workspace exists and the user belongs to it.
      */
-    public void requireAccessibleWorkspace(Long workspaceId, Long userId) {
+    public WorkspaceUser requireAccessibleWorkspace(Long workspaceId, Long userId) {
         workspaceLoader.loadOrThrow(workspaceId);
-        authorizationService.requireMembership(workspaceId, userId);
+        return authorizationService.requireMembership(workspaceId, userId);
     }
 
     /**
