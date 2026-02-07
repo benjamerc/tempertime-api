@@ -107,10 +107,10 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     @Override
     public List<WorkspaceListItemResponse> getUserWorkspaces(Long userId) {
 
-        List<WorkspaceUser> memberships =
+        List<WorkspaceUser> workspaceUsers =
                 workspaceUserRepository.findAllByUserId(userId);
 
-        return memberships.stream()
+        return workspaceUsers.stream()
                 .map(workspaceUserMapper::toWorkspaceListItemResponse)
                 .toList();
     }
@@ -121,12 +121,9 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     @Override
     public WorkspaceDetailResponse getWorkspaceById(Long workspaceId, Long userId) {
 
-        workspaceLoader.loadOrThrow(workspaceId);
+        WorkspaceUser workspaceUser = workspaceAccessService.requireAccessibleWorkspace(workspaceId, userId);
 
-        WorkspaceUser membership =
-                workspaceAuthorizationService.requireMembership(workspaceId, userId);
-
-        return workspaceUserMapper.toWorkspaceDetailResponse(membership);
+        return workspaceUserMapper.toWorkspaceDetailResponse(workspaceUser);
     }
 
     /**
@@ -330,10 +327,8 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     @Override
     public void leaveWorkspace(Long workspaceId, Long userId) {
 
-        workspaceAccessService.requireAccessibleWorkspace(workspaceId, userId);
-
-        WorkspaceUser workspaceUser = workspaceAuthorizationService
-                .requireMembership(workspaceId, userId);
+        WorkspaceUser workspaceUser =
+                workspaceAccessService.requireAccessibleWorkspace(workspaceId, userId);
 
         // Prevent the workspace owner from leaving the workspace
         if (workspaceUser.getRole() == WorkspaceRole.OWNER) {
