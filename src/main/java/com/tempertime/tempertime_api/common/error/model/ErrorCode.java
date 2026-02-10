@@ -23,6 +23,8 @@ public enum ErrorCode {
     // Event
     INVALID_EVENT_DATE_FORMAT("Invalid event date format"),
     EVENT_ACCESS_DENIED("Access denied to event"),
+    EVENT_NOT_ASSIGNABLE("Only SPECIFIC events can have users assigned"),
+    USER_NOT_ASSIGNED_TO_EVENT("User is not assigned to the event"),
     EVENT_NOT_FOUND("Event not found"),
 
     // User
