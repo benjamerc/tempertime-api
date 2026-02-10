@@ -6,9 +6,7 @@ import com.tempertime.tempertime_api.common.error.mapper.FieldErrorMapper;
 import com.tempertime.tempertime_api.common.error.model.ApiError;
 import com.tempertime.tempertime_api.common.error.model.ErrorCode;
 import com.tempertime.tempertime_api.common.error.model.FieldError;
-import com.tempertime.tempertime_api.events.exception.EventAccessDeniedException;
-import com.tempertime.tempertime_api.events.exception.EventNotFoundException;
-import com.tempertime.tempertime_api.events.exception.InvalidEventDateFormatException;
+import com.tempertime.tempertime_api.events.exception.*;
 import com.tempertime.tempertime_api.security.exception.HashingException;
 import com.tempertime.tempertime_api.security.exception.RefreshTokenExpiredException;
 import com.tempertime.tempertime_api.security.exception.RefreshTokenNotFoundException;
@@ -201,6 +199,32 @@ public class GlobalExceptionHandler {
                 ErrorCode.EVENT_ACCESS_DENIED,
                 ErrorCode.EVENT_ACCESS_DENIED.getDefaultMessage(),
                 HttpStatus.FORBIDDEN,
+                request
+        );
+    }
+
+    @ExceptionHandler(EventNotAssignableException.class)
+    public ResponseEntity<ApiError> handleEventNotAssignable(
+            EventNotAssignableException ex,
+            HttpServletRequest request
+    ) {
+        return buildErrorResponse(
+                ErrorCode.EVENT_NOT_ASSIGNABLE,
+                ErrorCode.EVENT_NOT_ASSIGNABLE.getDefaultMessage(),
+                HttpStatus.CONFLICT,
+                request
+        );
+    }
+
+    @ExceptionHandler(UserNotAssignedToEventException.class)
+    public ResponseEntity<ApiError> handleUserNotAssignedToEvent(
+            UserNotAssignedToEventException ex,
+            HttpServletRequest request
+    ) {
+        return buildErrorResponse(
+                ErrorCode.USER_NOT_ASSIGNED_TO_EVENT,
+                ErrorCode.USER_NOT_ASSIGNED_TO_EVENT.getDefaultMessage(),
+                HttpStatus.NOT_FOUND,
                 request
         );
     }
