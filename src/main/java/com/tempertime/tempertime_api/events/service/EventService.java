@@ -1,10 +1,9 @@
 package com.tempertime.tempertime_api.events.service;
 
+import com.tempertime.tempertime_api.events.dto.request.EventAssignUserRequest;
 import com.tempertime.tempertime_api.events.dto.request.EventCreateRequest;
 import com.tempertime.tempertime_api.events.dto.request.EventUpdateRequest;
-import com.tempertime.tempertime_api.events.dto.response.EventCreateResponse;
-import com.tempertime.tempertime_api.events.dto.response.EventListItemResponse;
-import com.tempertime.tempertime_api.events.dto.response.EventResponse;
+import com.tempertime.tempertime_api.events.dto.response.*;
 
 import java.util.List;
 
@@ -38,6 +37,27 @@ public interface EventService {
     void deleteEvent(
             Long workspaceId,
             Long eventId,
+            Long userId
+    );
+
+    /** Assigns users to an event */
+    EventAssignUserResponse assignUsersToEvent(
+            Long workspaceId,
+            Long eventId,
+            Long userId,
+            EventAssignUserRequest request
+    );
+
+    List<EventAssignedUserResponse> getEventAssignedUsers(
+            Long workspaceId,
+            Long eventId,
+            Long userId
+    );
+
+    void deleteUserFromEvent(
+            Long workspaceId,
+            Long eventId,
+            Long targetUserId,
             Long userId
     );
 }
