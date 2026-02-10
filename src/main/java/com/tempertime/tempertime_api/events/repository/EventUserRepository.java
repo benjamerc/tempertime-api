@@ -15,5 +15,12 @@ public interface EventUserRepository extends JpaRepository<EventUser, Long> {
     /** Retrieves all event-user associations for a given event */
     List<EventUser> findAllByEventId(Long eventId);
 
+    /** Deletes all user assignments for the given event */
     void deleteByEventId(Long eventId);
+
+    /** Deletes a user assignment from a determined event */
+    void deleteByEventIdAndUserId(Long eventId, Long userId);
+
+    /** Deletes all event assignments for a user within a workspace */
+    void deleteByEventWorkspaceIdAndUserId(Long workspaceId, Long userId);
 }
