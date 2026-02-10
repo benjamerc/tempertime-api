@@ -14,10 +14,10 @@ public class EventLoader {
 
     private final EventRepository eventRepository;
 
-    public Event loadOrThrow(Long eventId) {
-        return eventRepository.findById(eventId)
-                .orElseThrow(() ->
-                        new EventNotFoundException("Event not found")
-                );
+    /** Loads an event by id within the given workspace */
+    public Event loadOrThrow(Long workspaceId, Long eventId) {
+        return eventRepository
+                .findByIdAndWorkspaceId(eventId, workspaceId)
+                .orElseThrow(() -> new EventNotFoundException("Event not found"));
     }
 }
