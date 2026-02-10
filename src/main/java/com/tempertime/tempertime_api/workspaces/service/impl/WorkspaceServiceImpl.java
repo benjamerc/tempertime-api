@@ -1,6 +1,11 @@
 package com.tempertime.tempertime_api.workspaces.service.impl;
 
 import com.tempertime.tempertime_api.common.util.HashUtil;
+import com.tempertime.tempertime_api.events.model.Event;
+import com.tempertime.tempertime_api.events.model.EventScope;
+import com.tempertime.tempertime_api.events.model.EventUser;
+import com.tempertime.tempertime_api.events.repository.EventRepository;
+import com.tempertime.tempertime_api.events.repository.EventUserRepository;
 import com.tempertime.tempertime_api.users.model.User;
 import com.tempertime.tempertime_api.users.service.UserLoader;
 import com.tempertime.tempertime_api.workspaces.access.WorkspaceAccessService;
@@ -22,9 +27,9 @@ import com.tempertime.tempertime_api.workspaces.service.*;
 import com.tempertime.tempertime_api.common.color.ColorGenerator;
 import com.tempertime.tempertime_api.common.color.ColorUtil;
 import com.tempertime.tempertime_api.common.color.ColorValidator;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -37,11 +42,11 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     private final WorkspaceRepository workspaceRepository;
     private final WorkspaceUserRepository workspaceUserRepository;
     private final WorkspaceInviteCodeRepository workspaceInviteCodeRepository;
+    private final EventRepository eventRepository;
+    private final EventUserRepository eventUserRepository;
 
     // Loaders / Services
     private final UserLoader userLoader;
-    private final WorkspaceLoader workspaceLoader;
-    private final WorkspaceAuthorizationService workspaceAuthorizationService;
     private final WorkspaceAccessService workspaceAccessService;
     private final WorkspaceInviteCodeLoader workspaceInviteCodeLoader;
 
@@ -254,8 +259,8 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     }
 
     /**
-     * Joins a workspace using a valid and enabled invite code.
-     * Creates a MEMBER relationship if the user is not already part of the workspace.
+     * Joins a workspace using a valid invite code, creates a MEMBER relationship,
+     * and assigns the user to all global events.
      */
     @Transactional
     @Override
@@ -279,6 +284,8 @@ public class WorkspaceServiceImpl implements WorkspaceService {
                 .build();
 
         workspaceUserRepository.save(workspaceUser);
+
+        assignUserToGlobalEvents(workspace, user);
 
         return workspaceUserMapper.toWorkspaceJoinResponse(workspaceUser);
     }
@@ -317,6 +324,8 @@ public class WorkspaceServiceImpl implements WorkspaceService {
             );
         }
 
+        removeUserFromWorkspaceEvents(workspaceId,  targetUserId);
+
         workspaceUserRepository.delete(workspaceUser);
     }
 
@@ -324,6 +333,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
      * Allows a workspace user to leave the workspace.
      * Owners cannot leave themselves.
      */
+    @Transactional
     @Override
     public void leaveWorkspace(Long workspaceId, Long userId) {
 
@@ -336,6 +346,8 @@ public class WorkspaceServiceImpl implements WorkspaceService {
                     "Workspace operation not allowed"
             );
         }
+
+        removeUserFromWorkspaceEvents(workspaceId, userId);
 
         workspaceUserRepository.delete(workspaceUser);
     }
@@ -357,5 +369,27 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     private String hash(String rawInviteCode) {
 
         return HashUtil.hashSHA256(rawInviteCode);
+    }
+
+    /** Assigns the user to all global events in the workspace */
+    private void assignUserToGlobalEvents(Workspace workspace, User user) {
+
+        List<Event> globalEvents = eventRepository
+                .findByWorkspaceIdAndScope(workspace.getId(), EventScope.GLOBAL);
+
+        List<EventUser> eventUsers = globalEvents.stream()
+                .map(event -> EventUser.builder()
+                        .event(event)
+                        .user(user)
+                        .build())
+                .toList();
+
+        eventUserRepository.saveAll(eventUsers);
+    }
+
+    /** Removes the user from all events in the workspace */
+    private void removeUserFromWorkspaceEvents(Long workspaceId, Long userId) {
+
+        eventUserRepository.deleteByEventWorkspaceIdAndUserId(workspaceId, userId);
     }
 }
