@@ -203,12 +203,12 @@ public class WorkspaceController {
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Void> removeWorkspaceUser(
             @PathVariable Long workspaceId,
-            @PathVariable Long userId,
+            @PathVariable("userId") Long targetUserId,
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
         workspaceService.removeWorkspaceUser(
                 workspaceId,
-                userId,
+                targetUserId,
                 currentUserProvider.getUserId(userDetails)
         );
 
