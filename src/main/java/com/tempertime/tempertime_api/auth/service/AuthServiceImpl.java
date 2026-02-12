@@ -1,4 +1,4 @@
-package com.tempertime.tempertime_api.auth.service.impl;
+package com.tempertime.tempertime_api.auth.service;
 
 import com.tempertime.tempertime_api.auth.dto.request.AuthLoginRequest;
 import com.tempertime.tempertime_api.auth.dto.request.AuthRefreshTokenRequest;
@@ -7,7 +7,6 @@ import com.tempertime.tempertime_api.auth.dto.response.AuthRegisterResponse;
 import com.tempertime.tempertime_api.auth.dto.response.AuthTokenResponse;
 import com.tempertime.tempertime_api.auth.exception.EmailAlreadyExistsException;
 import com.tempertime.tempertime_api.auth.mapper.AuthMapper;
-import com.tempertime.tempertime_api.auth.service.AuthService;
 import com.tempertime.tempertime_api.security.core.CustomUserDetails;
 import com.tempertime.tempertime_api.security.jwt.AccessTokenService;
 import com.tempertime.tempertime_api.security.refresh.RefreshToken;
