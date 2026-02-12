@@ -5,7 +5,7 @@ import com.tempertime.tempertime_api.events.query.dto.internal.TimeRange;
 import com.tempertime.tempertime_api.events.query.dto.response.UserEventResponse;
 import com.tempertime.tempertime_api.events.query.exception.InvalidEventPeriodException;
 import com.tempertime.tempertime_api.events.query.mapper.UserEventMapper;
-import com.tempertime.tempertime_api.events.query.model.EventPeriod;
+import com.tempertime.tempertime_api.events.model.EventPeriod;
 import com.tempertime.tempertime_api.events.query.service.UserEventService;
 import com.tempertime.tempertime_api.events.repository.EventRepository;
 import lombok.RequiredArgsConstructor;

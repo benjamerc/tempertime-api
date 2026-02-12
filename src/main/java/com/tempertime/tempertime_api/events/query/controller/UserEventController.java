@@ -1,7 +1,7 @@
 package com.tempertime.tempertime_api.events.query.controller;
 
 import com.tempertime.tempertime_api.events.query.dto.response.UserEventResponse;
-import com.tempertime.tempertime_api.events.query.model.EventPeriod;
+import com.tempertime.tempertime_api.events.model.EventPeriod;
 import com.tempertime.tempertime_api.events.query.service.UserEventService;
 import com.tempertime.tempertime_api.security.core.CurrentUserProvider;
 import com.tempertime.tempertime_api.security.core.CustomUserDetails;
