@@ -7,6 +7,8 @@ import com.tempertime.tempertime_api.common.error.model.ApiError;
 import com.tempertime.tempertime_api.common.error.model.ErrorCode;
 import com.tempertime.tempertime_api.common.error.model.FieldError;
 import com.tempertime.tempertime_api.events.exception.*;
+import com.tempertime.tempertime_api.events.query.exception.InvalidEventPeriodException;
+import com.tempertime.tempertime_api.events.query.model.EventPeriod;
 import com.tempertime.tempertime_api.security.exception.HashingException;
 import com.tempertime.tempertime_api.security.exception.RefreshTokenExpiredException;
 import com.tempertime.tempertime_api.security.exception.RefreshTokenNotFoundException;
@@ -25,7 +27,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
+import java.time.ZoneId;
 import java.util.List;
 
 /**
@@ -242,6 +246,19 @@ public class GlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler(InvalidEventPeriodException.class)
+    public ResponseEntity<ApiError> handleInvalidEventPeriod(
+            InvalidEventPeriodException ex,
+            HttpServletRequest request
+    ) {
+        return buildErrorResponse(
+                ErrorCode.INVALID_EVENT_PERIOD,
+                ErrorCode.INVALID_EVENT_PERIOD.getDefaultMessage(),
+                HttpStatus.BAD_REQUEST,
+                request
+        );
+    }
+
     // ===================== User Exceptions =====================
 
     @ExceptionHandler(InvalidPasswordException.class)
@@ -396,6 +413,42 @@ public class GlobalExceptionHandler {
         return buildErrorResponse(
                 ErrorCode.INVALID_REQUEST_BODY,
                 ErrorCode.INVALID_REQUEST_BODY.getDefaultMessage(),
+                HttpStatus.BAD_REQUEST,
+                request
+        );
+    }
+
+    // ===================== Request Parameter Exceptions =====================
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ApiError> handleMethodArgumentTypeMismatch(
+            MethodArgumentTypeMismatchException ex,
+            HttpServletRequest request
+    ) {
+
+        if (ex.getRequiredType() == ZoneId.class) {
+
+            return buildErrorResponse(
+                    ErrorCode.INVALID_TIME_ZONE,
+                    ErrorCode.INVALID_TIME_ZONE.getDefaultMessage(),
+                    HttpStatus.BAD_REQUEST,
+                    request
+            );
+        }
+
+        if (ex.getRequiredType() == EventPeriod.class) {
+
+            return buildErrorResponse(
+                    ErrorCode.INVALID_EVENT_PERIOD,
+                    ErrorCode.INVALID_EVENT_PERIOD.getDefaultMessage(),
+                    HttpStatus.BAD_REQUEST,
+                    request
+            );
+        }
+
+        return buildErrorResponse(
+                ErrorCode.INVALID_REQUEST_PARAMETER,
+                ErrorCode.INVALID_REQUEST_PARAMETER.getDefaultMessage(),
                 HttpStatus.BAD_REQUEST,
                 request
         );
