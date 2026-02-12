@@ -6,7 +6,6 @@ import com.tempertime.tempertime_api.events.query.exception.InvalidEventPeriodEx
 import org.springframework.stereotype.Component;
 
 import java.time.DayOfWeek;
-import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
@@ -14,14 +13,20 @@ import java.time.temporal.TemporalAdjusters;
 import java.util.Optional;
 
 /**
- * Resolves filtering for an EventPeriod.
+ * Resolves the natural time boundaries for a given EventPeriod
+ * using the provided time zone.
  *
- * For DAY, WEEK, or MONTH, returns the corresponding TimeRange:
- * - DAY: from midnight at the start of the current day to midnight of the next day.
- * - WEEK: from 00:00 on Monday of the current week to 23:59:59.999 on Sunday of the same week.
- * - MONTH: from 00:00 on the first day of the current month to 23:59:59.999 on the last day of the month.
+ * The returned TimeRange represents the start of the period
+ * and the start of the next period.
+ *
+ * Examples:
+ * - DAY   -> [start of current day, start of next day)
+ * - WEEK  -> [start of current week, start of next week)
+ * - MONTH -> [start of current month, start of next month)
  *
  * For ALL, no filtering is applied and an empty Optional is returned.
+ *
+ * Note: EventRepository applies the range using ">= start" and "< end".
  */
 @Component
 public class EventPeriodResolver {
@@ -29,7 +34,7 @@ public class EventPeriodResolver {
     public Optional<TimeRange> resolve(EventPeriod period, ZoneId zone) {
 
         if (period == EventPeriod.ALL) {
-            return Optional.empty(); // Entirety, without restriction
+            return Optional.empty(); // No time filtering
         }
 
         ZonedDateTime now = ZonedDateTime.now(zone);
@@ -44,14 +49,12 @@ public class EventPeriodResolver {
             case WEEK -> {
                 start = now.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
                         .truncatedTo(ChronoUnit.DAYS);
-                end = now.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY))
-                        .with(LocalTime.MAX);
+                end = start.plusWeeks(1);
             }
             case MONTH -> {
                 start = now.with(TemporalAdjusters.firstDayOfMonth())
                         .truncatedTo(ChronoUnit.DAYS);
-                end = now.with(TemporalAdjusters.lastDayOfMonth())
-                        .with(LocalTime.MAX);
+                end = start.plusMonths(1);
             }
             default -> throw new InvalidEventPeriodException("Invalid event period");
         }
