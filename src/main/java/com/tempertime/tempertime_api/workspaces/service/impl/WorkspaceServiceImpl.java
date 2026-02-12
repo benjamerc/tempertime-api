@@ -1,6 +1,6 @@
 package com.tempertime.tempertime_api.workspaces.service.impl;
 
-import com.tempertime.tempertime_api.common.util.HashUtil;
+import com.tempertime.tempertime_api.common.hash.Hash;
 import com.tempertime.tempertime_api.events.model.Event;
 import com.tempertime.tempertime_api.events.model.EventScope;
 import com.tempertime.tempertime_api.events.model.EventUser;
@@ -368,7 +368,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     /** Hashes the raw invite code using SHA-256 */
     private String hash(String rawInviteCode) {
 
-        return HashUtil.hashSHA256(rawInviteCode);
+        return Hash.sha256(rawInviteCode);
     }
 
     /** Assigns the user to all global events in the workspace */

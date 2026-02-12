@@ -1,20 +1,23 @@
-package com.tempertime.tempertime_api.common.util;
+package com.tempertime.tempertime_api.common.hash;
 
-import com.tempertime.tempertime_api.security.exception.HashingException;
 import lombok.experimental.UtilityClass;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+/** Provides utility methods for hashing operations */
 @UtilityClass
-public class HashUtil {
+public class Hash {
 
-    /** Hashes a refresh token using SHA-256 (hex encoded) */
-    public String hashSHA256(String refreshToken) {
+    /**
+     * Generates a SHA-256 hash from the given string
+     * and returns it as a lowercase hexadecimal value.
+     */
+    public String sha256(String input) {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
-            byte[] hash = digest.digest(refreshToken.getBytes(StandardCharsets.UTF_8));
+            byte[] hash = digest.digest(input.getBytes(StandardCharsets.UTF_8));
 
             StringBuilder hex = new StringBuilder(64);
             for (byte b : hash) {
@@ -22,7 +25,7 @@ public class HashUtil {
             }
             return hex.toString();
         } catch (NoSuchAlgorithmException e) {
-            throw new HashingException("Error hashing refresh token", e);
+            throw new HashingException("Error hashing input", e);
         }
     }
 }

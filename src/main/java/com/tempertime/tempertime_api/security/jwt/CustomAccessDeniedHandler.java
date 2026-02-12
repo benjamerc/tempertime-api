@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tempertime.tempertime_api.common.error.ApiErrorBuilder;
 import com.tempertime.tempertime_api.common.error.model.ApiError;
 import com.tempertime.tempertime_api.common.error.model.ErrorCode;
-import com.tempertime.tempertime_api.security.util.RequestPathResolver;
+import com.tempertime.tempertime_api.common.web.RequestPathResolver;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;

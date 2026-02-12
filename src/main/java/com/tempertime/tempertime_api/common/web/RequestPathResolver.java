@@ -1,4 +1,4 @@
-package com.tempertime.tempertime_api.security.util;
+package com.tempertime.tempertime_api.common.web;
 
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.http.HttpServletRequest;

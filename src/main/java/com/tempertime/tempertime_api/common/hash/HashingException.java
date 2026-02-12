@@ -1,4 +1,4 @@
-package com.tempertime.tempertime_api.security.exception;
+package com.tempertime.tempertime_api.common.hash;
 
 public class HashingException extends RuntimeException {
     public HashingException(String message, Throwable cause) {
