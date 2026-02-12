@@ -4,6 +4,7 @@ import com.tempertime.tempertime_api.events.dto.request.EventAssignUserRequest;
 import com.tempertime.tempertime_api.events.dto.request.EventCreateRequest;
 import com.tempertime.tempertime_api.events.dto.request.EventUpdateRequest;
 import com.tempertime.tempertime_api.events.dto.response.*;
+import com.tempertime.tempertime_api.events.model.EventPeriod;
 import com.tempertime.tempertime_api.events.service.EventService;
 import com.tempertime.tempertime_api.security.core.CurrentUserProvider;
 import com.tempertime.tempertime_api.security.core.CustomUserDetails;
@@ -15,6 +16,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.ZoneId;
 import java.util.List;
 
 @RestController
@@ -45,13 +47,19 @@ public class EventController {
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<List<EventListItemResponse>> getEvents(
             @PathVariable Long workspaceId,
-            @AuthenticationPrincipal CustomUserDetails userDetails) {
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @RequestParam(defaultValue = "MONTH") EventPeriod period,
+            @RequestParam ZoneId timeZone
+    ) {
 
         return ResponseEntity.ok(
                 eventService.getEvents(
                         workspaceId,
-                        currentUserProvider.getUserId(userDetails)
-                ));
+                        currentUserProvider.getUserId(userDetails),
+                        period,
+                        timeZone
+                )
+        );
     }
 
     @GetMapping("/{eventId}")
