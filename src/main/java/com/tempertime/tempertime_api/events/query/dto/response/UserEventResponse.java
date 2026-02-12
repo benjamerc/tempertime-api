@@ -1,0 +1,13 @@
+package com.tempertime.tempertime_api.events.query.dto.response;
+
+import java.time.Instant;
+
+/** Response DTO representing an event assigned to the authenticated user */
+public record UserEventResponse(
+
+        Long id,
+        String title,
+        Instant eventDate,
+        String color,
+        Long workspaceId
+) {}
