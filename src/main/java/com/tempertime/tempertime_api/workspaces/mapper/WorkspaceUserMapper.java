@@ -4,7 +4,7 @@ import com.tempertime.tempertime_api.workspaces.dto.response.WorkspaceDetailResp
 import com.tempertime.tempertime_api.workspaces.dto.response.WorkspaceJoinResponse;
 import com.tempertime.tempertime_api.workspaces.dto.response.WorkspaceListItemResponse;
 import com.tempertime.tempertime_api.workspaces.dto.response.WorkspaceUserResponse;
-import com.tempertime.tempertime_api.workspaces.model.WorkspaceUser;
+import com.tempertime.tempertime_api.workspaces.domain.WorkspaceUser;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;

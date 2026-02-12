@@ -2,7 +2,7 @@ package com.tempertime.tempertime_api.workspaces.mapper;
 
 import com.tempertime.tempertime_api.workspaces.dto.response.WorkspaceCreateResponse;
 import com.tempertime.tempertime_api.workspaces.dto.response.WorkspaceUpdateResponse;
-import com.tempertime.tempertime_api.workspaces.model.Workspace;
+import com.tempertime.tempertime_api.workspaces.domain.Workspace;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

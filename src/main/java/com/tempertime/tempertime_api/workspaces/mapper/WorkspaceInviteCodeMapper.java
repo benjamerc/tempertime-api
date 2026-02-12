@@ -2,7 +2,7 @@ package com.tempertime.tempertime_api.workspaces.mapper;
 
 import com.tempertime.tempertime_api.workspaces.dto.response.WorkspaceInviteCodeRegenerateResponse;
 import com.tempertime.tempertime_api.workspaces.dto.response.WorkspaceInviteCodeResponse;
-import com.tempertime.tempertime_api.workspaces.model.WorkspaceInviteCode;
+import com.tempertime.tempertime_api.workspaces.domain.WorkspaceInviteCode;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

@@ -1,4 +1,4 @@
-package com.tempertime.tempertime_api.workspaces.model;
+package com.tempertime.tempertime_api.workspaces.domain;
 
 import jakarta.persistence.*;
 import lombok.*;

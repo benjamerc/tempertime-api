@@ -1,6 +1,6 @@
 package com.tempertime.tempertime_api.workspaces.dto.response;
 
-import com.tempertime.tempertime_api.workspaces.model.WorkspaceRole;
+import com.tempertime.tempertime_api.workspaces.domain.WorkspaceRole;
 
 /** Lightweight workspace view used in user workspace listings */
 public record WorkspaceListItemResponse(

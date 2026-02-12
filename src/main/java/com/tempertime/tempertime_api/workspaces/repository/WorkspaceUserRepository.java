@@ -1,7 +1,7 @@
 package com.tempertime.tempertime_api.workspaces.repository;
 
-import com.tempertime.tempertime_api.workspaces.model.WorkspaceRole;
-import com.tempertime.tempertime_api.workspaces.model.WorkspaceUser;
+import com.tempertime.tempertime_api.workspaces.domain.WorkspaceRole;
+import com.tempertime.tempertime_api.workspaces.domain.WorkspaceUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

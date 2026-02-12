@@ -1,7 +1,7 @@
 package com.tempertime.tempertime_api.workspaces.service.loader;
 
 import com.tempertime.tempertime_api.workspaces.exception.WorkspaceNotFoundException;
-import com.tempertime.tempertime_api.workspaces.model.Workspace;
+import com.tempertime.tempertime_api.workspaces.domain.Workspace;
 import com.tempertime.tempertime_api.workspaces.repository.WorkspaceRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

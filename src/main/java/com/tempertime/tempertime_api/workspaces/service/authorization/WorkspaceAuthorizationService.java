@@ -2,8 +2,8 @@ package com.tempertime.tempertime_api.workspaces.service.authorization;
 
 import com.tempertime.tempertime_api.workspaces.exception.WorkspaceAccessDeniedException;
 import com.tempertime.tempertime_api.workspaces.exception.WorkspaceRoleDeniedException;
-import com.tempertime.tempertime_api.workspaces.model.WorkspaceRole;
-import com.tempertime.tempertime_api.workspaces.model.WorkspaceUser;
+import com.tempertime.tempertime_api.workspaces.domain.WorkspaceRole;
+import com.tempertime.tempertime_api.workspaces.domain.WorkspaceUser;
 import com.tempertime.tempertime_api.workspaces.repository.WorkspaceUserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

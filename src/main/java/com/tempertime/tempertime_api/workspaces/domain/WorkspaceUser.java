@@ -1,4 +1,4 @@
-package com.tempertime.tempertime_api.workspaces.model;
+package com.tempertime.tempertime_api.workspaces.domain;
 
 import com.tempertime.tempertime_api.users.domain.User;
 import jakarta.persistence.*;

@@ -1,7 +1,7 @@
 package com.tempertime.tempertime_api.users.domain;
 
 import com.tempertime.tempertime_api.security.refresh.RefreshToken;
-import com.tempertime.tempertime_api.workspaces.model.WorkspaceUser;
+import com.tempertime.tempertime_api.workspaces.domain.WorkspaceUser;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;

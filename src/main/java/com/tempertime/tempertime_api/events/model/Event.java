@@ -1,6 +1,6 @@
 package com.tempertime.tempertime_api.events.model;
 
-import com.tempertime.tempertime_api.workspaces.model.Workspace;
+import com.tempertime.tempertime_api.workspaces.domain.Workspace;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
