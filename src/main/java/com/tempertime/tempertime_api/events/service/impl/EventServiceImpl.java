@@ -3,6 +3,7 @@ package com.tempertime.tempertime_api.events.service.impl;
 import com.tempertime.tempertime_api.common.color.ColorGenerator;
 import com.tempertime.tempertime_api.common.color.ColorUtil;
 import com.tempertime.tempertime_api.common.color.ColorValidator;
+import com.tempertime.tempertime_api.events.dto.internal.TimeRange;
 import com.tempertime.tempertime_api.events.dto.request.EventAssignUserRequest;
 import com.tempertime.tempertime_api.events.dto.request.EventCreateRequest;
 import com.tempertime.tempertime_api.events.dto.request.EventUpdateRequest;
@@ -10,9 +11,11 @@ import com.tempertime.tempertime_api.events.dto.response.*;
 import com.tempertime.tempertime_api.events.exception.EventAccessDeniedException;
 import com.tempertime.tempertime_api.events.exception.EventNotAssignableException;
 import com.tempertime.tempertime_api.events.exception.UserNotAssignedToEventException;
+import com.tempertime.tempertime_api.events.filter.EventPeriodResolver;
 import com.tempertime.tempertime_api.events.mapper.EventMapper;
 import com.tempertime.tempertime_api.events.mapper.EventUserMapper;
 import com.tempertime.tempertime_api.events.model.Event;
+import com.tempertime.tempertime_api.events.model.EventPeriod;
 import com.tempertime.tempertime_api.events.model.EventScope;
 import com.tempertime.tempertime_api.events.model.EventUser;
 import com.tempertime.tempertime_api.events.repository.EventRepository;
@@ -27,6 +30,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -42,6 +46,7 @@ public class EventServiceImpl implements EventService {
     private final EventMapper eventMapper;
     private final EventLoader eventLoader;
     private final EventUserMapper eventUserMapper;
+    private final EventPeriodResolver eventPeriodResolver;
 
     private final WorkspaceAccessService workspaceAccessService;
 
@@ -139,21 +144,37 @@ public class EventServiceImpl implements EventService {
         );
     }
 
-    /** Retrieves all events within a workspace to which the user is assigned */
+    /** Retrieves events within a workspace to which the user is assigned,
+     * optionally filtered by EventPeriod.
+     */
     @Transactional(readOnly = true)
     @Override
     public List<EventListItemResponse> getEvents(
             Long workspaceId,
-            Long userId) {
+            Long userId,
+            EventPeriod period,
+            ZoneId zone) {
 
         // Validate workspace exists and user has access to it
         workspaceAccessService.requireAccessibleWorkspace(workspaceId, userId);
 
-        // Retrieve events assigned to the user within the workspace
-        List<Event> events = eventRepository.findEventsByWorkspaceAndUser(
-                workspaceId,
-                userId
-        );
+        Optional<TimeRange> range =
+                eventPeriodResolver.resolve(period, zone);
+
+        List<Event> events = range
+                .map(r -> eventRepository
+                        .findEventsByWorkspaceAndUserAndDateRange(
+                                workspaceId,
+                                userId,
+                                r.start(),
+                                r.end()
+                        ))
+                .orElseGet(() ->
+                        eventRepository.findEventsByWorkspaceAndUser(
+                                workspaceId,
+                                userId
+                        )
+                );
 
         return events.stream()
                 .map(eventMapper::toEventListItemResponse)
