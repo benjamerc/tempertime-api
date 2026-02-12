@@ -8,7 +8,7 @@ import com.tempertime.tempertime_api.common.error.model.ErrorCode;
 import com.tempertime.tempertime_api.common.error.model.FieldError;
 import com.tempertime.tempertime_api.events.exception.*;
 import com.tempertime.tempertime_api.events.query.exception.InvalidEventPeriodException;
-import com.tempertime.tempertime_api.events.query.model.EventPeriod;
+import com.tempertime.tempertime_api.events.model.EventPeriod;
 import com.tempertime.tempertime_api.security.exception.HashingException;
 import com.tempertime.tempertime_api.security.exception.RefreshTokenExpiredException;
 import com.tempertime.tempertime_api.security.exception.RefreshTokenNotFoundException;

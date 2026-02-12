@@ -1,7 +1,7 @@
 package com.tempertime.tempertime_api.events.query.service.impl;
 
 import com.tempertime.tempertime_api.events.model.Event;
-import com.tempertime.tempertime_api.events.query.dto.internal.TimeRange;
+import com.tempertime.tempertime_api.events.dto.internal.TimeRange;
 import com.tempertime.tempertime_api.events.query.dto.response.UserEventResponse;
 import com.tempertime.tempertime_api.events.query.exception.InvalidEventPeriodException;
 import com.tempertime.tempertime_api.events.query.mapper.UserEventMapper;
