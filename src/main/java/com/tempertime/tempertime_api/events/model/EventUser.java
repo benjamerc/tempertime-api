@@ -5,7 +5,14 @@ import jakarta.persistence.*;
 import lombok.*;
 
 /**
- * Links a user to an event.
+ * Persistence entity representing the assignment of a User to an Event.
+ *
+ * This is a join entity.
+ * It models the domain concept of "a user assigned to an event".
+ *
+ * NOTE:
+ * Do not confuse with "UserEvent" terminology used in query layer,
+ * which represents read models for fetching events visible to a user.
  */
 @Entity
 @Table(
