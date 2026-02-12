@@ -34,6 +34,26 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             @Param("userId") Long userId
     );
 
+    /**
+     * Retrieves all events within a workspace assigned to a specific user
+     * filtered by eventDate range.
+     */
+    @Query("""
+    SELECT DISTINCT e
+        FROM Event e
+        JOIN EventUser eu ON eu.event = e
+        WHERE e.workspace.id = :workspaceId
+          AND eu.user.id = :userId
+          AND e.eventDate >= :start
+          AND e.eventDate < :end
+    """)
+    List<Event> findEventsByWorkspaceAndUserAndDateRange(
+            @Param("workspaceId") Long workspaceId,
+            @Param("userId") Long userId,
+            @Param("start") Instant start,
+            @Param("end") Instant end
+    );
+
     /** Retrieves all events assigned to a user */
     @Query("""
         SELECT DISTINCT e
@@ -41,7 +61,9 @@ public interface EventRepository extends JpaRepository<Event, Long> {
         JOIN EventUser eu ON eu.event = e
         WHERE eu.user.id = :userId
     """)
-    List<Event> findAllByUserId(Long userId);
+    List<Event> findAllByUserId(
+            @Param("userId") Long userId
+    );
 
     /** Retrieves events assigned to a user within the given time range */
     @Query("""
@@ -53,8 +75,8 @@ public interface EventRepository extends JpaRepository<Event, Long> {
           AND e.eventDate < :end
     """)
     List<Event> findAllByUserIdAndDateRange(
-            Long userId,
-            Instant start,
-            Instant end
+            @Param("userId") Long userId,
+            @Param("start") Instant start,
+            @Param("end") Instant end
     );
 }
