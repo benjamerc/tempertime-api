@@ -26,6 +26,7 @@ public enum ErrorCode {
     EVENT_NOT_ASSIGNABLE("Only SPECIFIC events can have users assigned"),
     USER_NOT_ASSIGNED_TO_EVENT("User is not assigned to the event"),
     EVENT_NOT_FOUND("Event not found"),
+    INVALID_EVENT_PERIOD("Invalid event period"),
 
     // User
     INVALID_PASSWORD("Invalid password"),
@@ -46,8 +47,10 @@ public enum ErrorCode {
     // Common
     INVALID_COLOR_FORMAT("Invalid color format"),
 
-    // Generic
+    // Generic (Request layer)
+    INVALID_TIME_ZONE("Invalid time zone. Use a valid IANA time zone"),
     INVALID_REQUEST_BODY("Malformed JSON request"),
+    INVALID_REQUEST_PARAMETER("Invalid request parameter"),
     VALIDATION_ERROR("Validation error"),
     INTERNAL_ERROR("Internal server error");
 
