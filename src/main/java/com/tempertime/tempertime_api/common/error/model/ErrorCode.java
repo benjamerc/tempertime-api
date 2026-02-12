@@ -50,6 +50,7 @@ public enum ErrorCode {
     // Generic (Request layer)
     INVALID_TIME_ZONE("Invalid time zone. Use a valid IANA time zone"),
     INVALID_REQUEST_BODY("Malformed JSON request"),
+    MISSING_REQUEST_PARAMETER("Missing required request parameter"),
     INVALID_REQUEST_PARAMETER("Invalid request parameter"),
     VALIDATION_ERROR("Validation error"),
     INTERNAL_ERROR("Internal server error");
