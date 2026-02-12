@@ -55,14 +55,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         catch (ExpiredJwtException ex) {
             // Mark request as having an expired token
             SecurityContextHolder.clearContext();
-            request.setAttribute(SecurityAttributes.SECURITY_ERROR_CODE.name(),
+            request.setAttribute(SecurityRequestAttributes.SECURITY_ERROR_CODE.name(),
                     ErrorCode.ACCESS_TOKEN_EXPIRED);
             throw new AccessTokenExpiredException("Access token expired", ex);
         }
         catch (JwtException | IllegalArgumentException ex) {
             // Mark request as having an invalid token
             SecurityContextHolder.clearContext();
-            request.setAttribute(SecurityAttributes.SECURITY_ERROR_CODE.name(),
+            request.setAttribute(SecurityRequestAttributes.SECURITY_ERROR_CODE.name(),
                     ErrorCode.ACCESS_TOKEN_INVALID);
             throw new AccessTokenInvalidException("Invalid access token", ex);
         }

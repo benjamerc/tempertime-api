@@ -4,8 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tempertime.tempertime_api.common.error.ApiErrorBuilder;
 import com.tempertime.tempertime_api.common.error.model.ApiError;
 import com.tempertime.tempertime_api.common.error.model.ErrorCode;
-import com.tempertime.tempertime_api.security.util.SecurityUtil;
-import jakarta.servlet.RequestDispatcher;
+import com.tempertime.tempertime_api.security.util.RequestPathResolver;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +29,7 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
             AccessDeniedException ex
     ) throws IOException {
 
-        String path = SecurityUtil.resolveRequestPath(request);
+        String path = RequestPathResolver.resolve(request);
 
         ApiError apiError = apiErrorBuilder.build(
                 ErrorCode.ACCESS_DENIED,

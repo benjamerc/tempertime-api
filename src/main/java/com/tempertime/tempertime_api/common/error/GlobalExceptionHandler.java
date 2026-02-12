@@ -13,7 +13,7 @@ import com.tempertime.tempertime_api.security.exception.HashingException;
 import com.tempertime.tempertime_api.security.exception.RefreshTokenExpiredException;
 import com.tempertime.tempertime_api.security.exception.RefreshTokenNotFoundException;
 import com.tempertime.tempertime_api.security.exception.RefreshTokenRevokedException;
-import com.tempertime.tempertime_api.security.util.SecurityUtil;
+import com.tempertime.tempertime_api.security.util.RequestPathResolver;
 import com.tempertime.tempertime_api.users.exception.InvalidPasswordException;
 import com.tempertime.tempertime_api.workspaces.exception.*;
 import jakarta.servlet.http.HttpServletRequest;
@@ -508,7 +508,7 @@ public class GlobalExceptionHandler {
             HttpServletRequest request
     ) {
         return ResponseEntity.status(status)
-                .body(apiErrorBuilder.build(code, message, SecurityUtil.resolveRequestPath(request)));
+                .body(apiErrorBuilder.build(code, message, RequestPathResolver.resolve(request)));
     }
 
     private ResponseEntity<ApiError> buildErrorResponse(
@@ -519,6 +519,6 @@ public class GlobalExceptionHandler {
             List<FieldError> details
     ) {
         return ResponseEntity.status(status)
-                .body(apiErrorBuilder.build(code, message, SecurityUtil.resolveRequestPath(request), details));
+                .body(apiErrorBuilder.build(code, message, RequestPathResolver.resolve(request), details));
     }
 }
