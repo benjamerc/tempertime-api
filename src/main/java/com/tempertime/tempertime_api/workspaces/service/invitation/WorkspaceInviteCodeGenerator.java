@@ -1,4 +1,4 @@
-package com.tempertime.tempertime_api.workspaces.service;
+package com.tempertime.tempertime_api.workspaces.service.invitation;
 
 import org.springframework.stereotype.Component;
 

@@ -6,7 +6,7 @@ import com.tempertime.tempertime_api.workspaces.dto.request.WorkspaceCreateReque
 import com.tempertime.tempertime_api.workspaces.dto.request.WorkspaceJoinRequest;
 import com.tempertime.tempertime_api.workspaces.dto.request.WorkspaceUpdateRequest;
 import com.tempertime.tempertime_api.workspaces.dto.response.*;
-import com.tempertime.tempertime_api.workspaces.service.WorkspaceService;
+import com.tempertime.tempertime_api.workspaces.service.core.WorkspaceService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

@@ -1,4 +1,4 @@
-package com.tempertime.tempertime_api.workspaces.service;
+package com.tempertime.tempertime_api.workspaces.service.loader;
 
 import com.tempertime.tempertime_api.workspaces.exception.WorkspaceNotFoundException;
 import com.tempertime.tempertime_api.workspaces.model.Workspace;

@@ -1,4 +1,4 @@
-package com.tempertime.tempertime_api.workspaces.service.impl;
+package com.tempertime.tempertime_api.workspaces.service.core;
 
 import com.tempertime.tempertime_api.common.hash.Hash;
 import com.tempertime.tempertime_api.events.model.Event;
@@ -8,7 +8,7 @@ import com.tempertime.tempertime_api.events.repository.EventRepository;
 import com.tempertime.tempertime_api.events.repository.EventUserRepository;
 import com.tempertime.tempertime_api.users.domain.User;
 import com.tempertime.tempertime_api.users.service.UserLoader;
-import com.tempertime.tempertime_api.workspaces.access.WorkspaceAccessService;
+import com.tempertime.tempertime_api.workspaces.service.authorization.WorkspaceAccessService;
 import com.tempertime.tempertime_api.workspaces.dto.request.WorkspaceCreateRequest;
 import com.tempertime.tempertime_api.workspaces.dto.request.WorkspaceUpdateRequest;
 import com.tempertime.tempertime_api.workspaces.dto.response.*;
@@ -23,10 +23,11 @@ import com.tempertime.tempertime_api.workspaces.model.WorkspaceUser;
 import com.tempertime.tempertime_api.workspaces.repository.WorkspaceInviteCodeRepository;
 import com.tempertime.tempertime_api.workspaces.repository.WorkspaceRepository;
 import com.tempertime.tempertime_api.workspaces.repository.WorkspaceUserRepository;
-import com.tempertime.tempertime_api.workspaces.service.*;
 import com.tempertime.tempertime_api.common.color.ColorGenerator;
 import com.tempertime.tempertime_api.common.color.ColorUtil;
 import com.tempertime.tempertime_api.common.color.ColorValidator;
+import com.tempertime.tempertime_api.workspaces.service.invitation.WorkspaceInviteCodeGenerator;
+import com.tempertime.tempertime_api.workspaces.service.loader.WorkspaceInviteCodeLoader;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

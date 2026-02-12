@@ -1,4 +1,4 @@
-package com.tempertime.tempertime_api.workspaces.service;
+package com.tempertime.tempertime_api.workspaces.service.core;
 
 import com.tempertime.tempertime_api.workspaces.dto.request.WorkspaceCreateRequest;
 import com.tempertime.tempertime_api.workspaces.dto.request.WorkspaceUpdateRequest;

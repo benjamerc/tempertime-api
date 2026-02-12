@@ -1,10 +1,9 @@
-package com.tempertime.tempertime_api.workspaces.access;
+package com.tempertime.tempertime_api.workspaces.service.authorization;
 
 import com.tempertime.tempertime_api.workspaces.model.Workspace;
 import com.tempertime.tempertime_api.workspaces.model.WorkspaceRole;
 import com.tempertime.tempertime_api.workspaces.model.WorkspaceUser;
-import com.tempertime.tempertime_api.workspaces.service.WorkspaceAuthorizationService;
-import com.tempertime.tempertime_api.workspaces.service.WorkspaceLoader;
+import com.tempertime.tempertime_api.workspaces.service.loader.WorkspaceLoader;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

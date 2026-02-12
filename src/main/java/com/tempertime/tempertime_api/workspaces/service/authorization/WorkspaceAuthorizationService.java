@@ -1,4 +1,4 @@
-package com.tempertime.tempertime_api.workspaces.service;
+package com.tempertime.tempertime_api.workspaces.service.authorization;
 
 import com.tempertime.tempertime_api.workspaces.exception.WorkspaceAccessDeniedException;
 import com.tempertime.tempertime_api.workspaces.exception.WorkspaceRoleDeniedException;

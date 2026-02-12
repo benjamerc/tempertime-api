@@ -23,7 +23,7 @@ import com.tempertime.tempertime_api.events.repository.EventUserRepository;
 import com.tempertime.tempertime_api.events.service.EventLoader;
 import com.tempertime.tempertime_api.events.service.EventService;
 import com.tempertime.tempertime_api.users.service.UserLoader;
-import com.tempertime.tempertime_api.workspaces.access.WorkspaceAccessService;
+import com.tempertime.tempertime_api.workspaces.service.authorization.WorkspaceAccessService;
 import com.tempertime.tempertime_api.workspaces.model.Workspace;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
