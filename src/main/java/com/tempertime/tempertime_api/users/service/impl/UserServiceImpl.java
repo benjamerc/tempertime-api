@@ -11,10 +11,10 @@ import com.tempertime.tempertime_api.users.model.User;
 import com.tempertime.tempertime_api.users.repository.UserRepository;
 import com.tempertime.tempertime_api.users.service.UserLoader;
 import com.tempertime.tempertime_api.users.service.UserService;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
