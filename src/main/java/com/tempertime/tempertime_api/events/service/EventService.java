@@ -4,7 +4,9 @@ import com.tempertime.tempertime_api.events.dto.request.EventAssignUserRequest;
 import com.tempertime.tempertime_api.events.dto.request.EventCreateRequest;
 import com.tempertime.tempertime_api.events.dto.request.EventUpdateRequest;
 import com.tempertime.tempertime_api.events.dto.response.*;
+import com.tempertime.tempertime_api.events.model.EventPeriod;
 
+import java.time.ZoneId;
 import java.util.List;
 
 public interface EventService {
@@ -25,7 +27,9 @@ public interface EventService {
     /** Retrieves all events from a workspace to which the user is assigned */
     List<EventListItemResponse> getEvents(
             Long workspaceId,
-            Long userId
+            Long userId,
+            EventPeriod period,
+            ZoneId timeZone
     );
 
     EventResponse getEvent(
