@@ -1,4 +1,4 @@
-package com.tempertime.tempertime_api.users.model;
+package com.tempertime.tempertime_api.users.domain;
 
 /** Application user roles */
 public enum UserRole {

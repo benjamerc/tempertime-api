@@ -1,6 +1,6 @@
 package com.tempertime.tempertime_api.security.core;
 
-import com.tempertime.tempertime_api.users.model.User;
+import com.tempertime.tempertime_api.users.domain.User;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Component;
 

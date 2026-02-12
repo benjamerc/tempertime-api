@@ -1,4 +1,4 @@
-package com.tempertime.tempertime_api.users.service.impl;
+package com.tempertime.tempertime_api.users.service;
 
 import com.tempertime.tempertime_api.security.refresh.RefreshTokenService;
 import com.tempertime.tempertime_api.users.dto.request.UserDeleteAccountRequest;
@@ -7,10 +7,8 @@ import com.tempertime.tempertime_api.users.dto.request.UserUpdateProfileRequest;
 import com.tempertime.tempertime_api.users.dto.response.UserProfileResponse;
 import com.tempertime.tempertime_api.users.exception.InvalidPasswordException;
 import com.tempertime.tempertime_api.users.mapper.UserMapper;
-import com.tempertime.tempertime_api.users.model.User;
+import com.tempertime.tempertime_api.users.domain.User;
 import com.tempertime.tempertime_api.users.repository.UserRepository;
-import com.tempertime.tempertime_api.users.service.UserLoader;
-import com.tempertime.tempertime_api.users.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

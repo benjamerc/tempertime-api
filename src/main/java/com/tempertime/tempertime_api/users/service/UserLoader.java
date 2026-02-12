@@ -1,7 +1,7 @@
 package com.tempertime.tempertime_api.users.service;
 
 import com.tempertime.tempertime_api.users.exception.UserNotFoundException;
-import com.tempertime.tempertime_api.users.model.User;
+import com.tempertime.tempertime_api.users.domain.User;
 import com.tempertime.tempertime_api.users.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

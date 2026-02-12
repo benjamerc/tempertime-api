@@ -1,6 +1,6 @@
 package com.tempertime.tempertime_api.workspaces.model;
 
-import com.tempertime.tempertime_api.users.model.User;
+import com.tempertime.tempertime_api.users.domain.User;
 import jakarta.persistence.*;
 import lombok.*;
 

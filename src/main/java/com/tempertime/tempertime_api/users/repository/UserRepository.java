@@ -1,6 +1,6 @@
 package com.tempertime.tempertime_api.users.repository;
 
-import com.tempertime.tempertime_api.users.model.User;
+import com.tempertime.tempertime_api.users.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -5,7 +5,7 @@ import com.tempertime.tempertime_api.security.exception.RefreshTokenExpiredExcep
 import com.tempertime.tempertime_api.security.exception.RefreshTokenNotFoundException;
 import com.tempertime.tempertime_api.security.exception.RefreshTokenRevokedException;
 import com.tempertime.tempertime_api.common.util.HashUtil;
-import com.tempertime.tempertime_api.users.model.User;
+import com.tempertime.tempertime_api.users.domain.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

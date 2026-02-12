@@ -1,6 +1,6 @@
 package com.tempertime.tempertime_api.security.refresh;
 
-import com.tempertime.tempertime_api.users.model.User;
+import com.tempertime.tempertime_api.users.domain.User;
 
 /** Refresh token lifecycle operations */
 public interface RefreshTokenService {

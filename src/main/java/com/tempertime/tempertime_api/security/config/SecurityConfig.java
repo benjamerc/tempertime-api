@@ -3,7 +3,7 @@ package com.tempertime.tempertime_api.security.config;
 import com.tempertime.tempertime_api.security.jwt.CustomAccessDeniedHandler;
 import com.tempertime.tempertime_api.security.jwt.CustomAuthenticationEntryPoint;
 import com.tempertime.tempertime_api.security.jwt.JwtAuthenticationFilter;
-import com.tempertime.tempertime_api.users.model.UserRole;
+import com.tempertime.tempertime_api.users.domain.UserRole;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

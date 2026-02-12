@@ -1,12 +1,11 @@
 package com.tempertime.tempertime_api.security.refresh;
 
-import com.tempertime.tempertime_api.users.model.User;
+import com.tempertime.tempertime_api.users.domain.User;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
 
 /**
  * Represents a refresh token used for obtaining new access tokens without

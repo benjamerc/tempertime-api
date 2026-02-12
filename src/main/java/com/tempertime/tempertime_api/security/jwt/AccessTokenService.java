@@ -1,6 +1,6 @@
 package com.tempertime.tempertime_api.security.jwt;
 
-import com.tempertime.tempertime_api.users.model.User;
+import com.tempertime.tempertime_api.users.domain.User;
 import io.jsonwebtoken.Claims;
 
 /** JWT access token creation and validation */

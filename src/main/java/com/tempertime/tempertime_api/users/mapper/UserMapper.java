@@ -1,7 +1,7 @@
 package com.tempertime.tempertime_api.users.mapper;
 
 import com.tempertime.tempertime_api.users.dto.response.UserProfileResponse;
-import com.tempertime.tempertime_api.users.model.User;
+import com.tempertime.tempertime_api.users.domain.User;
 import org.mapstruct.Mapper;
 
 /** Maps user-related domain objects to DTOs */

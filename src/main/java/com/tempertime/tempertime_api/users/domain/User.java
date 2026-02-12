@@ -1,4 +1,4 @@
-package com.tempertime.tempertime_api.users.model;
+package com.tempertime.tempertime_api.users.domain;
 
 import com.tempertime.tempertime_api.security.refresh.RefreshToken;
 import com.tempertime.tempertime_api.workspaces.model.WorkspaceUser;
