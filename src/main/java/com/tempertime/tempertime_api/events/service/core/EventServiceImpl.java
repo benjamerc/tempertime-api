@@ -10,6 +10,7 @@ import com.tempertime.tempertime_api.events.dto.request.EventUpdateRequest;
 import com.tempertime.tempertime_api.events.dto.response.*;
 import com.tempertime.tempertime_api.events.exception.EventAccessDeniedException;
 import com.tempertime.tempertime_api.events.exception.EventNotAssignableException;
+import com.tempertime.tempertime_api.events.exception.InvalidEventPeriodException;
 import com.tempertime.tempertime_api.events.exception.UserNotAssignedToEventException;
 import com.tempertime.tempertime_api.events.service.period.EventPeriodResolver;
 import com.tempertime.tempertime_api.events.mapper.EventMapper;
@@ -143,8 +144,14 @@ public class EventServiceImpl implements EventService {
         );
     }
 
-    /** Retrieves events within a workspace to which the user is assigned,
-     * optionally filtered by EventPeriod.
+    /**
+     * Retrieves events within a workspace to which the user is assigned.
+     *
+     * Behavior:
+     * - DAY/WEEK/MONTH: requires a non-null timeZone to calculate the time range.
+     * - ALL: ignores timeZone and returns all events in the workspace for the user.
+     *
+     * Throws InvalidEventPeriodException if timeZone is missing for DAY/WEEK/MONTH.
      */
     @Transactional(readOnly = true)
     @Override
@@ -152,13 +159,20 @@ public class EventServiceImpl implements EventService {
             Long workspaceId,
             Long userId,
             EventPeriod period,
-            ZoneId zone) {
+            ZoneId timeZone) {
 
         // Validate workspace exists and user has access to it
         workspaceAccessService.requireAccessibleWorkspace(workspaceId, userId);
 
+        // Validates that timeZone is provided for periods that require it
+        if (period != EventPeriod.ALL && timeZone == null) {
+            throw new InvalidEventPeriodException("timeZone is required for DAY/WEEK/MONTH periods");
+        }
+
         Optional<TimeRange> range =
-                eventPeriodResolver.resolve(period, zone);
+                (period == EventPeriod.ALL)
+                        ? Optional.empty()
+                        : eventPeriodResolver.resolve(period, timeZone);
 
         List<Event> events = range
                 .map(r -> eventRepository

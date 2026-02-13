@@ -1,5 +1,6 @@
 package com.tempertime.tempertime_api.events.service.core;
 
+import com.tempertime.tempertime_api.events.exception.InvalidEventPeriodException;
 import com.tempertime.tempertime_api.events.service.period.EventPeriodResolver;
 import com.tempertime.tempertime_api.events.domain.Event;
 import com.tempertime.tempertime_api.events.dto.internal.TimeRange;
@@ -23,8 +24,13 @@ public class UserEventServiceImpl implements UserEventService {
     private final EventPeriodResolver eventPeriodResolver;
 
     /**
-     * Retrieves the user's events for the given period and time zone.
-     * Uses a time range filter for DAY, WEEK, MONTH; returns all events for ALL.
+     * Retrieves events assigned to a user within the specified period.
+     *
+     * Behavior:
+     * - DAY/WEEK/MONTH: requires a non-null timeZone to calculate the time range.
+     * - ALL: ignores timeZone and returns all events without date filtering.
+     *
+     * Throws InvalidEventPeriodException if timeZone is missing for DAY/WEEK/MONTH.
      */
     @Override
     public List<UserEventResponse> getUserEvents(
@@ -33,8 +39,15 @@ public class UserEventServiceImpl implements UserEventService {
             ZoneId timeZone
     ) {
 
+        // Validates that timeZone is provided for periods that require it
+        if (period != EventPeriod.ALL && timeZone == null) {
+            throw new InvalidEventPeriodException("timeZone is required for DAY/WEEK/MONTH periods");
+        }
+
         Optional<TimeRange> range =
-                eventPeriodResolver.resolve(period, timeZone);
+                (period == EventPeriod.ALL)
+                        ? Optional.empty()
+                        : eventPeriodResolver.resolve(period, timeZone);
 
         List<Event> events = range
                 .map(r -> eventRepository
