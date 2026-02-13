@@ -32,7 +32,7 @@ public class UserEventController {
     public ResponseEntity<List<UserEventResponse>> getUserEvents(
             @AuthenticationPrincipal CustomUserDetails userDetails,
             @RequestParam(defaultValue = "MONTH") EventPeriod period,
-            @RequestParam ZoneId timeZone
+            @RequestParam(required = false) ZoneId timeZone
     ) {
         List<UserEventResponse> events = userEventService.getUserEvents(
                 currentUserProvider.getUserId(userDetails),

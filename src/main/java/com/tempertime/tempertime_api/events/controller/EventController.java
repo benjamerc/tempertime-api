@@ -49,7 +49,7 @@ public class EventController {
             @PathVariable Long workspaceId,
             @AuthenticationPrincipal CustomUserDetails userDetails,
             @RequestParam(defaultValue = "MONTH") EventPeriod period,
-            @RequestParam ZoneId timeZone
+            @RequestParam(required = false) ZoneId timeZone
     ) {
 
         return ResponseEntity.ok(
