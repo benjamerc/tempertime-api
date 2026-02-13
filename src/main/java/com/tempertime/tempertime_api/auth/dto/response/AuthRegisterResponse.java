@@ -1,6 +1,8 @@
 package com.tempertime.tempertime_api.auth.dto.response;
 
-/** User registration response */
+/**
+ * Response returned after successful user registration.
+ */
 public record AuthRegisterResponse(
 
         String email

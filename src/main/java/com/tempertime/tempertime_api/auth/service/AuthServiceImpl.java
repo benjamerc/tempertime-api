@@ -20,7 +20,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-/** Authentication use cases implementation */
 @Service
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
@@ -36,7 +35,7 @@ public class AuthServiceImpl implements AuthService {
     public AuthRegisterResponse register(AuthRegisterRequest request) {
 
         if (userRepository.existsByEmail(request.email())) {
-            throw new EmailAlreadyExistsException("Email already registered");
+            throw new EmailAlreadyExistsException();
         }
 
         User user = User.builder()
@@ -59,7 +58,7 @@ public class AuthServiceImpl implements AuthService {
                 )
         );
 
-        // Principal contains domain User via CustomUserDetails
+        // Principal exposes domain User through CustomUserDetails wrapper
         User user = ((CustomUserDetails) authentication.getPrincipal()).getUser();
 
         String accessToken = accessTokenService.createAccessToken(user);
@@ -68,6 +67,9 @@ public class AuthServiceImpl implements AuthService {
         return new AuthTokenResponse(accessToken, refreshToken);
     }
 
+    /**
+     * Performs refresh token rotation to prevent token reuse attacks.
+     */
     @Override
     public AuthTokenResponse refresh(AuthRefreshTokenRequest request) {
 

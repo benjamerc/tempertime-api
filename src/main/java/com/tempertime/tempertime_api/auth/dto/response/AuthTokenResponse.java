@@ -1,6 +1,9 @@
 package com.tempertime.tempertime_api.auth.dto.response;
 
-/** Auth token response used for login and token refresh */
+/**
+ * Response containing access and refresh tokens
+ * returned after successful authentication or refresh.
+ */
 public record AuthTokenResponse(
 
         String accessToken,

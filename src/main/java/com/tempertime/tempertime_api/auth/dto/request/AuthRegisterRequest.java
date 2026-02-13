@@ -4,7 +4,9 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
-/** User registration request */
+/**
+ * User registration request.
+ */
 public record AuthRegisterRequest(
 
         @NotBlank(message = "Email is required")
