@@ -1,7 +1,7 @@
-package com.tempertime.tempertime_api.events.query.mapper;
+package com.tempertime.tempertime_api.events.mapper;
 
-import com.tempertime.tempertime_api.events.model.Event;
-import com.tempertime.tempertime_api.events.query.dto.response.UserEventResponse;
+import com.tempertime.tempertime_api.events.domain.Event;
+import com.tempertime.tempertime_api.events.dto.response.UserEventResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

@@ -1,4 +1,4 @@
-package com.tempertime.tempertime_api.events.query.dto.response;
+package com.tempertime.tempertime_api.events.dto.response;
 
 import java.time.Instant;
 

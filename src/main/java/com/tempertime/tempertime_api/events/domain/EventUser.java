@@ -1,4 +1,4 @@
-package com.tempertime.tempertime_api.events.model;
+package com.tempertime.tempertime_api.events.domain;
 
 import com.tempertime.tempertime_api.users.domain.User;
 import jakarta.persistence.*;

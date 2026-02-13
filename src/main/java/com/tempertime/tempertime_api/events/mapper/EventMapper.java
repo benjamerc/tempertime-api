@@ -3,7 +3,7 @@ package com.tempertime.tempertime_api.events.mapper;
 import com.tempertime.tempertime_api.events.dto.response.EventCreateResponse;
 import com.tempertime.tempertime_api.events.dto.response.EventListItemResponse;
 import com.tempertime.tempertime_api.events.dto.response.EventResponse;
-import com.tempertime.tempertime_api.events.model.Event;
+import com.tempertime.tempertime_api.events.domain.Event;
 import org.mapstruct.Mapper;
 
 /** Maps Event entities to event-related response DTOs */

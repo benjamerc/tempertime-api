@@ -1,4 +1,4 @@
-package com.tempertime.tempertime_api.events.query.exception;
+package com.tempertime.tempertime_api.events.exception;
 
 public class InvalidEventPeriodException extends RuntimeException {
     public InvalidEventPeriodException(String message, Throwable cause) {

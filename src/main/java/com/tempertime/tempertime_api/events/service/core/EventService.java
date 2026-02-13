@@ -1,10 +1,10 @@
-package com.tempertime.tempertime_api.events.service;
+package com.tempertime.tempertime_api.events.service.core;
 
 import com.tempertime.tempertime_api.events.dto.request.EventAssignUserRequest;
 import com.tempertime.tempertime_api.events.dto.request.EventCreateRequest;
 import com.tempertime.tempertime_api.events.dto.request.EventUpdateRequest;
 import com.tempertime.tempertime_api.events.dto.response.*;
-import com.tempertime.tempertime_api.events.model.EventPeriod;
+import com.tempertime.tempertime_api.events.domain.EventPeriod;
 
 import java.time.ZoneId;
 import java.util.List;

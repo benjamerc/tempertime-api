@@ -1,7 +1,7 @@
 package com.tempertime.tempertime_api.events.mapper;
 
 import com.tempertime.tempertime_api.events.dto.response.EventAssignedUserResponse;
-import com.tempertime.tempertime_api.events.model.EventUser;
+import com.tempertime.tempertime_api.events.domain.EventUser;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

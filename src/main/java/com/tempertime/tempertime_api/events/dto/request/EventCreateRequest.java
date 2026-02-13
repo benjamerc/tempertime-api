@@ -2,7 +2,7 @@ package com.tempertime.tempertime_api.events.dto.request;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.tempertime.tempertime_api.events.deserializer.EventOffsetDateTimeDeserializer;
-import com.tempertime.tempertime_api.events.model.EventScope;
+import com.tempertime.tempertime_api.events.domain.EventScope;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

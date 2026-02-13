@@ -1,8 +1,8 @@
-package com.tempertime.tempertime_api.events.filter;
+package com.tempertime.tempertime_api.events.service.period;
 
 import com.tempertime.tempertime_api.events.dto.internal.TimeRange;
-import com.tempertime.tempertime_api.events.model.EventPeriod;
-import com.tempertime.tempertime_api.events.query.exception.InvalidEventPeriodException;
+import com.tempertime.tempertime_api.events.domain.EventPeriod;
+import com.tempertime.tempertime_api.events.exception.InvalidEventPeriodException;
 import org.springframework.stereotype.Component;
 
 import java.time.DayOfWeek;

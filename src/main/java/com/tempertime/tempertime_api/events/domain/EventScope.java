@@ -1,4 +1,4 @@
-package com.tempertime.tempertime_api.events.model;
+package com.tempertime.tempertime_api.events.domain;
 
 /** Defines the scope of an event */
 public enum EventScope {

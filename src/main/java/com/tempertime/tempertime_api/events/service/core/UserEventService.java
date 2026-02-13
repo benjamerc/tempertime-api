@@ -1,7 +1,7 @@
-package com.tempertime.tempertime_api.events.query.service;
+package com.tempertime.tempertime_api.events.service.core;
 
-import com.tempertime.tempertime_api.events.query.dto.response.UserEventResponse;
-import com.tempertime.tempertime_api.events.model.EventPeriod;
+import com.tempertime.tempertime_api.events.dto.response.UserEventResponse;
+import com.tempertime.tempertime_api.events.domain.EventPeriod;
 
 import java.time.ZoneId;
 import java.util.List;

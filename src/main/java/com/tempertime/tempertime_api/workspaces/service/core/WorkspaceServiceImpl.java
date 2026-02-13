@@ -1,9 +1,9 @@
 package com.tempertime.tempertime_api.workspaces.service.core;
 
 import com.tempertime.tempertime_api.common.hash.Hash;
-import com.tempertime.tempertime_api.events.model.Event;
-import com.tempertime.tempertime_api.events.model.EventScope;
-import com.tempertime.tempertime_api.events.model.EventUser;
+import com.tempertime.tempertime_api.events.domain.Event;
+import com.tempertime.tempertime_api.events.domain.EventScope;
+import com.tempertime.tempertime_api.events.domain.EventUser;
 import com.tempertime.tempertime_api.events.repository.EventRepository;
 import com.tempertime.tempertime_api.events.repository.EventUserRepository;
 import com.tempertime.tempertime_api.users.domain.User;

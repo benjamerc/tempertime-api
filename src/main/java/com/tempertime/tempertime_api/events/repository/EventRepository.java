@@ -1,7 +1,7 @@
 package com.tempertime.tempertime_api.events.repository;
 
-import com.tempertime.tempertime_api.events.model.Event;
-import com.tempertime.tempertime_api.events.model.EventScope;
+import com.tempertime.tempertime_api.events.domain.Event;
+import com.tempertime.tempertime_api.events.domain.EventScope;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

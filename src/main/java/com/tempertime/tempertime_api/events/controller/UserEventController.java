@@ -1,8 +1,8 @@
-package com.tempertime.tempertime_api.events.query.controller;
+package com.tempertime.tempertime_api.events.controller;
 
-import com.tempertime.tempertime_api.events.query.dto.response.UserEventResponse;
-import com.tempertime.tempertime_api.events.model.EventPeriod;
-import com.tempertime.tempertime_api.events.query.service.UserEventService;
+import com.tempertime.tempertime_api.events.dto.response.UserEventResponse;
+import com.tempertime.tempertime_api.events.domain.EventPeriod;
+import com.tempertime.tempertime_api.events.service.core.UserEventService;
 import com.tempertime.tempertime_api.security.core.CurrentUserProvider;
 import com.tempertime.tempertime_api.security.core.CustomUserDetails;
 import lombok.RequiredArgsConstructor;

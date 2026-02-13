@@ -9,4 +9,4 @@
  * Do not confuse with EventUser, which is the join entity
  * representing the assignment between Event and User.
  */
-package com.tempertime.tempertime_api.events.query;
+package com.tempertime.tempertime_api.events;

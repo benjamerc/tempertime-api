@@ -1,6 +1,6 @@
 package com.tempertime.tempertime_api.events.repository;
 
-import com.tempertime.tempertime_api.events.model.EventUser;
+import com.tempertime.tempertime_api.events.domain.EventUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

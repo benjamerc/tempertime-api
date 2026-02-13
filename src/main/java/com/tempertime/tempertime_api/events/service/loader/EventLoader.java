@@ -1,7 +1,7 @@
-package com.tempertime.tempertime_api.events.service;
+package com.tempertime.tempertime_api.events.service.loader;
 
 import com.tempertime.tempertime_api.events.exception.EventNotFoundException;
-import com.tempertime.tempertime_api.events.model.Event;
+import com.tempertime.tempertime_api.events.domain.Event;
 import com.tempertime.tempertime_api.events.repository.EventRepository;
 
 import lombok.RequiredArgsConstructor;
