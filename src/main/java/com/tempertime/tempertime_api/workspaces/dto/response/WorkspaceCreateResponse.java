@@ -5,6 +5,5 @@ public record WorkspaceCreateResponse(
 
         Long id,
         String name,
-        String color,
         String inviteCode
 ) {}
