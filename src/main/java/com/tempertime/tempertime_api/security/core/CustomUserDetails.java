@@ -10,7 +10,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.List;
 
-/** Spring Security UserDetails implementation */
+/**
+ * Spring Security UserDetails implementation
+ * that adapts the domain User entity.
+ */
 @RequiredArgsConstructor
 @Getter
 public class CustomUserDetails implements UserDetails {

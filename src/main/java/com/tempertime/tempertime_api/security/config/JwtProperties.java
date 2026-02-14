@@ -5,7 +5,12 @@ import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
-/** JWT security configuration properties */
+/**
+ * Configuration properties for JWT-based authentication.
+ *
+ * Binds and validates access and refresh token settings
+ * defined under the "application.security.jwt" prefix.
+ */
 @Configuration
 @ConfigurationProperties(prefix = "application.security.jwt")
 @Data
@@ -28,6 +33,9 @@ public class JwtProperties {
         }
     }
 
+    /**
+     * Refresh token specific configuration.
+     */
     @Data
     public static class RefreshToken {
         private long expiration;

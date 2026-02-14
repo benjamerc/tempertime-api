@@ -8,9 +8,9 @@ import org.hibernate.annotations.CreationTimestamp;
 import java.time.Instant;
 
 /**
- * Represents a refresh token used for obtaining new access tokens without
+ * Represents a refresh token for obtaining new access tokens without
  * requiring the user to log in again. The token is hashed before storage
- * for security. Each token is associated with a single user.
+ * for security and is associated with a single user.
  */
 @Entity
 @Table(
@@ -30,7 +30,9 @@ public class RefreshToken {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    /** SHA-256 hashed value of the refresh token, unique per token */
+    /**
+     * SHA-256 hashed value of the refresh token, unique per token.
+     */
     @Column(name = "token_hash", nullable = false, unique = true, length = 64)
     private String tokenHash;
 
@@ -41,7 +43,9 @@ public class RefreshToken {
     @Column(nullable = false)
     private Boolean revoked = false;
 
-    /** The user to whom this token belongs */
+    /**
+     * The user this token belongs to.
+     */
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "id_user", nullable = false)
     private User user;

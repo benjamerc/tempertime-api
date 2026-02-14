@@ -15,8 +15,9 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 
 /**
- * Handles unauthenticated requests, returning a standardized 401 JSON response.
- * Determines if the failure is due to an expired or invalid access token.
+ * Handles unauthenticated requests in Spring Security.
+ * Returns a 401 JSON response with an error code indicating
+ * whether the access token is invalid or expired.
  */
 @Component
 @RequiredArgsConstructor

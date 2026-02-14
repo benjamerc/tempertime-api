@@ -19,7 +19,9 @@ public class AccessTokenServiceImpl implements AccessTokenService {
 
     private final JwtProperties jwtProperties;
 
-    /** Generates a JWT access token for the given user */
+    /**
+     * Generates a JWT access token for the given user.
+     */
     @Override
     public String createAccessToken(User user) {
 
@@ -36,7 +38,9 @@ public class AccessTokenServiceImpl implements AccessTokenService {
                 .compact();
     }
 
-    /** Validates a JWT access token and returns its claims */
+    /**
+     * Validates a JWT access token and returns its claims.
+     */
     @Override
     public Claims validateAccessToken(String token) {
 

@@ -22,7 +22,10 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
-/** Extracts and validates JWT access tokens from requests */
+/**
+ * Spring Security filter that extracts JWT access tokens from the Authorization header,
+ * validates them, and sets the authentication in the SecurityContext.
+ */
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -57,14 +60,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             SecurityContextHolder.clearContext();
             request.setAttribute(SecurityRequestAttributes.SECURITY_ERROR_CODE.name(),
                     ErrorCode.ACCESS_TOKEN_EXPIRED);
-            throw new AccessTokenExpiredException("Access token expired", ex);
+            throw new AccessTokenExpiredException(ex);
         }
         catch (JwtException | IllegalArgumentException ex) {
             // Mark request as having an invalid token
             SecurityContextHolder.clearContext();
             request.setAttribute(SecurityRequestAttributes.SECURITY_ERROR_CODE.name(),
                     ErrorCode.ACCESS_TOKEN_INVALID);
-            throw new AccessTokenInvalidException("Invalid access token", ex);
+            throw new AccessTokenInvalidException(ex);
         }
 
         // Build User from token claims
@@ -76,7 +79,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         try {
             userRole = UserRole.valueOf(role);
         } catch (IllegalArgumentException ex) {
-            throw new AccessTokenInvalidException("Invalid role in access token", ex);
+            throw new AccessTokenInvalidException(ex);
         }
 
         User userFromToken = User.builder()

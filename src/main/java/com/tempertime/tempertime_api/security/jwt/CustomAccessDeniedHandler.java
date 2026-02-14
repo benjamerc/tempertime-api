@@ -14,7 +14,9 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
-/** Returns a standardized 403 response when a user lacks permission for a request. */
+/**
+ * Returns a standardized 403 response when a user lacks permission for a request.
+ */
 @Component
 @RequiredArgsConstructor
 public class CustomAccessDeniedHandler implements AccessDeniedHandler {

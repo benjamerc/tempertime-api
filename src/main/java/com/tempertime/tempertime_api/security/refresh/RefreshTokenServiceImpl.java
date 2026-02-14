@@ -13,7 +13,6 @@ import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
-/** Refresh token lifecycle implementation */
 @Service
 @RequiredArgsConstructor
 public class RefreshTokenServiceImpl implements RefreshTokenService {
@@ -21,7 +20,9 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     private final RefreshTokenRepository refreshTokenRepository;
     private final JwtProperties jwtProperties;
 
-    /** Creates and persists a new refresh token for a user */
+    /**
+     * Creates and persists a new refresh token for the given user.
+     */
     @Override
     public String createRefreshToken(User user) {
 
@@ -41,10 +42,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     }
 
     /**
-     * Validates a refresh token:
-     * - Exists in DB
-     * - Not revoked
-     * - Not expired
+     * Validates that a refresh token exists, is not revoked, and is not expired.
      */
     @Override
     public RefreshToken validateRefreshToken(String rawToken) {
@@ -52,18 +50,18 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
         RefreshToken refreshToken = getRefreshTokenOrThrow(hash(rawToken));
 
         if (refreshToken.getRevoked()) {
-            throw new RefreshTokenRevokedException("Refresh token revoked");
+            throw new RefreshTokenRevokedException();
         }
 
         if (refreshToken.getExpirationDate().isBefore(Instant.now())) {
-            throw new RefreshTokenExpiredException("Refresh token expired");
+            throw new RefreshTokenExpiredException();
         }
 
         return refreshToken;
     }
 
     /**
-     * Rotates a refresh token: revokes the current one and creates a new token for the same user.
+     * Revokes the given refresh token and issues a new one for the same user.
      */
     @Override
     public String rotateRefreshToken(RefreshToken refreshToken) {
@@ -74,6 +72,9 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
         return createRefreshToken(refreshToken.getUser());
     }
 
+    /**
+     * Revokes the specified refresh token.
+     */
     @Override
     public void revokeRefreshToken(String rawToken) {
 
@@ -83,6 +84,9 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
         refreshTokenRepository.save(refreshToken);
     }
 
+    /**
+     * Revokes all active refresh tokens for a user.
+     */
     @Override
     public void revokeAllRefreshTokensForUser(User user) {
 
@@ -95,15 +99,17 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     }
 
     /**
-     * Retrieves a refresh token from DB or throws an exception if not found.
+     * Retrieves a refresh token by hash or throws an exception if not found.
      */
     private RefreshToken getRefreshTokenOrThrow(String hashedToken) {
 
         return refreshTokenRepository.findByTokenHash(hashedToken)
-                .orElseThrow(() -> new RefreshTokenNotFoundException("Refresh token not found"));
+                .orElseThrow(RefreshTokenNotFoundException::new);
     }
 
-    /** Hashes the raw token using SHA-256 */
+    /**
+     * Hashes a raw token using SHA-256.
+     */
     private String hash(String rawToken) {
         return Hash.sha256(rawToken);
     }

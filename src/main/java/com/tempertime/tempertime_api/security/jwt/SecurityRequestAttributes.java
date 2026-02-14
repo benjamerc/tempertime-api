@@ -1,8 +1,12 @@
 package com.tempertime.tempertime_api.security.jwt;
 
-/** Request attribute keys for security errors */
+/**
+ * Keys for storing security-related error information in request attributes.
+ */
 public enum SecurityRequestAttributes {
 
-    /** Error code for auth/permission failures */
+    /**
+     * Attribute holding the error code for authentication or access failures.
+     */
     SECURITY_ERROR_CODE
 }

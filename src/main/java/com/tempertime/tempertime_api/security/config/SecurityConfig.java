@@ -16,7 +16,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-/** Spring Security setup for JWT-based authentication */
+/**
+ * Configures Spring Security for stateless JWT-based authentication.
+ *
+ * Defines authentication rules, exception handling,
+ * and registers the JWT authentication filter.
+ */
 @Configuration
 @RequiredArgsConstructor
 public class SecurityConfig {
@@ -51,6 +56,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/users/**").hasRole(UserRole.USER.name())
                         .anyRequest().authenticated()
                 )
+                // Stateless API: authentication handled via JWT
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(
                                 org.springframework.security.config.http.SessionCreationPolicy.STATELESS
