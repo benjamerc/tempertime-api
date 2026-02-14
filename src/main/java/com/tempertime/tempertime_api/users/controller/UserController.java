@@ -1,7 +1,6 @@
 package com.tempertime.tempertime_api.users.controller;
 
 import com.tempertime.tempertime_api.security.core.CurrentUserProvider;
-import com.tempertime.tempertime_api.security.core.CustomUserDetails;
 import com.tempertime.tempertime_api.users.dto.request.UserDeleteAccountRequest;
 import com.tempertime.tempertime_api.users.dto.request.UserUpdatePasswordRequest;
 import com.tempertime.tempertime_api.users.dto.request.UserUpdateProfileRequest;
@@ -11,7 +10,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -24,31 +22,37 @@ public class UserController {
 
     @GetMapping("/me")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<UserProfileResponse> userProfile(@AuthenticationPrincipal CustomUserDetails userDetails) {
+    public ResponseEntity<UserProfileResponse> userProfile() {
 
-        return ResponseEntity.ok(userService.getProfile(currentUserProvider.getUserId(userDetails)));
+        return ResponseEntity.ok(
+                userService.getProfile(
+                        currentUserProvider.getUserId()
+                )
+        );
     }
 
     @PatchMapping("/me")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<UserProfileResponse> updateProfile(
-            @AuthenticationPrincipal CustomUserDetails userDetails,
-            @Valid @RequestBody UserUpdateProfileRequest request) {
+            @Valid @RequestBody UserUpdateProfileRequest request
+    ) {
 
-        return ResponseEntity.ok(userService.updateProfile(
-                currentUserProvider.getUserId(userDetails),
-                request
-        ));
+        return ResponseEntity.ok(
+                userService.updateProfile(
+                        currentUserProvider.getUserId(),
+                        request
+                )
+        );
     }
 
     @PatchMapping("/me/password")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Void> updatePassword(
-            @AuthenticationPrincipal CustomUserDetails userDetails,
-            @Valid @RequestBody UserUpdatePasswordRequest request) {
+            @Valid @RequestBody UserUpdatePasswordRequest request
+    ) {
 
         userService.updatePassword(
-                currentUserProvider.getUserId(userDetails),
+                currentUserProvider.getUserId(),
                 request
         );
 
@@ -58,11 +62,11 @@ public class UserController {
     @DeleteMapping("/me")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Void> deleteAccount(
-            @AuthenticationPrincipal CustomUserDetails userDetails,
-            @Valid @RequestBody UserDeleteAccountRequest request) {
+            @Valid @RequestBody UserDeleteAccountRequest request
+    ) {
 
         userService.deleteAccount(
-                currentUserProvider.getUserId(userDetails),
+                currentUserProvider.getUserId(),
                 request
         );
 
