@@ -8,7 +8,9 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
-/** Workspace entity and its users (via WorkspaceUser) */
+/**
+ * Represents a workspace with its properties and associated users.
+ */
 @Entity
 @Table(name = "workspaces")
 @Getter

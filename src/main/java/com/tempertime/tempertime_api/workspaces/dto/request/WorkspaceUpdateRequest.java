@@ -2,7 +2,9 @@ package com.tempertime.tempertime_api.workspaces.dto.request;
 
 import jakarta.validation.constraints.Size;
 
-/** Payload used to update mutable workspace attributes */
+/**
+ * Payload used to update mutable workspace attributes.
+ */
 public record WorkspaceUpdateRequest(
 
         @Size(min = 2, max = 100, message = "Name must be between 2 and 100 characters")

@@ -9,9 +9,13 @@ import java.util.Optional;
 @Repository
 public interface WorkspaceInviteCodeRepository extends JpaRepository<WorkspaceInviteCode, Long> {
 
-    /** Finds the workspace invite code associated with a workspace */
+    /**
+     * Finds the workspace invite code associated with a workspace.
+     */
     Optional<WorkspaceInviteCode> findByWorkspaceId(Long workspaceId);
 
-    /** Finds a workspace invite code by its hash */
+    /**
+     * Finds a workspace invite code by its hash.
+     */
     Optional<WorkspaceInviteCode> findByInviteCodeHash(String inviteCodeHash);
 }

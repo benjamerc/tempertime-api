@@ -9,7 +9,9 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 
-/** Maps WorkspaceUser domain models to workspace DTOs scoped to a user */
+/**
+ * Maps WorkspaceUser domain models to workspace DTOs scoped to a user.
+ */
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.ERROR)
 public interface WorkspaceUserMapper {
 

@@ -73,12 +73,16 @@ public class WorkspaceInviteCodeLoader {
                         ));
     }
 
-    /** Normalizes the invite code for consistent handling */
+    /**
+     * Normalizes the invite code for consistent handling.
+     */
     private String normalize(String rawInviteCode) {
         return rawInviteCode.trim().toUpperCase();
     }
 
-    /** Hashes the normalized invite code using SHA-256 */
+    /**
+     * Hashes the normalized invite code using SHA-256.
+     */
     private String hash(String normalizedInviteCode) {
         return Hash.sha256(normalizedInviteCode);
     }

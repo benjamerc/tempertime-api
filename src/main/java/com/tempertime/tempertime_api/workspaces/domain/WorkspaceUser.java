@@ -4,7 +4,9 @@ import com.tempertime.tempertime_api.users.domain.User;
 import jakarta.persistence.*;
 import lombok.*;
 
-/** Links a user to a workspace and stores their role */
+/**
+ * Links a user to a workspace and stores their role.
+ */
 @Entity
 @Table(
         name = "workspace_user",
@@ -22,14 +24,23 @@ public class WorkspaceUser {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    /**
+     * Workspace associated with the user.
+     */
     @ManyToOne
     @JoinColumn(name = "id_workspace", nullable = false, foreignKey = @ForeignKey(name = "fk_workspace_user_workspace"))
     private Workspace workspace;
 
+    /**
+     * User associated with the workspace.
+     */
     @ManyToOne
     @JoinColumn(name = "id_user", nullable = false, foreignKey = @ForeignKey(name = "fk_workspace_user_user"))
     private User user;
 
+    /**
+     * Role of the user within the workspace.
+     */
     @Builder.Default
     @Enumerated(EnumType.STRING)
     @Column(name = "workspace_role", nullable = false, length = 20)

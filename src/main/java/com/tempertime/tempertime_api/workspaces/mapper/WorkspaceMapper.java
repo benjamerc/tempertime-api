@@ -6,7 +6,9 @@ import com.tempertime.tempertime_api.workspaces.domain.Workspace;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-/** Maps Workspace domain models to API response DTOs */
+/**
+ * Maps Workspace domain models to API response DTOs.
+ */
 @Mapper(componentModel = "spring")
 public interface WorkspaceMapper {
 

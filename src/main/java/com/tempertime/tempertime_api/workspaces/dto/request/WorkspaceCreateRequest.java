@@ -3,7 +3,9 @@ package com.tempertime.tempertime_api.workspaces.dto.request;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
-/** Payload used to create a new workspace */
+/**
+ * Payload used to create a new workspace.
+ */
 public record WorkspaceCreateRequest(
 
         @NotBlank(message = "Name is required")

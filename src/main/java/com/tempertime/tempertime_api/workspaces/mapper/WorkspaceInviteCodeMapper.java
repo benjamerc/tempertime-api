@@ -6,7 +6,9 @@ import com.tempertime.tempertime_api.workspaces.domain.WorkspaceInviteCode;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-/** Maps WorkspaceInviteCode entities to API response DTOs */
+/**
+ * Maps WorkspaceInviteCode entities to API response DTOs.
+ */
 @Mapper(componentModel = "spring")
 public interface WorkspaceInviteCodeMapper {
 

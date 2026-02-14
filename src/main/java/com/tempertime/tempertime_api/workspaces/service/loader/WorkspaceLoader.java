@@ -6,7 +6,9 @@ import com.tempertime.tempertime_api.workspaces.repository.WorkspaceRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-/** Loads Workspace entities and throws a domain exception if not found */
+/**
+ * Loads Workspace entities and throws a domain exception if not found.
+ */
 @Service
 @RequiredArgsConstructor
 public class WorkspaceLoader {

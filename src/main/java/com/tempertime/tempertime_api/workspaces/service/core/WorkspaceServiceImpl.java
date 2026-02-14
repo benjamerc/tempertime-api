@@ -366,13 +366,17 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         return workspaceInviteCodeLoader.loadByWorkspaceOrThrow(workspace);
     }
 
-    /** Hashes the raw invite code using SHA-256 */
+    /**
+     * Hashes the raw invite code using SHA-256.
+     */
     private String hash(String rawInviteCode) {
 
         return Hash.sha256(rawInviteCode);
     }
 
-    /** Assigns the user to all global events in the workspace */
+    /**
+     * Assigns the user to all global events in the workspace.
+     */
     private void assignUserToGlobalEvents(Workspace workspace, User user) {
 
         List<Event> globalEvents = eventRepository
@@ -388,7 +392,9 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         eventUserRepository.saveAll(eventUsers);
     }
 
-    /** Removes the user from all events in the workspace */
+    /**
+     * Removes the user from all events in the workspace.
+     */
     private void removeUserFromWorkspaceEvents(Long workspaceId, Long userId) {
 
         eventUserRepository.deleteByEventWorkspaceIdAndUserId(workspaceId, userId);

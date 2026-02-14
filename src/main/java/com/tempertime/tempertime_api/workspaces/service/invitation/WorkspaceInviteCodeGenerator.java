@@ -4,7 +4,9 @@ import org.springframework.stereotype.Component;
 
 import java.security.SecureRandom;
 
-/** Generates workspace invite codes */
+/**
+ * Generates workspace invite codes.
+ */
 @Component
 public class WorkspaceInviteCodeGenerator {
 

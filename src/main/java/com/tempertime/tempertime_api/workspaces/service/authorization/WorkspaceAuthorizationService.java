@@ -8,14 +8,18 @@ import com.tempertime.tempertime_api.workspaces.repository.WorkspaceUserReposito
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-/** Enforces workspace access and role-based authorization rules */
+/**
+ * Enforces workspace access and role-based authorization rules.
+ */
 @Service
 @RequiredArgsConstructor
 public class WorkspaceAuthorizationService {
 
     private final WorkspaceUserRepository workspaceUserRepository;
 
-    /** Ensures the user has a membership in the workspace (any role) */
+    /**
+     * Ensures the user has a membership in the workspace (any role).
+     */
     public WorkspaceUser requireMembership(Long workspaceId, Long userId) {
         return workspaceUserRepository
                 .findByWorkspaceIdAndUserId(workspaceId, userId)
@@ -23,7 +27,9 @@ public class WorkspaceAuthorizationService {
                         new WorkspaceAccessDeniedException("Workspace not accessible"));
     }
 
-    /** Ensures the user has the required role within the workspace */
+    /**
+     * Ensures the user has the required role within the workspace.
+     */
     public void requireRole(
             Long workspaceId,
             Long userId,
