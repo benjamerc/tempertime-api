@@ -35,6 +35,10 @@ public class UserServiceImpl implements UserService {
         return userMapper.toUserProfileResponse(user);
     }
 
+    /**
+     * Updates the user's profile.
+     * Only fields provided in the request are updated.
+     */
     @Override
     public UserProfileResponse updateProfile(Long userId, UserUpdateProfileRequest request) {
 
@@ -51,7 +55,11 @@ public class UserServiceImpl implements UserService {
         return userMapper.toUserProfileResponse(userRepository.save(user));
     }
 
-    /** Updates user's password and revokes all active refresh tokens */
+    /**
+     * Updates user's password.
+     * Requires the current password to be correct.
+     * Revokes all active refresh tokens after the update.
+     */
     @Override
     public void updatePassword(Long userId, UserUpdatePasswordRequest request) {
 
@@ -65,7 +73,11 @@ public class UserServiceImpl implements UserService {
         refreshTokenService.revokeAllRefreshTokensForUser(user);
     }
 
-    /** Deletes user's account and all associated refresh tokens via cascade */
+    /**
+     * Deletes user's account.
+     * Requires the current password to be correct.
+     * All associated refresh tokens are removed via cascade.
+     */
     @Transactional
     @Override
     public void deleteAccount(Long userId, UserDeleteAccountRequest request) {

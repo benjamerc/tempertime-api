@@ -4,7 +4,9 @@ import com.tempertime.tempertime_api.users.dto.response.UserProfileResponse;
 import com.tempertime.tempertime_api.users.domain.User;
 import org.mapstruct.Mapper;
 
-/** Maps user-related domain objects to DTOs */
+/**
+ * Maps user domain objects to response DTOs.
+ */
 @Mapper(componentModel = "spring")
 public interface UserMapper {
 

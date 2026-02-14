@@ -10,7 +10,9 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
-/** System user entity */
+/**
+ * Represents a user in the system.
+ */
 @Entity
 @Table(name = "users")
 @Getter

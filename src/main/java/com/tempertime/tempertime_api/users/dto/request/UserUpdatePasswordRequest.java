@@ -3,7 +3,9 @@ package com.tempertime.tempertime_api.users.dto.request;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
-/** User password update request */
+/**
+ * User password update request.
+ */
 public record UserUpdatePasswordRequest(
 
         @NotBlank(message = "Current password is required")

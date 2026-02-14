@@ -6,7 +6,9 @@ import com.tempertime.tempertime_api.users.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-/** Loads User entities and throws a domain exception if not found */
+/**
+ * Loads User entities and throws a domain exception if not found.
+ */
 @Service
 @RequiredArgsConstructor
 public class UserLoader {

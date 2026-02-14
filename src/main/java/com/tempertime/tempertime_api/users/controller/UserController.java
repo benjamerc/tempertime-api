@@ -12,6 +12,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * REST controller for managing authenticated user profiles.
+ */
 @RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
@@ -20,6 +23,9 @@ public class UserController {
     private final UserService userService;
     private final CurrentUserProvider currentUserProvider;
 
+    /**
+     * Returns the profile of the currently authenticated user.
+     */
     @GetMapping("/me")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<UserProfileResponse> userProfile() {
@@ -31,6 +37,9 @@ public class UserController {
         );
     }
 
+    /**
+     * Updates the profile of the currently authenticated user.
+     */
     @PatchMapping("/me")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<UserProfileResponse> updateProfile(
@@ -45,6 +54,9 @@ public class UserController {
         );
     }
 
+    /**
+     * Updates the password of the currently authenticated user.
+     */
     @PatchMapping("/me/password")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Void> updatePassword(
@@ -59,6 +71,9 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
+    /**
+     * Deletes the account of the currently authenticated user.
+     */
     @DeleteMapping("/me")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Void> deleteAccount(
