@@ -5,7 +5,9 @@ import com.tempertime.tempertime_api.events.dto.response.UserEventResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-/** Maps Event entities to UserEventResponse DTOs */
+/**
+ * Maps Event entities to UserEvent DTOs.
+ */
 @Mapper(componentModel = "spring")
 public interface UserEventMapper {
 

@@ -7,7 +7,9 @@ import jakarta.validation.constraints.Size;
 
 import java.time.OffsetDateTime;
 
-/** Event partial update request */
+/**
+ * Represents a partial update payload for an Event.
+ */
 public record EventUpdateRequest(
 
         @Size(min = 3, max = 150, message = "Title must be between 3 and 150 characters")

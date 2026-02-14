@@ -7,12 +7,11 @@ import lombok.*;
 /**
  * Persistence entity representing the assignment of a User to an Event.
  *
- * This is a join entity.
- * It models the domain concept of "a user assigned to an event".
+ * This join entity maps the many-to-many relationship
+ * between Event and User.
  *
- * NOTE:
- * Do not confuse with "UserEvent" terminology used in query layer,
- * which represents read models for fetching events visible to a user.
+ * Note: Do not confuse with "UserEvent" terminology, which is
+ * a read model used for querying events visible to a user.
  */
 @Entity
 @Table(

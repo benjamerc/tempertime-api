@@ -7,7 +7,9 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.Instant;
 
-/** Event entity */
+/**
+ * Persistence entity that belongs to a workspace and can be assigned to users.
+ */
 @Entity
 @Table(
         name = "events",
@@ -43,7 +45,7 @@ public class Event {
     private EventScope scope = EventScope.GLOBAL;
 
     /**
-     * Indicates whether the event has members assigned other than the owner.
+     * Indicates whether the event has users assigned other than the owner.
      * The owner is always considered assigned to the event.
      */
     @Builder.Default
@@ -60,9 +62,4 @@ public class Event {
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
-
-    @Transient
-    public boolean isExpired() {
-        return eventDate.isBefore(Instant.now());
-    }
 }

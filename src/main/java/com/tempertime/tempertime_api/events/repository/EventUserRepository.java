@@ -9,18 +9,28 @@ import java.util.List;
 @Repository
 public interface EventUserRepository extends JpaRepository<EventUser, Long> {
 
-    /** Checks whether a user is assigned to a specific event */
+    /**
+     * Checks if a user is assigned to an event.
+     */
     boolean existsByEventIdAndUserId(Long eventId, Long userId);
 
-    /** Retrieves all event-user associations for a given event */
+    /**
+     * Finds all assignments for an event.
+     */
     List<EventUser> findAllByEventId(Long eventId);
 
-    /** Deletes all user assignments for the given event */
+    /**
+     * Deletes all assignments for an event.
+     */
     void deleteByEventId(Long eventId);
 
-    /** Deletes a user assignment from a determined event */
+    /**
+     * Deletes a user assignment from an event.
+     */
     void deleteByEventIdAndUserId(Long eventId, Long userId);
 
-    /** Deletes all event assignments for a user within a workspace */
+    /**
+     * Deletes all assignments of a user within a workspace.
+     */
     void deleteByEventWorkspaceIdAndUserId(Long workspaceId, Long userId);
 }

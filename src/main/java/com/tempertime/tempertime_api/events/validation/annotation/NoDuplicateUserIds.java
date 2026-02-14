@@ -6,7 +6,9 @@ import jakarta.validation.Payload;
 
 import java.lang.annotation.*;
 
-/** Validates that the list of user IDs does not contain duplicates */
+/**
+ * Validates that the list of user IDs does not contain duplicates.
+ */
 @Documented
 @Constraint(validatedBy = NoDuplicateUserIdsValidator.class)
 @Target({ ElementType.FIELD })

@@ -5,7 +5,9 @@ import com.tempertime.tempertime_api.events.domain.EventUser;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-/** Maps EventUser relations to event-assigned user response DTOs */
+/**
+ * Maps EventUser entities to assigned user response DTOs.
+ */
 @Mapper(componentModel = "spring")
 public interface EventUserMapper {
 

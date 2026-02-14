@@ -10,6 +10,7 @@ import com.tempertime.tempertime_api.events.domain.EventPeriod;
 import com.tempertime.tempertime_api.events.repository.EventRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.ZoneId;
 import java.util.List;
@@ -32,6 +33,7 @@ public class UserEventServiceImpl implements UserEventService {
      *
      * Throws InvalidEventPeriodException if timeZone is missing for DAY/WEEK/MONTH.
      */
+    @Transactional(readOnly = true)
     @Override
     public List<UserEventResponse> getUserEvents(
             Long userId,

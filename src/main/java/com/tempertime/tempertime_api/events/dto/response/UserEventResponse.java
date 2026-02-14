@@ -2,7 +2,9 @@ package com.tempertime.tempertime_api.events.dto.response;
 
 import java.time.Instant;
 
-/** Response DTO representing an event assigned to the authenticated user */
+/**
+ * Response DTO representing events assigned to the authenticated user.
+ */
 public record UserEventResponse(
 
         Long id,

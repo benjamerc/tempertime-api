@@ -9,7 +9,9 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-/** Validator that checks existence of user IDs using the repository */
+/**
+ * Validator that checks existence of user IDs using the repository.
+ */
 @Component
 @RequiredArgsConstructor
 public class ExistingUserIdsValidator

@@ -2,7 +2,9 @@ package com.tempertime.tempertime_api.events.dto.response;
 
 import java.time.Instant;
 
-/** Response DTO after creating a new Event */
+/**
+ * Response DTO after creating a new Event.
+ */
 public record EventCreateResponse(
 
         Long id,

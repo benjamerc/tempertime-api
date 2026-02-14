@@ -6,7 +6,9 @@ import jakarta.validation.Payload;
 
 import java.lang.annotation.*;
 
-/** Validates that all provided user IDs exist in the system */
+/**
+ * Validates that all provided user IDs exist in the system.
+ */
 @Documented
 @Constraint(validatedBy = ExistingUserIdsValidator.class)
 @Target({ ElementType.FIELD })

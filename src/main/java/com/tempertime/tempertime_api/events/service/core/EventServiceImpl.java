@@ -194,6 +194,7 @@ public class EventServiceImpl implements EventService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
     @Override
     public EventResponse getEvent(
             Long workspaceId,
@@ -292,6 +293,7 @@ public class EventServiceImpl implements EventService {
         return new EventAssignUserResponse(eventId, assignedUserIds);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<EventAssignedUserResponse> getEventAssignedUsers(
             Long workspaceId,

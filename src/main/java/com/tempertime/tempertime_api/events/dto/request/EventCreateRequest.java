@@ -10,7 +10,9 @@ import jakarta.validation.constraints.Size;
 
 import java.time.OffsetDateTime;
 
-/** Request DTO for creating a new Event */
+/**
+ * Request DTO for creating a new Event.
+ */
 public record EventCreateRequest(
 
         @NotBlank(message = "Title is required")

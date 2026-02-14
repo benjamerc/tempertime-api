@@ -6,10 +6,14 @@ import com.tempertime.tempertime_api.events.domain.EventPeriod;
 import java.time.ZoneId;
 import java.util.List;
 
-/** Service for retrieving events assigned to a specific user */
+/**
+ * Service for retrieving events assigned to a user.
+ */
 public interface UserEventService {
 
-    /** Returns events assigned to the given user, filtered by time period */
+    /**
+     * Finds events assigned to a user filtered by period.
+     */
     List<UserEventResponse> getUserEvents(
             Long userId,
             EventPeriod period,

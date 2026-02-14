@@ -3,8 +3,8 @@ package com.tempertime.tempertime_api.events.dto.response;
 import java.time.Instant;
 
 /**
- * Response DTO for GET by ID and PATCH.
- * Returns all event fields.
+ * Response DTO for Event retrieval and partial update.
+ * Contains all event fields.
  */
 public record EventResponse(
 

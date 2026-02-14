@@ -15,13 +15,19 @@ import java.util.Optional;
 @Repository
 public interface EventRepository extends JpaRepository<Event, Long> {
 
-    /** Finds an event by id within the given workspace */
+    /**
+     * Finds an event by id within a workspace.
+     */
     Optional<Event> findByIdAndWorkspaceId(Long eventId, Long workspaceId);
 
-    /** Finds all events in a workspace filtered by scope */
+    /**
+     * Finds all events in a workspace by scope.
+     */
     List<Event> findByWorkspaceIdAndScope(Long workspaceId, EventScope scope);
 
-    /** Retrieves all events within a workspace that are assigned to a specific user */
+    /**
+     * Finds all events in a workspace assigned to a specific user.
+     */
     @Query("""
         SELECT DISTINCT e
         FROM Event e
@@ -35,8 +41,8 @@ public interface EventRepository extends JpaRepository<Event, Long> {
     );
 
     /**
-     * Retrieves all events within a workspace assigned to a specific user
-     * filtered by eventDate range.
+     * Finds all events in a workspace assigned to a user
+     * within the given eventDate range.
      */
     @Query("""
     SELECT DISTINCT e
@@ -54,7 +60,9 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             @Param("end") Instant end
     );
 
-    /** Retrieves all events assigned to a user */
+    /**
+     * Finds all events assigned to a user.
+     */
     @Query("""
         SELECT DISTINCT e
         FROM Event e
@@ -65,7 +73,10 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             @Param("userId") Long userId
     );
 
-    /** Retrieves events assigned to a user within the given time range */
+    /**
+     * Finds all events assigned to a user
+     * within the given eventDate range.
+     */
     @Query("""
         SELECT DISTINCT e
         FROM Event e

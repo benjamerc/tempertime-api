@@ -9,14 +9,23 @@ import com.tempertime.tempertime_api.events.domain.EventPeriod;
 import java.time.ZoneId;
 import java.util.List;
 
+/**
+ * Service for managing workspace events and user assignments.
+ */
 public interface EventService {
 
+    /**
+     * Creates a new event within a workspace.
+     */
     EventCreateResponse createEvent(
             Long workspaceId,
             Long userId,
             EventCreateRequest request
     );
 
+    /**
+     * Updates an existing event.
+     */
     EventResponse updateEvent(
             Long workspaceId,
             Long eventId,
@@ -24,7 +33,9 @@ public interface EventService {
             EventUpdateRequest request
     );
 
-    /** Retrieves all events from a workspace to which the user is assigned */
+    /**
+     * Finds all events in a workspace assigned to the user.
+     */
     List<EventListItemResponse> getEvents(
             Long workspaceId,
             Long userId,
@@ -32,6 +43,9 @@ public interface EventService {
             ZoneId timeZone
     );
 
+    /**
+     * Retrieves a single event by id.
+     */
     EventResponse getEvent(
             Long workspaceId,
             Long eventId,
@@ -44,7 +58,9 @@ public interface EventService {
             Long userId
     );
 
-    /** Assigns users to an event */
+    /**
+     * Assigns users to an event.
+     */
     EventAssignUserResponse assignUsersToEvent(
             Long workspaceId,
             Long eventId,
@@ -52,12 +68,18 @@ public interface EventService {
             EventAssignUserRequest request
     );
 
+    /**
+     * Retrieves users assigned to an event.
+     */
     List<EventAssignedUserResponse> getEventAssignedUsers(
             Long workspaceId,
             Long eventId,
             Long userId
     );
 
+    /**
+     * Removes a user from an event.
+     */
     void deleteUserFromEvent(
             Long workspaceId,
             Long eventId,

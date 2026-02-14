@@ -8,7 +8,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-/** Validator that ensures all user IDs in the list are unique */
+/**
+ * Validator that ensures all user IDs in the list are unique.
+ */
 public class NoDuplicateUserIdsValidator
         implements ConstraintValidator<NoDuplicateUserIds, List<Long>> {
 

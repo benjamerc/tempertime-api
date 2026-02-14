@@ -7,7 +7,9 @@ import jakarta.validation.constraints.NotNull;
 
 import java.util.List;
 
-/** Request DTO for assigning users to an event */
+/**
+ * Request DTO for assigning users to an event.
+ */
 public record EventAssignUserRequest(
 
         @NotNull(message = "User IDs list is required")
