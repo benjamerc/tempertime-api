@@ -4,10 +4,8 @@ import com.tempertime.tempertime_api.events.dto.response.UserEventResponse;
 import com.tempertime.tempertime_api.events.domain.EventPeriod;
 import com.tempertime.tempertime_api.events.service.core.UserEventService;
 import com.tempertime.tempertime_api.security.core.CurrentUserProvider;
-import com.tempertime.tempertime_api.security.core.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -30,16 +28,16 @@ public class UserEventController {
      */
     @GetMapping
     public ResponseEntity<List<UserEventResponse>> getUserEvents(
-            @AuthenticationPrincipal CustomUserDetails userDetails,
             @RequestParam(defaultValue = "MONTH") EventPeriod period,
             @RequestParam(required = false) ZoneId timeZone
     ) {
-        List<UserEventResponse> events = userEventService.getUserEvents(
-                currentUserProvider.getUserId(userDetails),
-                period,
-                timeZone
-        );
 
-        return ResponseEntity.ok(events);
+        return ResponseEntity.ok(
+                userEventService.getUserEvents(
+                        currentUserProvider.getUserId(),
+                        period,
+                        timeZone
+                )
+        );
     }
 }
