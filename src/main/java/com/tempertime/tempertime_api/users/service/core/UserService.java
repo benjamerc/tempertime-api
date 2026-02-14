@@ -1,4 +1,4 @@
-package com.tempertime.tempertime_api.users.service;
+package com.tempertime.tempertime_api.users.service.core;
 
 import com.tempertime.tempertime_api.users.dto.request.UserDeleteAccountRequest;
 import com.tempertime.tempertime_api.users.dto.request.UserUpdatePasswordRequest;

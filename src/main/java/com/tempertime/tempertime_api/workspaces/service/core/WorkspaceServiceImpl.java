@@ -7,7 +7,7 @@ import com.tempertime.tempertime_api.events.domain.EventUser;
 import com.tempertime.tempertime_api.events.repository.EventRepository;
 import com.tempertime.tempertime_api.events.repository.EventUserRepository;
 import com.tempertime.tempertime_api.users.domain.User;
-import com.tempertime.tempertime_api.users.service.UserLoader;
+import com.tempertime.tempertime_api.users.service.loader.UserLoader;
 import com.tempertime.tempertime_api.workspaces.service.authorization.WorkspaceAccessService;
 import com.tempertime.tempertime_api.workspaces.dto.request.WorkspaceCreateRequest;
 import com.tempertime.tempertime_api.workspaces.dto.request.WorkspaceUpdateRequest;

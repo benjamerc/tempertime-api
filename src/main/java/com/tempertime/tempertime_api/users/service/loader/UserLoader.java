@@ -1,4 +1,4 @@
-package com.tempertime.tempertime_api.users.service;
+package com.tempertime.tempertime_api.users.service.loader;
 
 import com.tempertime.tempertime_api.users.exception.UserNotFoundException;
 import com.tempertime.tempertime_api.users.domain.User;

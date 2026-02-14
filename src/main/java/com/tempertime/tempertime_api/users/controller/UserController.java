@@ -5,7 +5,7 @@ import com.tempertime.tempertime_api.users.dto.request.UserDeleteAccountRequest;
 import com.tempertime.tempertime_api.users.dto.request.UserUpdatePasswordRequest;
 import com.tempertime.tempertime_api.users.dto.request.UserUpdateProfileRequest;
 import com.tempertime.tempertime_api.users.dto.response.UserProfileResponse;
-import com.tempertime.tempertime_api.users.service.UserService;
+import com.tempertime.tempertime_api.users.service.core.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
