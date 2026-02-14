@@ -1,7 +1,6 @@
 package com.tempertime.tempertime_api.workspaces.controller;
 
 import com.tempertime.tempertime_api.security.core.CurrentUserProvider;
-import com.tempertime.tempertime_api.security.core.CustomUserDetails;
 import com.tempertime.tempertime_api.workspaces.dto.request.WorkspaceCreateRequest;
 import com.tempertime.tempertime_api.workspaces.dto.request.WorkspaceJoinRequest;
 import com.tempertime.tempertime_api.workspaces.dto.request.WorkspaceUpdateRequest;
@@ -12,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,60 +26,69 @@ public class WorkspaceController {
     @PostMapping
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<WorkspaceCreateResponse> createWorkspace(
-            @AuthenticationPrincipal CustomUserDetails userDetails,
-            @Valid @RequestBody WorkspaceCreateRequest request) {
+            @Valid @RequestBody WorkspaceCreateRequest request
+    ) {
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(workspaceService.createWorkspace(
-                        request,
-                        currentUserProvider.getUserId(userDetails)
-                ));
+                .body(
+                        workspaceService.createWorkspace(
+                                request,
+                                currentUserProvider.getUserId()
+                        )
+                );
     }
 
     @GetMapping
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<List<WorkspaceListItemResponse>> getUserWorkspaces(
-            @AuthenticationPrincipal CustomUserDetails userDetails) {
+    public ResponseEntity<List<WorkspaceListItemResponse>> getUserWorkspaces() {
 
-        return ResponseEntity.ok(workspaceService.getUserWorkspaces(currentUserProvider.getUserId(userDetails)));
+        return ResponseEntity.ok(
+                workspaceService.getUserWorkspaces(
+                        currentUserProvider.getUserId()
+                )
+        );
     }
 
     @GetMapping("/{workspaceId}")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<WorkspaceDetailResponse> getWorkspaceById(
-            @PathVariable Long workspaceId,
-            @AuthenticationPrincipal CustomUserDetails userDetails) {
+            @PathVariable Long workspaceId
+    ) {
 
-        return ResponseEntity.ok(workspaceService.getWorkspaceById(
-                workspaceId,
-                currentUserProvider.getUserId(userDetails)
-        ));
+        return ResponseEntity.ok(
+                workspaceService.getWorkspaceById(
+                        workspaceId,
+                        currentUserProvider.getUserId()
+                )
+        );
     }
 
     @PatchMapping("/{workspaceId}")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<WorkspaceUpdateResponse> updateWorkspace(
             @PathVariable Long workspaceId,
-            @AuthenticationPrincipal CustomUserDetails userDetails,
-            @Valid @RequestBody WorkspaceUpdateRequest request) {
+            @Valid @RequestBody WorkspaceUpdateRequest request
+    ) {
 
-        return ResponseEntity.ok(workspaceService.updateWorkspace(
-                workspaceId,
-                currentUserProvider.getUserId(userDetails),
-                request
-        ));
+        return ResponseEntity.ok(
+                workspaceService.updateWorkspace(
+                        workspaceId,
+                        currentUserProvider.getUserId(),
+                        request
+                )
+        );
     }
 
     @PatchMapping("/{workspaceId}/archive")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Void> archiveWorkspace(
-            @PathVariable Long workspaceId,
-            @AuthenticationPrincipal CustomUserDetails userDetails) {
+            @PathVariable Long workspaceId
+    ) {
 
         workspaceService.archiveWorkspace(
                 workspaceId,
-                currentUserProvider.getUserId(userDetails)
+                currentUserProvider.getUserId()
         );
 
         return ResponseEntity.noContent().build();
@@ -90,12 +97,12 @@ public class WorkspaceController {
     @PatchMapping("/{workspaceId}/unarchive")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Void> unarchiveWorkspace(
-            @PathVariable Long workspaceId,
-            @AuthenticationPrincipal CustomUserDetails userDetails) {
+            @PathVariable Long workspaceId
+    ) {
 
         workspaceService.unarchiveWorkspace(
                 workspaceId,
-                currentUserProvider.getUserId(userDetails)
+                currentUserProvider.getUserId()
         );
 
         return ResponseEntity.noContent().build();
@@ -104,12 +111,12 @@ public class WorkspaceController {
     @DeleteMapping("/{workspaceId}")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Void> deleteWorkspace(
-            @PathVariable Long workspaceId,
-            @AuthenticationPrincipal CustomUserDetails userDetails) {
+            @PathVariable Long workspaceId
+    ) {
 
         workspaceService.deleteWorkspace(
                 workspaceId,
-                currentUserProvider.getUserId(userDetails)
+                currentUserProvider.getUserId()
         );
 
         return ResponseEntity.noContent().build();
@@ -118,13 +125,13 @@ public class WorkspaceController {
     @GetMapping("/{workspaceId}/invite-code")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<WorkspaceInviteCodeResponse> getInviteCode(
-            @PathVariable Long workspaceId,
-            @AuthenticationPrincipal CustomUserDetails userDetails
+            @PathVariable Long workspaceId
     ) {
+
         return ResponseEntity.ok(
                 workspaceService.getInviteCode(
                         workspaceId,
-                        currentUserProvider.getUserId(userDetails)
+                        currentUserProvider.getUserId()
                 )
         );
     }
@@ -132,13 +139,13 @@ public class WorkspaceController {
     @PatchMapping("/{workspaceId}/invite-code/enable")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<WorkspaceInviteCodeResponse> activateInviteCode(
-            @PathVariable Long workspaceId,
-            @AuthenticationPrincipal CustomUserDetails userDetails
+            @PathVariable Long workspaceId
     ) {
+
         return ResponseEntity.ok(
                 workspaceService.activateInviteCode(
                         workspaceId,
-                        currentUserProvider.getUserId(userDetails)
+                        currentUserProvider.getUserId()
                 )
         );
     }
@@ -146,13 +153,13 @@ public class WorkspaceController {
     @PatchMapping("/{workspaceId}/invite-code/disable")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<WorkspaceInviteCodeResponse> deactivateInviteCode(
-            @PathVariable Long workspaceId,
-            @AuthenticationPrincipal CustomUserDetails userDetails
+            @PathVariable Long workspaceId
     ) {
+
         return ResponseEntity.ok(
                 workspaceService.deactivateInviteCode(
                         workspaceId,
-                        currentUserProvider.getUserId(userDetails)
+                        currentUserProvider.getUserId()
                 )
         );
     }
@@ -160,13 +167,13 @@ public class WorkspaceController {
     @PatchMapping("/{workspaceId}/invite-code/regenerate")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<WorkspaceInviteCodeRegenerateResponse> regenerateInviteCode(
-            @PathVariable Long workspaceId,
-            @AuthenticationPrincipal CustomUserDetails userDetails
+            @PathVariable Long workspaceId
     ) {
+
         return ResponseEntity.ok(
                 workspaceService.regenerateInviteCode(
                         workspaceId,
-                        currentUserProvider.getUserId(userDetails)
+                        currentUserProvider.getUserId()
                 )
         );
     }
@@ -174,13 +181,13 @@ public class WorkspaceController {
     @PostMapping("/join")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<WorkspaceJoinResponse> joinWorkspace(
-            @AuthenticationPrincipal CustomUserDetails userDetails,
             @Valid @RequestBody WorkspaceJoinRequest request
     ) {
+
         return ResponseEntity.ok(
                 workspaceService.joinWorkspace(
                         request.inviteCode(),
-                        currentUserProvider.getUserId(userDetails)
+                        currentUserProvider.getUserId()
                 )
         );
     }
@@ -188,13 +195,13 @@ public class WorkspaceController {
     @GetMapping("/{workspaceId}/users")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<List<WorkspaceUserResponse>> getWorkspaceUsers(
-            @PathVariable Long workspaceId,
-            @AuthenticationPrincipal CustomUserDetails userDetails
+            @PathVariable Long workspaceId
     ) {
+
         return ResponseEntity.ok(
                 workspaceService.getWorkspaceUsers(
                         workspaceId,
-                        currentUserProvider.getUserId(userDetails)
+                        currentUserProvider.getUserId()
                 )
         );
     }
@@ -203,13 +210,13 @@ public class WorkspaceController {
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Void> removeWorkspaceUser(
             @PathVariable Long workspaceId,
-            @PathVariable("userId") Long targetUserId,
-            @AuthenticationPrincipal CustomUserDetails userDetails
+            @PathVariable("userId") Long targetUserId
     ) {
+
         workspaceService.removeWorkspaceUser(
                 workspaceId,
                 targetUserId,
-                currentUserProvider.getUserId(userDetails)
+                currentUserProvider.getUserId()
         );
 
         return ResponseEntity.noContent().build();
@@ -218,12 +225,12 @@ public class WorkspaceController {
     @DeleteMapping("/{workspaceId}/users/me")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Void> leaveWorkspace(
-            @PathVariable Long workspaceId,
-            @AuthenticationPrincipal CustomUserDetails userDetails
+            @PathVariable Long workspaceId
     ) {
+
         workspaceService.leaveWorkspace(
                 workspaceId,
-                currentUserProvider.getUserId(userDetails)
+                currentUserProvider.getUserId()
         );
 
         return ResponseEntity.noContent().build();
