@@ -5,7 +5,10 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class ColorUtil {
 
-    /** Returns a valid color: generates one if missing, otherwise validates hexadecimal format */
+    /**
+     * Returns a valid color.
+     * Generates one if missing; otherwise validates hexadecimal format.
+     */
     public static String resolveColor(
             String color,
             ColorValidator validator,
@@ -19,7 +22,9 @@ public class ColorUtil {
         return color;
     }
 
-    /** Validates a color only if present; does not generate */
+    /**
+     * Validates a color only if present; does not generate a new color.
+     */
     public static void validateIfPresent(String color, ColorValidator validator) {
         if (!validator.isColorMissing(color) && !validator.isHexColor(color)) {
             throw new InvalidColorFormatException("Color must be hexadecimal");

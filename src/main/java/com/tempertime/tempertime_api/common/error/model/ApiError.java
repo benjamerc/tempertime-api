@@ -6,7 +6,9 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
-/** Standard API error response */
+/**
+ * Standard API error response.
+ */
 @Getter
 @AllArgsConstructor
 @Builder

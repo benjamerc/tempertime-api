@@ -4,7 +4,9 @@ import org.springframework.stereotype.Component;
 
 import java.util.regex.Pattern;
 
-/** Validates color */
+/**
+ * Validates color strings.
+ */
 @Component
 public class ColorValidator {
 

@@ -7,11 +7,15 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-/** Builds ApiError instances for API responses. */
+/**
+ * Builds ApiError instances for API responses.
+ */
 @Component
 public class ApiErrorBuilder {
 
-    /** Builds an ApiError without field-level details. */
+    /**
+     * Builds an ApiError without field-level details.
+     */
     public ApiError build(
             ErrorCode code,
             String message,
@@ -24,7 +28,9 @@ public class ApiErrorBuilder {
                 .build();
     }
 
-    /** Builds an ApiError including field-level validation details */
+    /**
+     * Builds an ApiError including field-level validation errors from @Valid requests.
+     */
     public ApiError build(
             ErrorCode code,
             String message,

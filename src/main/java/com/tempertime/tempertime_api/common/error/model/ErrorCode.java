@@ -3,7 +3,9 @@ package com.tempertime.tempertime_api.common.error.model;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-/** API error codes grouped by origin */
+/**
+ * API error codes grouped primarily by origin.
+ */
 @AllArgsConstructor
 @Getter
 public enum ErrorCode {

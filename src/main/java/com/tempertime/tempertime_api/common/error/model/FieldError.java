@@ -4,7 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
-/** Represents a single field validation error */
+/**
+ * Represents a single field validation error from @Valid requests.
+ */
 @Getter
 @AllArgsConstructor
 @Builder

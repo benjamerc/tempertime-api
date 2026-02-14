@@ -6,7 +6,9 @@ import org.springframework.validation.BindingResult;
 
 import java.util.List;
 
-/** Maps BindingResult to API FieldError object */
+/**
+ * Maps BindingResult to API FieldError object.
+ */
 @UtilityClass
 public class FieldErrorMapper {
 

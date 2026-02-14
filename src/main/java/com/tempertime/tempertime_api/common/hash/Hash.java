@@ -6,13 +6,15 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-/** Provides utility methods for hashing operations */
+/**
+ * Utility methods for hashing operations.
+ */
 @UtilityClass
 public class Hash {
 
     /**
-     * Generates a SHA-256 hash from the given string
-     * and returns it as a lowercase hexadecimal value.
+     * Generates SHA-256 hash from the given string
+     * as a lowercase hexadecimal value.
      */
     public String sha256(String input) {
         try {

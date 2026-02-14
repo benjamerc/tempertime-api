@@ -5,7 +5,9 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Random;
 
-/** Generates a default color when none is provided */
+/**
+ * Generates a default color when none is provided.
+ */
 @Component
 public class ColorGenerator {
 
