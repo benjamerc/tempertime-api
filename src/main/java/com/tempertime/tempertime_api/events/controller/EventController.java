@@ -7,13 +7,11 @@ import com.tempertime.tempertime_api.events.dto.response.*;
 import com.tempertime.tempertime_api.events.domain.EventPeriod;
 import com.tempertime.tempertime_api.events.service.core.EventService;
 import com.tempertime.tempertime_api.security.core.CurrentUserProvider;
-import com.tempertime.tempertime_api.security.core.CustomUserDetails;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.ZoneId;
@@ -31,23 +29,24 @@ public class EventController {
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<EventCreateResponse> createEvent(
             @PathVariable Long workspaceId,
-            @AuthenticationPrincipal CustomUserDetails userDetails,
-            @Valid @RequestBody EventCreateRequest request) {
+            @Valid @RequestBody EventCreateRequest request
+    ) {
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(eventService.createEvent(
-                        workspaceId,
-                        currentUserProvider.getUserId(userDetails),
-                        request
-                ));
+                .body(
+                        eventService.createEvent(
+                                workspaceId,
+                                currentUserProvider.getUserId(),
+                                request
+                        )
+                );
     }
 
     @GetMapping
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<List<EventListItemResponse>> getEvents(
             @PathVariable Long workspaceId,
-            @AuthenticationPrincipal CustomUserDetails userDetails,
             @RequestParam(defaultValue = "MONTH") EventPeriod period,
             @RequestParam(required = false) ZoneId timeZone
     ) {
@@ -55,7 +54,7 @@ public class EventController {
         return ResponseEntity.ok(
                 eventService.getEvents(
                         workspaceId,
-                        currentUserProvider.getUserId(userDetails),
+                        currentUserProvider.getUserId(),
                         period,
                         timeZone
                 )
@@ -66,16 +65,16 @@ public class EventController {
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<EventResponse> getEvent(
             @PathVariable Long workspaceId,
-            @PathVariable Long eventId,
-            @AuthenticationPrincipal CustomUserDetails userDetails
+            @PathVariable Long eventId
     ) {
 
         return ResponseEntity.ok(
                 eventService.getEvent(
                         workspaceId,
                         eventId,
-                        currentUserProvider.getUserId(userDetails)
-                ));
+                        currentUserProvider.getUserId()
+                )
+        );
     }
 
     @PatchMapping("/{eventId}")
@@ -83,30 +82,30 @@ public class EventController {
     public ResponseEntity<EventResponse> updateEvent(
             @PathVariable Long workspaceId,
             @PathVariable Long eventId,
-            @AuthenticationPrincipal CustomUserDetails userDetails,
-            @Valid @RequestBody EventUpdateRequest request) {
+            @Valid @RequestBody EventUpdateRequest request
+    ) {
 
         return ResponseEntity.ok(
                 eventService.updateEvent(
                         workspaceId,
                         eventId,
-                        currentUserProvider.getUserId(userDetails),
+                        currentUserProvider.getUserId(),
                         request
-                ));
+                )
+        );
     }
 
     @DeleteMapping("/{eventId}")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Void> deleteEvent(
             @PathVariable Long workspaceId,
-            @PathVariable Long eventId,
-            @AuthenticationPrincipal CustomUserDetails userDetails
+            @PathVariable Long eventId
     ) {
 
         eventService.deleteEvent(
                 workspaceId,
                 eventId,
-                currentUserProvider.getUserId(userDetails)
+                currentUserProvider.getUserId()
         );
 
         return ResponseEntity.noContent().build();
@@ -117,33 +116,35 @@ public class EventController {
     public ResponseEntity<EventAssignUserResponse> assignUsersToEvent(
             @PathVariable Long workspaceId,
             @PathVariable Long eventId,
-            @AuthenticationPrincipal CustomUserDetails userDetails,
-            @Valid @RequestBody EventAssignUserRequest request) {
+            @Valid @RequestBody EventAssignUserRequest request
+    ) {
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(eventService.assignUsersToEvent(
-                        workspaceId,
-                        eventId,
-                        currentUserProvider.getUserId(userDetails),
-                        request
-                ));
+                .body(
+                        eventService.assignUsersToEvent(
+                                workspaceId,
+                                eventId,
+                                currentUserProvider.getUserId(),
+                                request
+                        )
+                );
     }
 
     @GetMapping("/{eventId}/users")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<List<EventAssignedUserResponse>> getEventAssignedUsers(
             @PathVariable Long workspaceId,
-            @PathVariable Long eventId,
-            @AuthenticationPrincipal CustomUserDetails userDetails
+            @PathVariable Long eventId
     ) {
 
         return ResponseEntity.ok(
                 eventService.getEventAssignedUsers(
                         workspaceId,
                         eventId,
-                        currentUserProvider.getUserId(userDetails)
-                ));
+                        currentUserProvider.getUserId()
+                )
+        );
     }
 
     @DeleteMapping("/{eventId}/users/{userId}")
@@ -151,15 +152,14 @@ public class EventController {
     public ResponseEntity<Void> deleteUserFromEvent(
             @PathVariable Long workspaceId,
             @PathVariable Long eventId,
-            @PathVariable("userId") Long targetUserId,
-            @AuthenticationPrincipal CustomUserDetails userDetails
+            @PathVariable("userId") Long targetUserId
     ) {
 
         eventService.deleteUserFromEvent(
                 workspaceId,
                 eventId,
                 targetUserId,
-                currentUserProvider.getUserId(userDetails)
+                currentUserProvider.getUserId()
         );
 
         return ResponseEntity.noContent().build();
