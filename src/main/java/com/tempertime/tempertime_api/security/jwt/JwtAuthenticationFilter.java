@@ -9,6 +9,7 @@ import com.tempertime.tempertime_api.users.domain.UserRole;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
+import jakarta.annotation.Nonnull;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -33,10 +34,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final AccessTokenService accessTokenService;
 
+    // Claim names as constants
+    private static final String CLAIM_ID = "id";
+    private static final String CLAIM_ROLE = "role";
+
     @Override
     protected void doFilterInternal(HttpServletRequest request,
-                                    HttpServletResponse response,
-                                    FilterChain filterChain)
+                                    @Nonnull HttpServletResponse response,
+                                    @Nonnull FilterChain filterChain)
             throws ServletException, IOException {
 
         // Extract Authorization header
@@ -70,25 +75,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             throw new AccessTokenInvalidException(ex);
         }
 
-        // Build User from token claims
-        String email = claims.getSubject();
-        Long userId = claims.get("id", Long.class);
-        String role = claims.get("role", String.class);
-
-        UserRole userRole;
-        try {
-            userRole = UserRole.valueOf(role);
-        } catch (IllegalArgumentException ex) {
-            throw new AccessTokenInvalidException(ex);
-        }
-
-        User userFromToken = User.builder()
-                .id(userId)
-                .email(email)
-                .role(userRole)
-                .build();
-
-        CustomUserDetails userDetails = new CustomUserDetails(userFromToken);
+        // Build CustomUserDetails from token claims
+        CustomUserDetails userDetails = buildUserFromClaims(claims);
 
         // Set authentication if not already present
         if (SecurityContextHolder.getContext().getAuthentication() == null) {
@@ -103,5 +91,36 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         filterChain.doFilter(request, response);
+    }
+
+    /**
+     * Constructs a CustomUserDetails object from JWT claims.
+     * Validates essential claims are present.
+     */
+    private CustomUserDetails buildUserFromClaims(Claims claims) {
+
+        String email = claims.getSubject();
+        Long userId = claims.get(CLAIM_ID, Long.class);
+        String roleStr = claims.get(CLAIM_ROLE, String.class);
+
+        // Validate required claims
+        if (email == null || userId == null || roleStr == null) {
+            throw new AccessTokenInvalidException(null);
+        }
+
+        UserRole role;
+        try {
+            role = UserRole.valueOf(roleStr);
+        } catch (IllegalArgumentException ex) {
+            throw new AccessTokenInvalidException(ex);
+        }
+
+        User user = User.builder()
+                .id(userId)
+                .email(email)
+                .role(role)
+                .build();
+
+        return new CustomUserDetails(user);
     }
 }
