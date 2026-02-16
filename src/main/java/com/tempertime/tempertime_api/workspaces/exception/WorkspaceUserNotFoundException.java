@@ -1,11 +1,10 @@
 package com.tempertime.tempertime_api.workspaces.exception;
 
-public class WorkspaceUserNotFoundException extends RuntimeException {
-    public WorkspaceUserNotFoundException(String message, Throwable cause) {
-        super(message, cause);
-    }
+import com.tempertime.tempertime_api.common.error.model.ErrorCode;
 
-    public WorkspaceUserNotFoundException(String message) {
-        super(message);
+public class WorkspaceUserNotFoundException extends RuntimeException {
+
+    public WorkspaceUserNotFoundException() {
+        super(ErrorCode.WORKSPACE_USER_NOT_FOUND.getDefaultMessage());
     }
 }

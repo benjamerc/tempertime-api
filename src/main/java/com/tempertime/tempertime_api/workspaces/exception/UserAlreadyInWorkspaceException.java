@@ -1,11 +1,10 @@
 package com.tempertime.tempertime_api.workspaces.exception;
 
-public class UserAlreadyInWorkspaceException extends RuntimeException {
-    public UserAlreadyInWorkspaceException(String message, Throwable cause) {
-        super(message, cause);
-    }
+import com.tempertime.tempertime_api.common.error.model.ErrorCode;
 
-    public UserAlreadyInWorkspaceException(String message) {
-        super(message);
+public class UserAlreadyInWorkspaceException extends RuntimeException {
+
+    public UserAlreadyInWorkspaceException() {
+        super(ErrorCode.USER_ALREADY_IN_WORKSPACE.getDefaultMessage());
     }
 }

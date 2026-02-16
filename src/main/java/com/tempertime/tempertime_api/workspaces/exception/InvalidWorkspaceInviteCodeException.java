@@ -1,11 +1,10 @@
 package com.tempertime.tempertime_api.workspaces.exception;
 
-public class InvalidWorkspaceInviteCodeException extends RuntimeException {
-    public InvalidWorkspaceInviteCodeException(String message, Throwable cause) {
-        super(message, cause);
-    }
+import com.tempertime.tempertime_api.common.error.model.ErrorCode;
 
-    public InvalidWorkspaceInviteCodeException(String message) {
-        super(message);
+public class InvalidWorkspaceInviteCodeException extends RuntimeException {
+
+    public InvalidWorkspaceInviteCodeException() {
+        super(ErrorCode.INVALID_WORKSPACE_INVITE_CODE.getDefaultMessage());
     }
 }

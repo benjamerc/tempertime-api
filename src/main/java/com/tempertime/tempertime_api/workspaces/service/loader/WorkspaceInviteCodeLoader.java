@@ -35,10 +35,7 @@ public class WorkspaceInviteCodeLoader {
      */
     public WorkspaceInviteCode loadByWorkspaceIdOrThrow(Long workspaceId) {
         return workspaceInviteCodeRepository.findByWorkspaceId(workspaceId)
-                .orElseThrow(() ->
-                        new WorkspaceInviteCodeNotFoundException(
-                                "Workspace invite code not found"
-                        ));
+                .orElseThrow(WorkspaceInviteCodeNotFoundException::new);
     }
 
     /**
@@ -49,9 +46,7 @@ public class WorkspaceInviteCodeLoader {
         WorkspaceInviteCode workspaceInviteCode = loadByCodeOrThrow(rawInviteCode);
 
         if (!workspaceInviteCode.getInviteEnabled()) {
-            throw new WorkspaceInviteCodeDisabledException(
-                    "Workspace invite code is disabled"
-            );
+            throw new WorkspaceInviteCodeDisabledException();
         }
 
         return workspaceInviteCode;
@@ -67,10 +62,7 @@ public class WorkspaceInviteCodeLoader {
         String inviteCodeHash = hash(normalizedInviteCode);
 
         return workspaceInviteCodeRepository.findByInviteCodeHash(inviteCodeHash)
-                .orElseThrow(() ->
-                        new InvalidWorkspaceInviteCodeException(
-                                "Invalid workspace invite code"
-                        ));
+                .orElseThrow(InvalidWorkspaceInviteCodeException::new);
     }
 
     /**

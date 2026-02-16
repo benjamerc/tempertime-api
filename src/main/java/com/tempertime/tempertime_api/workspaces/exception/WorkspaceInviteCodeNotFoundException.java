@@ -1,11 +1,10 @@
 package com.tempertime.tempertime_api.workspaces.exception;
 
-public class WorkspaceInviteCodeNotFoundException extends RuntimeException {
-    public WorkspaceInviteCodeNotFoundException(String message, Throwable cause) {
-        super(message, cause);
-    }
+import com.tempertime.tempertime_api.common.error.model.ErrorCode;
 
-    public WorkspaceInviteCodeNotFoundException(String message) {
-        super(message);
+public class WorkspaceInviteCodeNotFoundException extends RuntimeException {
+
+    public WorkspaceInviteCodeNotFoundException() {
+        super(ErrorCode.WORKSPACE_INVITE_CODE_NOT_FOUND.getDefaultMessage());
     }
 }

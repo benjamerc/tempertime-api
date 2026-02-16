@@ -191,7 +191,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
                 workspaceAccessService.loadWorkspaceWithOwnerAccess(workspaceId, userId);
 
         if (!workspace.getArchived()) {
-            throw new WorkspaceNotArchivedException("Workspace must be archived before deletion");
+            throw new WorkspaceNotArchivedException();
         }
 
         workspaceRepository.delete(workspace);
@@ -269,9 +269,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         User user = userLoader.loadUserOrThrow(userId);
 
         if (workspaceUserRepository.existsByWorkspaceIdAndUserId(workspace.getId(), userId)) {
-            throw new UserAlreadyInWorkspaceException(
-                    "User is already in workspace"
-            );
+            throw new UserAlreadyInWorkspaceException();
         }
 
         WorkspaceUser workspaceUser = WorkspaceUser.builder()
@@ -312,15 +310,11 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
         WorkspaceUser workspaceUser = workspaceUserRepository
                 .findByWorkspaceIdAndUserId(workspaceId, targetUserId)
-                .orElseThrow(() -> new WorkspaceUserNotFoundException(
-                        "Workspace member not found"
-                ));
+                .orElseThrow(WorkspaceUserNotFoundException::new);
 
         // Prevent removing the workspace owner
         if (workspaceUser.getRole() == WorkspaceRole.OWNER) {
-            throw new WorkspaceOperationNotAllowedException(
-                    "Workspace operation not allowed"
-            );
+            throw new WorkspaceOperationNotAllowedException();
         }
 
         eventAccessService.removeUserFromWorkspaceEvents(
@@ -344,9 +338,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
         // Prevent the workspace owner from leaving the workspace
         if (workspaceUser.getRole() == WorkspaceRole.OWNER) {
-            throw new WorkspaceOperationNotAllowedException(
-                    "Workspace operation not allowed"
-            );
+            throw new WorkspaceOperationNotAllowedException();
         }
 
         eventAccessService.removeUserFromWorkspaceEvents(

@@ -1,11 +1,10 @@
 package com.tempertime.tempertime_api.workspaces.exception;
 
-public class WorkspaceOperationNotAllowedException extends RuntimeException {
-    public WorkspaceOperationNotAllowedException(String message, Throwable cause) {
-        super(message, cause);
-    }
+import com.tempertime.tempertime_api.common.error.model.ErrorCode;
 
-    public WorkspaceOperationNotAllowedException(String message) {
-        super(message);
+public class WorkspaceOperationNotAllowedException extends RuntimeException {
+
+    public WorkspaceOperationNotAllowedException() {
+        super(ErrorCode.WORKSPACE_OPERATION_NOT_ALLOWED.getDefaultMessage());
     }
 }

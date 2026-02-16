@@ -17,8 +17,6 @@ public class WorkspaceLoader {
 
     public Workspace loadOrThrow(Long workspaceId) {
         return workspaceRepository.findById(workspaceId)
-                .orElseThrow(() ->
-                        new WorkspaceNotFoundException("Workspace not found")
-                );
+                .orElseThrow(WorkspaceNotFoundException::new);
     }
 }

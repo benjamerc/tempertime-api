@@ -1,11 +1,10 @@
 package com.tempertime.tempertime_api.workspaces.exception;
 
-public class WorkspaceInviteCodeDisabledException extends RuntimeException {
-    public WorkspaceInviteCodeDisabledException(String message, Throwable cause) {
-        super(message, cause);
-    }
+import com.tempertime.tempertime_api.common.error.model.ErrorCode;
 
-    public WorkspaceInviteCodeDisabledException(String message) {
-        super(message);
+public class WorkspaceInviteCodeDisabledException extends RuntimeException {
+
+    public WorkspaceInviteCodeDisabledException() {
+        super(ErrorCode.WORKSPACE_INVITE_CODE_DISABLED.getDefaultMessage());
     }
 }

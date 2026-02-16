@@ -23,8 +23,7 @@ public class WorkspaceAuthorizationService {
     public WorkspaceUser requireMembership(Long workspaceId, Long userId) {
         return workspaceUserRepository
                 .findByWorkspaceIdAndUserId(workspaceId, userId)
-                .orElseThrow(() ->
-                        new WorkspaceAccessDeniedException("Workspace not accessible"));
+                .orElseThrow(WorkspaceAccessDeniedException::new);
     }
 
     /**
@@ -38,9 +37,7 @@ public class WorkspaceAuthorizationService {
         WorkspaceUser membership = requireMembership(workspaceId, userId);
 
         if (membership.getRole() != requiredRole) {
-            throw new WorkspaceRoleDeniedException(
-                    "User does not have sufficient permissions"
-            );
+            throw new WorkspaceRoleDeniedException();
         }
     }
 }

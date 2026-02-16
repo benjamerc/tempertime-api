@@ -1,11 +1,10 @@
 package com.tempertime.tempertime_api.workspaces.exception;
 
-public class WorkspaceRoleDeniedException extends RuntimeException {
-    public WorkspaceRoleDeniedException(String message, Throwable cause) {
-        super(message, cause);
-    }
+import com.tempertime.tempertime_api.common.error.model.ErrorCode;
 
-    public WorkspaceRoleDeniedException(String message) {
-        super(message);
+public class WorkspaceRoleDeniedException extends RuntimeException {
+
+    public WorkspaceRoleDeniedException() {
+        super(ErrorCode.WORKSPACE_ROLE_DENIED.getDefaultMessage());
     }
 }
