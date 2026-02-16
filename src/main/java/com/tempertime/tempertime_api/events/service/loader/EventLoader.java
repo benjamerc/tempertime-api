@@ -22,6 +22,6 @@ public class EventLoader {
     public Event loadOrThrow(Long workspaceId, Long eventId) {
         return eventRepository
                 .findByIdAndWorkspaceId(eventId, workspaceId)
-                .orElseThrow(() -> new EventNotFoundException("Event not found"));
+                .orElseThrow(EventNotFoundException::new);
     }
 }

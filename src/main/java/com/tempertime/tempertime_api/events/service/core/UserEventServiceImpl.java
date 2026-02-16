@@ -43,7 +43,7 @@ public class UserEventServiceImpl implements UserEventService {
 
         // Validates that timeZone is provided for periods that require it
         if (period != EventPeriod.ALL && timeZone == null) {
-            throw new InvalidEventPeriodException("timeZone is required for DAY/WEEK/MONTH periods");
+            throw new InvalidEventPeriodException("Time zone is required for DAY, WEEK, or MONTH periods");
         }
 
         Optional<TimeRange> range =

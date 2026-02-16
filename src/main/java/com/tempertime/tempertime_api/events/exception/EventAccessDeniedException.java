@@ -1,11 +1,10 @@
 package com.tempertime.tempertime_api.events.exception;
 
-public class EventAccessDeniedException extends RuntimeException {
-    public EventAccessDeniedException(String message, Throwable cause) {
-        super(message, cause);
-    }
+import com.tempertime.tempertime_api.common.error.model.ErrorCode;
 
-    public EventAccessDeniedException(String message) {
-        super(message);
+public class EventAccessDeniedException extends RuntimeException {
+
+    public EventAccessDeniedException() {
+        super(ErrorCode.EVENT_ACCESS_DENIED.getDefaultMessage());
     }
 }

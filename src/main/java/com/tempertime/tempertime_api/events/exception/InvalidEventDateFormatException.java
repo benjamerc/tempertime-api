@@ -1,11 +1,10 @@
 package com.tempertime.tempertime_api.events.exception;
 
-public class InvalidEventDateFormatException extends RuntimeException {
-    public InvalidEventDateFormatException(String message, Throwable cause) {
-        super(message, cause);
-    }
+import com.tempertime.tempertime_api.common.error.model.ErrorCode;
 
-    public InvalidEventDateFormatException(String message) {
-        super(message);
+public class InvalidEventDateFormatException extends RuntimeException {
+
+    public InvalidEventDateFormatException() {
+        super(ErrorCode.INVALID_EVENT_DATE_FORMAT.getDefaultMessage());
     }
 }

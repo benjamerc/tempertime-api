@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.tempertime.tempertime_api.events.exception.InvalidEventDateFormatException;
+import com.tempertime.tempertime_api.events.exception.InvalidEventDateValueException;
 
 import java.io.IOException;
 import java.time.OffsetDateTime;
@@ -36,18 +37,14 @@ public class EventOffsetDateTimeDeserializer extends JsonDeserializer<OffsetDate
 
         // Fast structural validation
         if (!FORMAT_PATTERN.matcher(value).matches()) {
-            throw new InvalidEventDateFormatException(
-                    "Invalid event date format"
-            );
+            throw new InvalidEventDateFormatException();
         }
 
         try {
             // Semantic validation
             return OffsetDateTime.parse(value, ISO_STRICT);
         } catch (DateTimeParseException ex) {
-            throw new InvalidEventDateFormatException(
-                    "Invalid event date value", ex
-            );
+            throw new InvalidEventDateValueException();
         }
     }
 }

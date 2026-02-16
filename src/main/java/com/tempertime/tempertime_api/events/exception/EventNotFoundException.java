@@ -1,11 +1,10 @@
 package com.tempertime.tempertime_api.events.exception;
 
-public class EventNotFoundException extends RuntimeException {
-    public EventNotFoundException(String message, Throwable cause) {
-        super(message, cause);
-    }
+import com.tempertime.tempertime_api.common.error.model.ErrorCode;
 
-    public EventNotFoundException(String message) {
-        super(message);
+public class EventNotFoundException extends RuntimeException {
+
+    public EventNotFoundException() {
+        super(ErrorCode.EVENT_NOT_FOUND.getDefaultMessage());
     }
 }

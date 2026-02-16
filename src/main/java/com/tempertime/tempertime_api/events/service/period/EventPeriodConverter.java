@@ -17,7 +17,7 @@ public class EventPeriodConverter implements Converter<String, EventPeriod> {
         try {
             return EventPeriod.valueOf(source.toUpperCase());
         } catch (IllegalArgumentException e) {
-            throw new InvalidEventPeriodException("Invalid event period");
+            throw new InvalidEventPeriodException();
         }
     }
 }

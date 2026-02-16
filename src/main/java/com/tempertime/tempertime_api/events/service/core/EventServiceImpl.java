@@ -23,6 +23,7 @@ import com.tempertime.tempertime_api.events.repository.EventRepository;
 import com.tempertime.tempertime_api.events.repository.EventUserRepository;
 import com.tempertime.tempertime_api.events.service.loader.EventLoader;
 import com.tempertime.tempertime_api.users.service.loader.UserLoader;
+import com.tempertime.tempertime_api.workspaces.exception.WorkspaceAccessDeniedException;
 import com.tempertime.tempertime_api.workspaces.service.authorization.WorkspaceAccessService;
 import com.tempertime.tempertime_api.workspaces.domain.Workspace;
 import lombok.RequiredArgsConstructor;
@@ -166,7 +167,7 @@ public class EventServiceImpl implements EventService {
 
         // Validates that timeZone is provided for periods that require it
         if (period != EventPeriod.ALL && timeZone == null) {
-            throw new InvalidEventPeriodException("timeZone is required for DAY/WEEK/MONTH periods");
+            throw new InvalidEventPeriodException("Time zone is required for DAY, WEEK, or MONTH periods");
         }
 
         Optional<TimeRange> range =
@@ -209,7 +210,7 @@ public class EventServiceImpl implements EventService {
 
         // Validate user has access to event
         if (!eventUserRepository.existsByEventIdAndUserId(eventId, userId)) {
-            throw new EventAccessDeniedException("Event not accessible");
+            throw new EventAccessDeniedException();
         }
 
         // Load and return event details
@@ -251,7 +252,7 @@ public class EventServiceImpl implements EventService {
         Event event = eventLoader.loadOrThrow(workspaceId, eventId);
 
         if (!EventScope.SPECIFIC.equals(event.getScope())) {
-            throw new EventNotAssignableException("Event is not assignable");
+            throw new EventNotAssignableException();
         }
 
         List<Long> userIds = request.userIds();
@@ -272,7 +273,13 @@ public class EventServiceImpl implements EventService {
         for (Long targetUserId : userIds) {
 
             // Ensure target user belongs to the workspace
-            workspaceAccessService.requireAccessibleWorkspace(workspaceId, targetUserId);
+            try {
+                workspaceAccessService.requireAccessibleWorkspace(workspaceId, targetUserId);
+            } catch (WorkspaceAccessDeniedException ex) {
+                throw new WorkspaceAccessDeniedException(
+                        "Some user does not have access to this workspace: userId=" + targetUserId
+                );
+            }
 
             if (!alreadyAssignedUserIds.contains(targetUserId)) {
                 newEventUsers.add(
@@ -307,7 +314,7 @@ public class EventServiceImpl implements EventService {
 
         // Validate user has access to event
         if (!eventUserRepository.existsByEventIdAndUserId(eventId, userId)) {
-            throw new EventAccessDeniedException("Event not accessible");
+            throw new EventAccessDeniedException();
         }
 
         return eventUserRepository.findAllByEventId(eventId)
@@ -330,12 +337,12 @@ public class EventServiceImpl implements EventService {
         Event event = eventLoader.loadOrThrow(workspaceId, eventId);
 
         if (EventScope.GLOBAL.equals(event.getScope())) {
-            throw new EventNotAssignableException("Event is not assignable");
+            throw new EventNotAssignableException();
         }
 
         // Validate target user is assigned to the event
         if (!eventUserRepository.existsByEventIdAndUserId(eventId, targetUserId)) {
-            throw new UserNotAssignedToEventException("User is not assigned to the event");
+            throw new UserNotAssignedToEventException();
         }
 
         // Remove user assignment

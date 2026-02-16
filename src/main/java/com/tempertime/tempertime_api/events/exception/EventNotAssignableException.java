@@ -1,11 +1,10 @@
 package com.tempertime.tempertime_api.events.exception;
 
-public class EventNotAssignableException extends RuntimeException {
-    public EventNotAssignableException(String message, Throwable cause) {
-        super(message, cause);
-    }
+import com.tempertime.tempertime_api.common.error.model.ErrorCode;
 
-    public EventNotAssignableException(String message) {
-        super(message);
+public class EventNotAssignableException extends RuntimeException {
+
+    public EventNotAssignableException() {
+        super(ErrorCode.EVENT_NOT_ASSIGNABLE.getDefaultMessage());
     }
 }

@@ -56,7 +56,7 @@ public class EventPeriodResolver {
                         .truncatedTo(ChronoUnit.DAYS);
                 end = start.plusMonths(1);
             }
-            default -> throw new InvalidEventPeriodException("Invalid event period");
+            default -> throw new InvalidEventPeriodException();
         }
 
         return Optional.of(
