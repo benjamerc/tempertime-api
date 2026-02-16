@@ -42,19 +42,23 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class EventServiceImpl implements EventService {
 
+    // Repositories
     private final EventRepository eventRepository;
     private final EventUserRepository eventUserRepository;
-    private final EventMapper eventMapper;
-    private final EventLoader eventLoader;
-    private final EventUserMapper eventUserMapper;
-    private final EventPeriodResolver eventPeriodResolver;
 
+    // Loaders / Services
     private final WorkspaceAccessService workspaceAccessService;
-
+    private final EventLoader eventLoader;
     private final UserLoader userLoader;
 
+    // Mappers
+    private final EventMapper eventMapper;
+    private final EventUserMapper eventUserMapper;
+
+    // Validators / Generators / Resolvers
     private final ColorValidator colorValidator;
     private final ColorGenerator colorGenerator;
+    private final EventPeriodResolver eventPeriodResolver;
 
     /**
      * Creates a new event within a workspace and assigns the creator to it.
