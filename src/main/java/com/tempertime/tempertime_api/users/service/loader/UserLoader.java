@@ -17,8 +17,6 @@ public class UserLoader {
 
     public User loadUserOrThrow(Long userId) {
         return userRepository.findById(userId)
-                .orElseThrow(() ->
-                        new UserNotFoundException("User not found with id: " + userId)
-                );
+                .orElseThrow(UserNotFoundException::new);
     }
 }

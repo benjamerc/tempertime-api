@@ -92,7 +92,7 @@ public class UserServiceImpl implements UserService {
     private void validateCurrentPassword(User user, String currentPassword) {
 
         if (!passwordEncoder.matches(currentPassword, user.getPasswordHash())) {
-            throw new InvalidPasswordException("The current password is incorrect");
+            throw new InvalidPasswordException();
         }
     }
 }
