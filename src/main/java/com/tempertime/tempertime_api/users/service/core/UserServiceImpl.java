@@ -1,5 +1,6 @@
 package com.tempertime.tempertime_api.users.service.core;
 
+import com.tempertime.tempertime_api.common.validator.PasswordValidator;
 import com.tempertime.tempertime_api.security.refresh.RefreshTokenService;
 import com.tempertime.tempertime_api.users.dto.request.UserDeleteAccountRequest;
 import com.tempertime.tempertime_api.users.dto.request.UserUpdatePasswordRequest;
@@ -21,11 +22,21 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
+    // Repositories
     private final UserRepository userRepository;
-    private final UserMapper userMapper;
+
+    // Security / Encoder
     private final PasswordEncoder passwordEncoder;
+
+    // Services
     private final RefreshTokenService refreshTokenService;
     private final UserLoader userLoader;
+
+    // Mappers
+    private final UserMapper userMapper;
+
+    // Validators
+    private final PasswordValidator passwordValidator;
 
     @Override
     public UserProfileResponse getProfile(Long userId) {
@@ -66,6 +77,8 @@ public class UserServiceImpl implements UserService {
         User user = userLoader.loadUserOrThrow(userId);
 
         validateCurrentPassword(user, request.currentPassword());
+
+        passwordValidator.validate(request.newPassword());
 
         user.setPasswordHash(passwordEncoder.encode(request.newPassword()));
         userRepository.save(user);
