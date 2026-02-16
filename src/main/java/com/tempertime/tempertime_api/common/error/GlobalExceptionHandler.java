@@ -15,6 +15,7 @@ import com.tempertime.tempertime_api.security.exception.RefreshTokenNotFoundExce
 import com.tempertime.tempertime_api.security.exception.RefreshTokenRevokedException;
 import com.tempertime.tempertime_api.common.web.RequestPathResolver;
 import com.tempertime.tempertime_api.users.exception.InvalidPasswordException;
+import com.tempertime.tempertime_api.users.exception.UserNotFoundException;
 import com.tempertime.tempertime_api.workspaces.exception.*;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -53,7 +54,7 @@ public class GlobalExceptionHandler {
     ) {
         return buildErrorResponse(
                 ErrorCode.WORKSPACE_ACCESS_DENIED,
-                ErrorCode.WORKSPACE_ACCESS_DENIED.getDefaultMessage(),
+                ex.getMessage(),
                 HttpStatus.FORBIDDEN,
                 request
         );
@@ -86,7 +87,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(WorkspaceUserNotFoundException.class)
-    public ResponseEntity<ApiError> handleWorkspaceMemberNotFound(
+    public ResponseEntity<ApiError> handleWorkspaceUserNotFound(
             WorkspaceUserNotFoundException ex,
             HttpServletRequest request
     ) {
@@ -125,21 +126,6 @@ public class GlobalExceptionHandler {
     }
 
     // ===================== Workspace Invite Code Exceptions =====================
-
-    @ExceptionHandler(WorkspaceInviteCodeGenerationException.class)
-    public ResponseEntity<ApiError> handleWorkspaceInviteCodeGeneration(
-            WorkspaceInviteCodeGenerationException ex,
-            HttpServletRequest request
-    ) {
-        log.error("Workspace invite code generation failed", ex);
-
-        return buildErrorResponse(
-                ErrorCode.INTERNAL_ERROR,
-                ErrorCode.INTERNAL_ERROR.getDefaultMessage(),
-                HttpStatus.INTERNAL_SERVER_ERROR,
-                request
-        );
-    }
 
     @ExceptionHandler(InvalidWorkspaceInviteCodeException.class)
     public ResponseEntity<ApiError> handleInvalidWorkspaceInviteCode(
@@ -254,7 +240,7 @@ public class GlobalExceptionHandler {
     ) {
         return buildErrorResponse(
                 ErrorCode.INVALID_EVENT_PERIOD,
-                ErrorCode.INVALID_EVENT_PERIOD.getDefaultMessage(),
+                ex.getMessage(),
                 HttpStatus.BAD_REQUEST,
                 request
         );
@@ -271,6 +257,19 @@ public class GlobalExceptionHandler {
                 ErrorCode.INVALID_PASSWORD,
                 ErrorCode.INVALID_PASSWORD.getDefaultMessage(),
                 HttpStatus.FORBIDDEN,
+                request
+        );
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<ApiError> handleUserNotFound(
+            UserNotFoundException ex,
+            HttpServletRequest request
+    ) {
+        return buildErrorResponse(
+                ErrorCode.USER_NOT_FOUND,
+                ErrorCode.USER_NOT_FOUND.getDefaultMessage(),
+                HttpStatus.NOT_FOUND,
                 request
         );
     }
@@ -398,14 +397,25 @@ public class GlobalExceptionHandler {
     ) {
         Throwable cause = ex.getCause();
 
-        while (cause != null && !(cause instanceof InvalidEventDateFormatException)) {
+        while (cause != null &&
+                !(cause instanceof InvalidEventDateFormatException) &&
+                !(cause instanceof InvalidEventDateValueException)) {
             cause = cause.getCause();
         }
 
-        if (cause instanceof InvalidEventDateFormatException invalidEx) {
+        if (cause instanceof InvalidEventDateFormatException invalidFormatEx) {
             return buildErrorResponse(
                     ErrorCode.INVALID_EVENT_DATE_FORMAT,
-                    invalidEx.getMessage(),
+                    invalidFormatEx.getMessage(),
+                    HttpStatus.BAD_REQUEST,
+                    request
+            );
+        }
+
+        if (cause instanceof InvalidEventDateValueException invalidValueEx) {
+            return buildErrorResponse(
+                    ErrorCode.INVALID_EVENT_DATE_VALUE,
+                    invalidValueEx.getMessage(),
                     HttpStatus.BAD_REQUEST,
                     request
             );
