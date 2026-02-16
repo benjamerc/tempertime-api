@@ -50,6 +50,9 @@ public enum ErrorCode {
 
     // Common
     INVALID_COLOR_FORMAT("The color format is invalid"),
+    INVALID_PASSWORD_FORMAT(
+            "The password must be at least 8 characters long, include at least one uppercase letter, one lowercase letter, one number, and must not contain whitespace characters."
+    ),
 
     // Generic (Request layer)
     INVALID_TIME_ZONE("Invalid time zone. Use a valid IANA time zone"),
