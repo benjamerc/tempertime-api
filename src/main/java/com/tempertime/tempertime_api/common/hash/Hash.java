@@ -27,7 +27,7 @@ public class Hash {
             }
             return hex.toString();
         } catch (NoSuchAlgorithmException e) {
-            throw new HashingException("Error hashing input", e);
+            throw new HashingException("Error hashing with SHA-256", e);
         }
     }
 }

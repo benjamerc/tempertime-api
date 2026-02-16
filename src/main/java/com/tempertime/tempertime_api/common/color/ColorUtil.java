@@ -17,7 +17,7 @@ public class ColorUtil {
         if (validator.isColorMissing(color)) {
             return generator.generate();
         } else if (!validator.isHexColor(color)) {
-            throw new InvalidColorFormatException("Color must be hexadecimal");
+            throw new InvalidColorFormatException();
         }
         return color;
     }
@@ -27,7 +27,7 @@ public class ColorUtil {
      */
     public static void validateIfPresent(String color, ColorValidator validator) {
         if (!validator.isColorMissing(color) && !validator.isHexColor(color)) {
-            throw new InvalidColorFormatException("Color must be hexadecimal");
+            throw new InvalidColorFormatException();
         }
     }
 }
