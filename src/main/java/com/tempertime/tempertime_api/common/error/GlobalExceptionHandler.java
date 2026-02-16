@@ -6,6 +6,7 @@ import com.tempertime.tempertime_api.common.error.mapper.FieldErrorMapper;
 import com.tempertime.tempertime_api.common.error.model.ApiError;
 import com.tempertime.tempertime_api.common.error.model.ErrorCode;
 import com.tempertime.tempertime_api.common.error.model.FieldError;
+import com.tempertime.tempertime_api.common.validator.InvalidPasswordFormatException;
 import com.tempertime.tempertime_api.events.exception.*;
 import com.tempertime.tempertime_api.events.exception.InvalidEventPeriodException;
 import com.tempertime.tempertime_api.events.domain.EventPeriod;
@@ -383,6 +384,19 @@ public class GlobalExceptionHandler {
         return buildErrorResponse(
                 ErrorCode.INVALID_COLOR_FORMAT,
                 ErrorCode.INVALID_COLOR_FORMAT.getDefaultMessage(),
+                HttpStatus.BAD_REQUEST,
+                request
+        );
+    }
+
+    @ExceptionHandler(InvalidPasswordFormatException.class)
+    public ResponseEntity<ApiError> handleInvalidPasswordFormat(
+            InvalidPasswordFormatException ex,
+            HttpServletRequest request
+    ) {
+        return buildErrorResponse(
+                ErrorCode.INVALID_PASSWORD_FORMAT,
+                ErrorCode.INVALID_PASSWORD_FORMAT.getDefaultMessage(),
                 HttpStatus.BAD_REQUEST,
                 request
         );
