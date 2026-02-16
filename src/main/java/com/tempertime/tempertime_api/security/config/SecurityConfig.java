@@ -54,6 +54,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/users/**").hasRole(UserRole.USER.name())
+                        .requestMatchers("/api/workspaces/**").hasRole(UserRole.USER.name())
                         .anyRequest().authenticated()
                 )
                 // Stateless API: authentication handled via JWT
