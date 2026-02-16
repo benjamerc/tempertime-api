@@ -1,5 +1,6 @@
 package com.tempertime.tempertime_api.security.exception;
 
+import com.tempertime.tempertime_api.common.error.model.ErrorCode;
 import org.springframework.security.core.AuthenticationException;
 
 /**
@@ -8,6 +9,6 @@ import org.springframework.security.core.AuthenticationException;
 public class AccessTokenExpiredException extends AuthenticationException {
 
     public AccessTokenExpiredException(Throwable cause) {
-        super("Access token expired", cause);
+        super(ErrorCode.ACCESS_TOKEN_EXPIRED.getDefaultMessage(), cause);
     }
 }

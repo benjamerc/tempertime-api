@@ -1,11 +1,13 @@
 package com.tempertime.tempertime_api.security.exception;
 
+import com.tempertime.tempertime_api.common.error.model.ErrorCode;
+
 /**
  * Thrown when a refresh token has been revoked.
  */
 public class RefreshTokenRevokedException extends RuntimeException {
 
     public RefreshTokenRevokedException() {
-        super("Refresh token revoked");
+        super(ErrorCode.REFRESH_TOKEN_REVOKED.getDefaultMessage());
     }
 }
