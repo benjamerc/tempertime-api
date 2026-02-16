@@ -7,6 +7,7 @@ import com.tempertime.tempertime_api.auth.dto.response.AuthRegisterResponse;
 import com.tempertime.tempertime_api.auth.dto.response.AuthTokenResponse;
 import com.tempertime.tempertime_api.auth.exception.EmailAlreadyExistsException;
 import com.tempertime.tempertime_api.auth.mapper.AuthMapper;
+import com.tempertime.tempertime_api.common.validator.PasswordValidator;
 import com.tempertime.tempertime_api.security.core.CustomUserDetails;
 import com.tempertime.tempertime_api.security.jwt.AccessTokenService;
 import com.tempertime.tempertime_api.security.refresh.RefreshToken;
@@ -24,12 +25,22 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
 
+    // Repositories
     private final UserRepository userRepository;
+
+    // Security / Authentication
     private final PasswordEncoder passwordEncoder;
-    private final AuthMapper authMapper;
     private final AuthenticationManager authenticationManager;
+
+    // Services
     private final AccessTokenService accessTokenService;
     private final RefreshTokenService refreshTokenService;
+
+    // Mappers
+    private final AuthMapper authMapper;
+
+    // Validators
+    private final PasswordValidator passwordValidator;
 
     @Override
     public AuthRegisterResponse register(AuthRegisterRequest request) {
@@ -37,6 +48,8 @@ public class AuthServiceImpl implements AuthService {
         if (userRepository.existsByEmail(request.email())) {
             throw new EmailAlreadyExistsException();
         }
+
+        passwordValidator.validate(request.password());
 
         User user = User.builder()
                 .email(request.email())
