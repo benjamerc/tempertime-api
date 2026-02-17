@@ -11,6 +11,7 @@ import com.tempertime.tempertime_api.users.mapper.UserMapper;
 import com.tempertime.tempertime_api.users.domain.User;
 import com.tempertime.tempertime_api.users.repository.UserRepository;
 import com.tempertime.tempertime_api.users.service.loader.UserLoader;
+import com.tempertime.tempertime_api.workspaces.service.authorization.WorkspaceAccessService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -29,6 +30,7 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
 
     // Services
+    private final WorkspaceAccessService workspaceAccessService;
     private final RefreshTokenService refreshTokenService;
     private final UserLoader userLoader;
 
@@ -87,7 +89,8 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     * Deletes user's account.
+     * Deletes the user's account.
+     * Requires that the user does not own any workspaces.
      * Requires the current password to be correct.
      * All associated refresh tokens are removed via cascade.
      */
@@ -96,6 +99,9 @@ public class UserServiceImpl implements UserService {
     public void deleteAccount(Long userId, UserDeleteAccountRequest request) {
 
         User user = userLoader.loadUserOrThrow(userId);
+
+        // Validates that user does not own any workspaces
+        workspaceAccessService.requireNoOwnedWorkspaces(user.getId());
 
         validateCurrentPassword(user, request.currentPassword());
 
