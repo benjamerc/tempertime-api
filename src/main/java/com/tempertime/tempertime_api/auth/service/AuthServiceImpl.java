@@ -88,7 +88,7 @@ public class AuthServiceImpl implements AuthService {
 
         // Validates refresh token and loads associated user
         RefreshToken refreshToken =
-                refreshTokenService.validateRefreshToken(request.refreshToken());
+                refreshTokenService.validateRefreshToken(request.refreshToken().toString());
         User user = refreshToken.getUser();
 
         String newAccessToken = accessTokenService.createAccessToken(user);
@@ -103,6 +103,6 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public void logout(AuthRefreshTokenRequest request) {
 
-        refreshTokenService.revokeRefreshToken(request.refreshToken());
+        refreshTokenService.revokeRefreshToken(request.refreshToken().toString());
     }
 }
