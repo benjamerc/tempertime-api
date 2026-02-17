@@ -14,7 +14,7 @@ public enum ErrorCode {
     WORKSPACE_ACCESS_DENIED("You do not have access to this workspace"),
     WORKSPACE_NOT_ARCHIVED("Workspace must be archived before deletion"),
     WORKSPACE_NOT_FOUND("Workspace not found"),
-    WORKSPACE_ROLE_DENIED("This action is not allowed for your workspace role"),
+    WORKSPACE_ROLE_DENIED("Insufficient permissions for this workspace"),
     INVALID_WORKSPACE_INVITE_CODE("The workspace invite code is invalid"),
     WORKSPACE_INVITE_CODE_NOT_FOUND("Workspace invite code not found"),
     WORKSPACE_INVITE_CODE_DISABLED("This workspace invite code is disabled"),
