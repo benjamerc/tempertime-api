@@ -126,6 +126,32 @@ public class GlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler(WorkspaceCapacityExceededException.class)
+    public ResponseEntity<ApiError> handleWorkspaceCapacityExceeded(
+            WorkspaceCapacityExceededException ex,
+            HttpServletRequest request
+    ) {
+        return buildErrorResponse(
+                ErrorCode.WORKSPACE_CAPACITY_EXCEEDED,
+                ErrorCode.WORKSPACE_CAPACITY_EXCEEDED.getDefaultMessage(),
+                HttpStatus.CONFLICT,
+                request
+        );
+    }
+
+    @ExceptionHandler(WorkspaceOwnerExistsException.class)
+    public ResponseEntity<ApiError> handleWorkspaceOwnerExists(
+            WorkspaceOwnerExistsException ex,
+            HttpServletRequest request
+    ) {
+        return buildErrorResponse(
+                ErrorCode.WORKSPACE_OWNER_RESTRICTION,
+                ErrorCode.WORKSPACE_OWNER_RESTRICTION.getDefaultMessage(),
+                HttpStatus.CONFLICT,
+                request
+        );
+    }
+
     // ===================== Workspace Invite Code Exceptions =====================
 
     @ExceptionHandler(InvalidWorkspaceInviteCodeException.class)
