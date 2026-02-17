@@ -50,7 +50,7 @@ public class Event {
      */
     @Builder.Default
     @Column(name = "has_active_users", nullable = false)
-    private Boolean hasActiveUsers = true;
+    private Boolean hasActiveUsers = false;
 
     @Column(length = 7)
     private String color;
