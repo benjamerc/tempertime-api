@@ -21,6 +21,8 @@ public enum ErrorCode {
     USER_ALREADY_IN_WORKSPACE("User already belongs to this workspace"),
     WORKSPACE_USER_NOT_FOUND("User not found in this workspace"),
     WORKSPACE_OPERATION_NOT_ALLOWED("This workspace operation is not allowed"),
+    WORKSPACE_CAPACITY_EXCEEDED("This workspace has reached its maximum user capacity"),
+    WORKSPACE_OWNER_RESTRICTION("Account deletion is restricted while owning one or more workspaces."),
 
     // Event
     INVALID_EVENT_DATE_FORMAT("The event date format is invalid. Use yyyy-MM-dd'T'HH:mm±HH:mm"),
