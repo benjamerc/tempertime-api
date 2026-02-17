@@ -300,6 +300,9 @@ public class EventServiceImpl implements EventService {
 
         eventUserRepository.saveAll(newEventUsers);
 
+        // Update hasActiveUsers flag
+        updateHasActiveUsers(event);
+
         // Return only newly assigned users
         return new EventAssignUserResponse(eventId, assignedUserIds);
     }
@@ -351,5 +354,20 @@ public class EventServiceImpl implements EventService {
 
         // Remove user assignment
         eventUserRepository.deleteByEventIdAndUserId(eventId, targetUserId);
+
+        // Update hasActiveUsers flag
+        updateHasActiveUsers(event);
+    }
+
+    /**
+     * Updates the hasActiveUsers flag based on the number of users assigned to the event.
+     * True if there is at least one user besides the owner.
+     */
+    private void updateHasActiveUsers(Event event) {
+
+        long assignedUserCount = eventUserRepository.countByEventId(event.getId());
+        event.setHasActiveUsers(assignedUserCount > 1);
+
+        eventRepository.save(event);
     }
 }
