@@ -1,5 +1,6 @@
 package com.tempertime.tempertime_api.workspaces.repository;
 
+import com.tempertime.tempertime_api.workspaces.domain.WorkspaceRole;
 import com.tempertime.tempertime_api.workspaces.domain.WorkspaceUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -32,4 +33,14 @@ public interface WorkspaceUserRepository extends JpaRepository<WorkspaceUser, Lo
      * Returns all users in a workspace.
      */
     List<WorkspaceUser> findByWorkspaceId(Long workspaceId);
+
+    /**
+     * Counts the number of users in a workspace.
+     */
+    long countByWorkspaceId(Long workspaceId);
+
+    /**
+     * Checks if the user has OWNER role in any workspace.
+     */
+    boolean existsByUserIdAndRole(Long userId, WorkspaceRole role);
 }
