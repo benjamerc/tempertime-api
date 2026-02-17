@@ -272,6 +272,8 @@ public class WorkspaceServiceImpl implements WorkspaceService {
             throw new UserAlreadyInWorkspaceException();
         }
 
+        validateWorkspaceCapacity(workspace);
+
         WorkspaceUser workspaceUser = WorkspaceUser.builder()
                 .workspace(workspace)
                 .user(user)
@@ -347,6 +349,18 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         );
 
         workspaceUserRepository.delete(workspaceUser);
+    }
+
+    /**
+     * Validates that the workspace has not exceeded the maximum allowed users.
+     */
+    private void validateWorkspaceCapacity(Workspace workspace) {
+        int maxCapacity = 50;
+        long currentUserCount = workspaceUserRepository.countByWorkspaceId(workspace.getId());
+
+        if (currentUserCount >= maxCapacity) {
+            throw new WorkspaceCapacityExceededException();
+        }
     }
 
     /**
