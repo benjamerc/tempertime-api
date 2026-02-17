@@ -23,6 +23,11 @@ public interface EventUserRepository extends JpaRepository<EventUser, Long> {
     List<EventUser> findAllByEventId(Long eventId);
 
     /**
+     * Returns the number of users assigned to the given event.
+     */
+    long countByEventId(Long eventId);
+
+    /**
      * Deletes all assignments for an event.
      */
     void deleteByEventId(Long eventId);
