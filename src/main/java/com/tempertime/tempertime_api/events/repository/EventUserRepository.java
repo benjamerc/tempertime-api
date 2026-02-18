@@ -43,6 +43,16 @@ public interface EventUserRepository extends JpaRepository<EventUser, Long> {
     void deleteByEventWorkspaceIdAndUserId(Long workspaceId, Long userId);
 
     /**
+     * Deletes all event assignments of a user.
+     */
+    void deleteByUserId(Long userId);
+
+    /**
+     * Deletes all event assignments within a workspace.
+     */
+    void deleteByEventWorkspaceId(Long workspaceId);
+
+    /**
      * Finds event ids in a workspace
      * where the user is already assigned.
      */
@@ -56,5 +66,4 @@ public interface EventUserRepository extends JpaRepository<EventUser, Long> {
             @Param("workspaceId") Long workspaceId,
             @Param("userId") Long userId
     );
-
 }
