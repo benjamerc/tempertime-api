@@ -38,6 +38,9 @@ public class Workspace {
     @Builder.Default
     private Boolean archived = false;
 
+    @OneToOne(mappedBy = "workspace", cascade = CascadeType.ALL, orphanRemoval = true)
+    private WorkspaceInviteCode inviteCode;
+
     @Builder.Default
     @OneToMany(mappedBy = "workspace", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<WorkspaceUser> users = new ArrayList<>();
