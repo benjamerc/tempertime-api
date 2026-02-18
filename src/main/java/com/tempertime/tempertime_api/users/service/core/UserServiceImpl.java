@@ -1,6 +1,7 @@
 package com.tempertime.tempertime_api.users.service.core;
 
 import com.tempertime.tempertime_api.common.validator.PasswordValidator;
+import com.tempertime.tempertime_api.events.service.access.EventAccessService;
 import com.tempertime.tempertime_api.security.refresh.RefreshTokenService;
 import com.tempertime.tempertime_api.users.dto.request.UserDeleteAccountRequest;
 import com.tempertime.tempertime_api.users.dto.request.UserUpdatePasswordRequest;
@@ -31,6 +32,7 @@ public class UserServiceImpl implements UserService {
 
     // Services
     private final WorkspaceAccessService workspaceAccessService;
+    private final EventAccessService eventAccessService;
     private final RefreshTokenService refreshTokenService;
     private final UserLoader userLoader;
 
@@ -104,6 +106,8 @@ public class UserServiceImpl implements UserService {
         workspaceAccessService.requireNoOwnedWorkspaces(user.getId());
 
         validateCurrentPassword(user, request.currentPassword());
+
+        eventAccessService.removeUserFromAllEvents(user.getId());
 
         userRepository.delete(user);
     }
