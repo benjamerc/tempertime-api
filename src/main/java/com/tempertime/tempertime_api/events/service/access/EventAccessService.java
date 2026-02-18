@@ -75,4 +75,23 @@ public class EventAccessService {
         eventUserRepository
                 .deleteByEventWorkspaceIdAndUserId(workspaceId, userId);
     }
+
+    /**
+     * Removes all event assignments for the given user.
+     */
+    @Transactional
+    public void removeUserFromAllEvents(Long userId) {
+        eventUserRepository.deleteByUserId(userId);
+    }
+
+    /**
+     * Removes all events and their assignments
+     * within the specified workspace.
+     */
+    @Transactional
+    public void removeAllWorkspaceEvents(Long workspaceId) {
+
+        eventUserRepository.deleteByEventWorkspaceId(workspaceId);
+        eventRepository.deleteByWorkspaceId(workspaceId);
+    }
 }
