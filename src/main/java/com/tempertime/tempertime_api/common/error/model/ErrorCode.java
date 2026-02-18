@@ -31,7 +31,10 @@ public enum ErrorCode {
     EVENT_NOT_ASSIGNABLE("Users can only be assigned to SPECIFIC events"),
     USER_NOT_ASSIGNED_TO_EVENT("User is not assigned to this event"),
     EVENT_NOT_FOUND("Event not found"),
-    INVALID_EVENT_PERIOD("The event period is invalid"),
+    INVALID_EVENT_SCOPE("The event scope is invalid. Valid values are GLOBAL or SPECIFIC"),
+    INVALID_EVENT_PERIOD("Event period must be DAY, WEEK, MONTH or ALL"),
+    TIME_ZONE_MISSING("Time zone is required for DAY, WEEK, or MONTH periods"),
+    INVALID_TIME_ZONE("Invalid time zone. Use a valid IANA time zone"),
 
     // User
     INVALID_PASSWORD("The current password provided is incorrect"),
@@ -51,13 +54,12 @@ public enum ErrorCode {
     EMAIL_NOT_FOUND("Email address not found"),
 
     // Common
-    INVALID_COLOR_FORMAT("The color format is invalid"),
+    INVALID_COLOR_FORMAT("Invalid color format. Use a valid hexadecimal color code (#RRGGBB or #RGB)"),
     INVALID_PASSWORD_FORMAT(
             "The password must be at least 8 characters long, include at least one uppercase letter, one lowercase letter, one number, and must not contain whitespace characters."
     ),
 
     // Generic (Request layer)
-    INVALID_TIME_ZONE("Invalid time zone. Use a valid IANA time zone"),
     INVALID_REQUEST_BODY("Malformed JSON in request body"),
     MISSING_REQUEST_PARAMETER("Missing required request parameter"),
     INVALID_REQUEST_PARAMETER("Invalid request parameter value"),
