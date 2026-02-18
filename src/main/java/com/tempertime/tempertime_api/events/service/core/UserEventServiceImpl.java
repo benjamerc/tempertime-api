@@ -1,6 +1,6 @@
 package com.tempertime.tempertime_api.events.service.core;
 
-import com.tempertime.tempertime_api.events.exception.InvalidEventPeriodException;
+import com.tempertime.tempertime_api.events.exception.TimeZoneMissingException;
 import com.tempertime.tempertime_api.events.service.period.EventPeriodResolver;
 import com.tempertime.tempertime_api.events.domain.Event;
 import com.tempertime.tempertime_api.events.dto.internal.TimeRange;
@@ -43,7 +43,7 @@ public class UserEventServiceImpl implements UserEventService {
 
         // Validates that timeZone is provided for periods that require it
         if (period != EventPeriod.ALL && timeZone == null) {
-            throw new InvalidEventPeriodException("Time zone is required for DAY, WEEK, or MONTH periods");
+            throw new TimeZoneMissingException();
         }
 
         Optional<TimeRange> range =

@@ -8,10 +8,7 @@ import com.tempertime.tempertime_api.events.dto.request.EventAssignUserRequest;
 import com.tempertime.tempertime_api.events.dto.request.EventCreateRequest;
 import com.tempertime.tempertime_api.events.dto.request.EventUpdateRequest;
 import com.tempertime.tempertime_api.events.dto.response.*;
-import com.tempertime.tempertime_api.events.exception.EventAccessDeniedException;
-import com.tempertime.tempertime_api.events.exception.EventNotAssignableException;
-import com.tempertime.tempertime_api.events.exception.InvalidEventPeriodException;
-import com.tempertime.tempertime_api.events.exception.UserNotAssignedToEventException;
+import com.tempertime.tempertime_api.events.exception.*;
 import com.tempertime.tempertime_api.events.service.period.EventPeriodResolver;
 import com.tempertime.tempertime_api.events.mapper.EventMapper;
 import com.tempertime.tempertime_api.events.mapper.EventUserMapper;
@@ -171,7 +168,7 @@ public class EventServiceImpl implements EventService {
 
         // Validates that timeZone is provided for periods that require it
         if (period != EventPeriod.ALL && timeZone == null) {
-            throw new InvalidEventPeriodException("Time zone is required for DAY, WEEK, or MONTH periods");
+            throw new TimeZoneMissingException();
         }
 
         Optional<TimeRange> range =
