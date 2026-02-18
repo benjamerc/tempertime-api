@@ -184,6 +184,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
      * Permanently deletes a workspace.
      * The workspace must be archived beforehand.
      */
+    @Transactional
     @Override
     public void deleteWorkspace(Long workspaceId, Long userId) {
 
@@ -193,6 +194,8 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         if (!workspace.getArchived()) {
             throw new WorkspaceNotArchivedException();
         }
+
+        eventAccessService.removeAllWorkspaceEvents(workspace.getId());
 
         workspaceRepository.delete(workspace);
     }
