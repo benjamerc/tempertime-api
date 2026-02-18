@@ -1,6 +1,6 @@
 package com.tempertime.tempertime_api.auth.dto.request;
 
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import java.util.UUID;
 
@@ -9,6 +9,6 @@ import java.util.UUID;
  */
 public record AuthRefreshTokenRequest(
 
-        @NotBlank(message = "Refresh token is required")
+        @NotNull(message = "Refresh token is required")
         UUID refreshToken
 ) {}
