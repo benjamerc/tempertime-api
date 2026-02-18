@@ -1,5 +1,6 @@
 package com.tempertime.tempertime_api.common.error;
 
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.tempertime.tempertime_api.auth.exception.EmailAlreadyExistsException;
 import com.tempertime.tempertime_api.common.color.InvalidColorFormatException;
 import com.tempertime.tempertime_api.common.error.mapper.FieldErrorMapper;
@@ -7,6 +8,7 @@ import com.tempertime.tempertime_api.common.error.model.ApiError;
 import com.tempertime.tempertime_api.common.error.model.ErrorCode;
 import com.tempertime.tempertime_api.common.error.model.FieldError;
 import com.tempertime.tempertime_api.common.validator.InvalidPasswordFormatException;
+import com.tempertime.tempertime_api.events.domain.EventScope;
 import com.tempertime.tempertime_api.events.exception.*;
 import com.tempertime.tempertime_api.events.exception.InvalidEventPeriodException;
 import com.tempertime.tempertime_api.events.domain.EventPeriod;
@@ -267,7 +269,20 @@ public class GlobalExceptionHandler {
     ) {
         return buildErrorResponse(
                 ErrorCode.INVALID_EVENT_PERIOD,
-                ex.getMessage(),
+                ErrorCode.INVALID_EVENT_PERIOD.getDefaultMessage(),
+                HttpStatus.BAD_REQUEST,
+                request
+        );
+    }
+
+    @ExceptionHandler(TimeZoneMissingException.class)
+    public ResponseEntity<ApiError> handleTimeZoneMissing(
+            TimeZoneMissingException ex,
+            HttpServletRequest request
+    ) {
+        return buildErrorResponse(
+                ErrorCode.TIME_ZONE_MISSING,
+                ErrorCode.TIME_ZONE_MISSING.getDefaultMessage(),
                 HttpStatus.BAD_REQUEST,
                 request
         );
@@ -435,30 +450,41 @@ public class GlobalExceptionHandler {
             HttpMessageNotReadableException ex,
             HttpServletRequest request
     ) {
-        Throwable cause = ex.getCause();
+        Throwable cause = ex;
 
-        while (cause != null &&
-                !(cause instanceof InvalidEventDateFormatException) &&
-                !(cause instanceof InvalidEventDateValueException)) {
+        while (cause != null) {
+
+            if (cause instanceof InvalidEventDateFormatException invalidFormatEx) {
+                return buildErrorResponse(
+                        ErrorCode.INVALID_EVENT_DATE_FORMAT,
+                        invalidFormatEx.getMessage(),
+                        HttpStatus.BAD_REQUEST,
+                        request
+                );
+            }
+
+            if (cause instanceof InvalidEventDateValueException invalidValueEx) {
+                return buildErrorResponse(
+                        ErrorCode.INVALID_EVENT_DATE_VALUE,
+                        invalidValueEx.getMessage(),
+                        HttpStatus.BAD_REQUEST,
+                        request
+                );
+            }
+
+            if (cause instanceof InvalidFormatException invalidFormatEx) {
+
+                if (invalidFormatEx.getTargetType() == EventScope.class) {
+                    return buildErrorResponse(
+                            ErrorCode.INVALID_EVENT_SCOPE,
+                            ErrorCode.INVALID_EVENT_SCOPE.getDefaultMessage(),
+                            HttpStatus.BAD_REQUEST,
+                            request
+                    );
+                }
+            }
+
             cause = cause.getCause();
-        }
-
-        if (cause instanceof InvalidEventDateFormatException invalidFormatEx) {
-            return buildErrorResponse(
-                    ErrorCode.INVALID_EVENT_DATE_FORMAT,
-                    invalidFormatEx.getMessage(),
-                    HttpStatus.BAD_REQUEST,
-                    request
-            );
-        }
-
-        if (cause instanceof InvalidEventDateValueException invalidValueEx) {
-            return buildErrorResponse(
-                    ErrorCode.INVALID_EVENT_DATE_VALUE,
-                    invalidValueEx.getMessage(),
-                    HttpStatus.BAD_REQUEST,
-                    request
-            );
         }
 
         return buildErrorResponse(
