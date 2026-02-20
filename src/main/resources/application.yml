@@ -27,6 +27,8 @@ application:
       refresh-token:
         expiration: ${JWT_REFRESH_EXPIRATION}
 
+  workspaces:
+    max-users: 50
   events:
     constraints:
       max-months-ahead: 12
