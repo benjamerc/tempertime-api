@@ -4,6 +4,7 @@ import com.tempertime.tempertime_api.common.hash.Hash;
 import com.tempertime.tempertime_api.events.service.access.EventAccessService;
 import com.tempertime.tempertime_api.users.domain.User;
 import com.tempertime.tempertime_api.users.service.loader.UserLoader;
+import com.tempertime.tempertime_api.workspaces.config.WorkspaceProperties;
 import com.tempertime.tempertime_api.workspaces.service.authorization.WorkspaceAccessService;
 import com.tempertime.tempertime_api.workspaces.dto.request.WorkspaceCreateRequest;
 import com.tempertime.tempertime_api.workspaces.dto.request.WorkspaceUpdateRequest;
@@ -55,6 +56,9 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     private final ColorGenerator colorGenerator;
     private final ColorValidator colorValidator;
     private final WorkspaceInviteCodeGenerator workspaceInviteCodeGenerator;
+
+    // Configuration Properties
+    private final WorkspaceProperties workspaceProperties;
 
     /**
      * Creates a new workspace and assigns the creator as OWNER.
@@ -358,7 +362,8 @@ public class WorkspaceServiceImpl implements WorkspaceService {
      * Validates that the workspace has not exceeded the maximum allowed users.
      */
     private void validateWorkspaceCapacity(Workspace workspace) {
-        int maxCapacity = 50;
+
+        int maxCapacity = workspaceProperties.getMaxUsers();
         long currentUserCount = workspaceUserRepository.countByWorkspaceId(workspace.getId());
 
         if (currentUserCount >= maxCapacity) {
