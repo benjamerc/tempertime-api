@@ -26,3 +26,7 @@ application:
       expiration: ${JWT_EXPIRATION}
       refresh-token:
         expiration: ${JWT_REFRESH_EXPIRATION}
+
+  events:
+    constraints:
+      max-months-ahead: 12
