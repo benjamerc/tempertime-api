@@ -1,6 +1,6 @@
 package com.tempertime.tempertime_api.security.config;
 
-import org.springframework.beans.factory.annotation.Value;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.cors.CorsConfiguration;
@@ -11,19 +11,18 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Global CORS configuration for Tempertime API.
- * Allows configured origins to access the API using JWT-based authentication.
+ * Configures CORS for the API using the allowed origins.
  */
 @Configuration
+@RequiredArgsConstructor
 public class CorsConfig {
 
-    @Value("${application.cors.allowed-origins}")
-    private String allowedOrigins;
+    private final CorsProperties corsProperties;
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
 
-        List<String> origins = Arrays.asList(allowedOrigins.split(","));
+        List<String> origins = Arrays.asList(corsProperties.getAllowedOrigins().split(","));
 
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowedOriginPatterns(origins);
