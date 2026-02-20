@@ -288,6 +288,19 @@ public class GlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler(EventDateLimitExceededException.class)
+    public ResponseEntity<ApiError> handleEventDateLimitExceeded(
+            EventDateLimitExceededException ex,
+            HttpServletRequest request
+    ) {
+        return buildErrorResponse(
+                ErrorCode.EVENT_DATE_LIMIT_EXCEEDED,
+                ErrorCode.EVENT_DATE_LIMIT_EXCEEDED.getDefaultMessage(),
+                HttpStatus.BAD_REQUEST,
+                request
+        );
+    }
+
     // ===================== User Exceptions =====================
 
     @ExceptionHandler(InvalidPasswordException.class)
