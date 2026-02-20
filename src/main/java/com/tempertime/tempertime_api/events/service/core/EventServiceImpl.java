@@ -19,6 +19,7 @@ import com.tempertime.tempertime_api.events.domain.EventUser;
 import com.tempertime.tempertime_api.events.repository.EventRepository;
 import com.tempertime.tempertime_api.events.repository.EventUserRepository;
 import com.tempertime.tempertime_api.events.service.loader.EventLoader;
+import com.tempertime.tempertime_api.events.service.rules.EventDateRules;
 import com.tempertime.tempertime_api.users.service.loader.UserLoader;
 import com.tempertime.tempertime_api.workspaces.exception.WorkspaceAccessDeniedException;
 import com.tempertime.tempertime_api.workspaces.service.authorization.WorkspaceAccessService;
@@ -56,6 +57,7 @@ public class EventServiceImpl implements EventService {
     private final ColorValidator colorValidator;
     private final ColorGenerator colorGenerator;
     private final EventPeriodResolver eventPeriodResolver;
+    private final EventDateRules eventDateRules;
 
     /**
      * Creates a new event within a workspace and assigns the creator to it.
@@ -72,6 +74,8 @@ public class EventServiceImpl implements EventService {
         // Loads the workspace and verifies OWNER permissions
         Workspace workspace =
                 workspaceAccessService.loadWorkspaceWithOwnerAccess(workspaceId, userId);
+
+        eventDateRules.validateDateRange(request.eventDate());
 
         // Converts the request date (with offset) to an absolute UTC instant
         Instant eventDate = request.eventDate().toInstant();
@@ -132,7 +136,10 @@ public class EventServiceImpl implements EventService {
                 .ifPresent(event::setDescription);
 
         Optional.ofNullable(request.eventDate())
-                .ifPresent(ed -> event.setEventDate(ed.toInstant()));
+                .ifPresent(ed -> {
+                    eventDateRules.validateDateRange(ed);
+                    event.setEventDate(ed.toInstant());
+                });
 
         Optional.ofNullable(request.color())
                 .filter(c -> !c.isBlank())
