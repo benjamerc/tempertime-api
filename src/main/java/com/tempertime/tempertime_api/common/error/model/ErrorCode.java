@@ -35,6 +35,7 @@ public enum ErrorCode {
     INVALID_EVENT_PERIOD("Event period must be DAY, WEEK, MONTH or ALL"),
     TIME_ZONE_MISSING("Time zone is required for DAY, WEEK, or MONTH periods"),
     INVALID_TIME_ZONE("Invalid time zone. Use a valid IANA time zone"),
+    EVENT_DATE_LIMIT_EXCEEDED("Event date exceeds the maximum allowed range"),
 
     // User
     INVALID_PASSWORD("The current password provided is incorrect"),
