@@ -66,22 +66,42 @@ public class EventAccessService {
     }
 
     /**
-     * Removes all event assignments for the user
-     * within the specified workspace.
+     * Removes all event assignments for the user within the specified workspace
+     * and updates the hasActiveUsers flag for affected events.
      */
     @Transactional
     public void removeUserFromWorkspaceEvents(Long workspaceId, Long userId) {
 
+        Set<Long> affectedEventIds =
+                eventUserRepository.findEventIdsByWorkspaceIdAndUserId(workspaceId, userId);
+
+        if (affectedEventIds.isEmpty()) {
+            return;
+        }
+
         eventUserRepository
                 .deleteByEventWorkspaceIdAndUserId(workspaceId, userId);
+
+        updateHasActiveUsersByEventIds(affectedEventIds);
     }
 
     /**
-     * Removes all event assignments for the given user.
+     * Removes all event assignments for the given user
+     * and updates the hasActiveUsers flag for affected events.
      */
     @Transactional
     public void removeUserFromAllEvents(Long userId) {
+
+        Set<Long> affectedEventIds =
+                eventUserRepository.findEventIdsByUserId(userId);
+
+        if (affectedEventIds.isEmpty()) {
+            return;
+        }
+
         eventUserRepository.deleteByUserId(userId);
+
+        updateHasActiveUsersByEventIds(affectedEventIds);
     }
 
     /**
@@ -93,5 +113,23 @@ public class EventAccessService {
 
         eventUserRepository.deleteByEventWorkspaceId(workspaceId);
         eventRepository.deleteByWorkspaceId(workspaceId);
+    }
+
+    /**
+     * Updates the hasActiveUsers flag for the given events
+     * based on their current user assignments.
+     */
+    private void updateHasActiveUsersByEventIds(Set<Long> eventIds) {
+
+        List<Event> events = eventRepository.findAllById(eventIds);
+
+        for (Event event : events) {
+            long assignedCount =
+                    eventUserRepository.countByEventId(event.getId());
+
+            event.setHasActiveUsers(assignedCount > 1);
+        }
+
+        eventRepository.saveAll(events);
     }
 }
