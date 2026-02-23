@@ -66,4 +66,14 @@ public interface EventUserRepository extends JpaRepository<EventUser, Long> {
             @Param("workspaceId") Long workspaceId,
             @Param("userId") Long userId
     );
+
+    /**
+     * Finds all event identifiers assigned to a user.
+     */
+    @Query("""
+       SELECT eu.event.id
+       FROM EventUser eu
+       WHERE eu.user.id = :userId
+       """)
+    Set<Long> findEventIdsByUserId(Long userId);
 }
