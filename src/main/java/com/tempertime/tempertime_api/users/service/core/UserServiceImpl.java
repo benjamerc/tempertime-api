@@ -1,5 +1,6 @@
 package com.tempertime.tempertime_api.users.service.core;
 
+import com.tempertime.tempertime_api.common.normalizer.InputNormalizer;
 import com.tempertime.tempertime_api.common.validator.PasswordValidator;
 import com.tempertime.tempertime_api.events.service.access.EventAccessService;
 import com.tempertime.tempertime_api.security.refresh.RefreshTokenService;
@@ -39,8 +40,9 @@ public class UserServiceImpl implements UserService {
     // Mappers
     private final UserMapper userMapper;
 
-    // Validators
+    // Validators / Normalizers
     private final PasswordValidator passwordValidator;
+    private final InputNormalizer inputNormalizer;
 
     @Override
     public UserProfileResponse getProfile(Long userId) {
@@ -61,10 +63,12 @@ public class UserServiceImpl implements UserService {
 
         Optional.ofNullable(request.firstName())
                 .filter(f -> !f.isBlank())
+                .map(inputNormalizer::normalize)
                 .ifPresent(user::setFirstName);
 
         Optional.ofNullable(request.lastName())
                 .filter(l -> !l.isBlank())
+                .map(inputNormalizer::normalize)
                 .ifPresent(user::setLastName);
 
         return userMapper.toUserProfileResponse(userRepository.save(user));
