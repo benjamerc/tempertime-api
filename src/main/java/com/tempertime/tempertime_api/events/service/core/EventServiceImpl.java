@@ -3,6 +3,7 @@ package com.tempertime.tempertime_api.events.service.core;
 import com.tempertime.tempertime_api.common.color.ColorGenerator;
 import com.tempertime.tempertime_api.common.color.ColorUtil;
 import com.tempertime.tempertime_api.common.color.ColorValidator;
+import com.tempertime.tempertime_api.common.normalizer.InputNormalizer;
 import com.tempertime.tempertime_api.events.dto.internal.TimeRange;
 import com.tempertime.tempertime_api.events.dto.request.EventAssignUserRequest;
 import com.tempertime.tempertime_api.events.dto.request.EventCreateRequest;
@@ -53,11 +54,12 @@ public class EventServiceImpl implements EventService {
     private final EventMapper eventMapper;
     private final EventUserMapper eventUserMapper;
 
-    // Validators / Generators / Resolvers
+    // Validators / Generators / Resolvers / Normalizers
     private final ColorValidator colorValidator;
     private final ColorGenerator colorGenerator;
     private final EventPeriodResolver eventPeriodResolver;
     private final EventDateRules eventDateRules;
+    private final InputNormalizer inputNormalizer;
 
     /**
      * Creates a new event within a workspace and assigns the creator to it.
@@ -88,9 +90,9 @@ public class EventServiceImpl implements EventService {
         );
 
         Event event = Event.builder()
-                .title(request.title())
+                .title(inputNormalizer.normalize(request.title()))
                 .eventDate(eventDate)
-                .description(request.description())
+                .description(inputNormalizer.normalize(request.description()))
                 .scope(request.scope())
                 .color(resolvedColor)
                 .workspace(workspace)
@@ -129,10 +131,12 @@ public class EventServiceImpl implements EventService {
         // Update optional fields if present
         Optional.ofNullable(request.title())
                 .filter(t -> !t.isBlank())
+                .map(inputNormalizer::normalize)
                 .ifPresent(event::setTitle);
 
         Optional.ofNullable(request.description())
                 .filter(d -> !d.isBlank())
+                .map(inputNormalizer::normalize)
                 .ifPresent(event::setDescription);
 
         Optional.ofNullable(request.eventDate())
