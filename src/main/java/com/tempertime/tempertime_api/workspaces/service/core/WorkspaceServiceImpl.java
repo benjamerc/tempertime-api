@@ -1,6 +1,7 @@
 package com.tempertime.tempertime_api.workspaces.service.core;
 
 import com.tempertime.tempertime_api.common.hash.Hash;
+import com.tempertime.tempertime_api.common.normalizer.InputNormalizer;
 import com.tempertime.tempertime_api.events.service.access.EventAccessService;
 import com.tempertime.tempertime_api.users.domain.User;
 import com.tempertime.tempertime_api.users.service.loader.UserLoader;
@@ -52,10 +53,11 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     private final WorkspaceUserMapper workspaceUserMapper;
     private final WorkspaceInviteCodeMapper workspaceInviteCodeMapper;
 
-    // Generators / Validators
+    // Generators / Validators / Normalizers
     private final ColorGenerator colorGenerator;
     private final ColorValidator colorValidator;
     private final WorkspaceInviteCodeGenerator workspaceInviteCodeGenerator;
+    private final InputNormalizer inputNormalizer;
 
     // Configuration Properties
     private final WorkspaceProperties workspaceProperties;
@@ -79,7 +81,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         );
 
         Workspace workspace = Workspace.builder()
-                .name(request.name())
+                .name(inputNormalizer.normalize(request.name()))
                 .color(color)
                 .build();
 
@@ -148,6 +150,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
         Optional.ofNullable(request.name())
                 .filter(n -> !n.isBlank())
+                .map(inputNormalizer::normalize)
                 .ifPresent(workspace::setName);
 
         Optional.ofNullable(request.color())
