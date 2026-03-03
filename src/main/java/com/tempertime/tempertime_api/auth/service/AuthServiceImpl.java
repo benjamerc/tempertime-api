@@ -7,6 +7,7 @@ import com.tempertime.tempertime_api.auth.dto.response.AuthRegisterResponse;
 import com.tempertime.tempertime_api.auth.dto.response.AuthTokenResponse;
 import com.tempertime.tempertime_api.auth.exception.EmailAlreadyExistsException;
 import com.tempertime.tempertime_api.auth.mapper.AuthMapper;
+import com.tempertime.tempertime_api.common.normalizer.InputNormalizer;
 import com.tempertime.tempertime_api.common.validator.PasswordValidator;
 import com.tempertime.tempertime_api.security.core.CustomUserDetails;
 import com.tempertime.tempertime_api.security.jwt.AccessTokenService;
@@ -39,8 +40,9 @@ public class AuthServiceImpl implements AuthService {
     // Mappers
     private final AuthMapper authMapper;
 
-    // Validators
+    // Validators / Normalizers
     private final PasswordValidator passwordValidator;
+    private final InputNormalizer inputNormalizer;
 
     @Override
     public AuthRegisterResponse register(AuthRegisterRequest request) {
@@ -52,9 +54,9 @@ public class AuthServiceImpl implements AuthService {
         passwordValidator.validate(request.password());
 
         User user = User.builder()
-                .email(request.email())
-                .firstName(request.firstName())
-                .lastName(request.lastName())
+                .email(inputNormalizer.normalize(request.email()))
+                .firstName(inputNormalizer.normalize(request.firstName()))
+                .lastName(inputNormalizer.normalize(request.lastName()))
                 .passwordHash(passwordEncoder.encode(request.password()))
                 .build();
 
