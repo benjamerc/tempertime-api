@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
  * Configuration properties for workspace settings.
  */
 @Component
-@ConfigurationProperties(prefix = "application.workspaces")
+@ConfigurationProperties(prefix = "application.workspaces.constraints")
 @Getter
 @Setter
 public class WorkspaceProperties {
