@@ -5,7 +5,7 @@ import com.tempertime.tempertime_api.common.normalizer.InputNormalizer;
 import com.tempertime.tempertime_api.events.service.access.EventAccessService;
 import com.tempertime.tempertime_api.users.domain.User;
 import com.tempertime.tempertime_api.users.service.loader.UserLoader;
-import com.tempertime.tempertime_api.workspaces.config.WorkspaceProperties;
+import com.tempertime.tempertime_api.workspaces.config.WorkspaceConstraintsProperties;
 import com.tempertime.tempertime_api.workspaces.service.authorization.WorkspaceAccessService;
 import com.tempertime.tempertime_api.workspaces.dto.request.WorkspaceCreateRequest;
 import com.tempertime.tempertime_api.workspaces.dto.request.WorkspaceUpdateRequest;
@@ -26,6 +26,7 @@ import com.tempertime.tempertime_api.common.color.ColorUtil;
 import com.tempertime.tempertime_api.common.color.ColorValidator;
 import com.tempertime.tempertime_api.workspaces.service.invitation.WorkspaceInviteCodeGenerator;
 import com.tempertime.tempertime_api.workspaces.service.loader.WorkspaceInviteCodeLoader;
+import com.tempertime.tempertime_api.workspaces.service.security.WorkspaceInviteCodeSecurityService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -47,6 +48,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     private final WorkspaceAccessService workspaceAccessService;
     private final WorkspaceInviteCodeLoader workspaceInviteCodeLoader;
     private final EventAccessService eventAccessService;
+    private final WorkspaceInviteCodeSecurityService workspaceInviteCodeSecurityService;
 
     // Mappers
     private final WorkspaceMapper workspaceMapper;
@@ -60,7 +62,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     private final InputNormalizer inputNormalizer;
 
     // Configuration Properties
-    private final WorkspaceProperties workspaceProperties;
+    private final WorkspaceConstraintsProperties workspaceConstraintsProperties;
 
     /**
      * Creates a new workspace and assigns the creator as OWNER.
@@ -98,11 +100,13 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
         // Generate initial workspace invite code (raw code returned only once)
         String rawInviteCode = workspaceInviteCodeGenerator.generate();
-        String inviteCodeHash = hash(rawInviteCode);
+        String encryptedInviteCode = workspaceInviteCodeSecurityService.encrypt(rawInviteCode);
+        String hashedInviteCode = hash(rawInviteCode);
 
         WorkspaceInviteCode workspaceInviteCode = WorkspaceInviteCode.builder()
                 .workspace(savedWorkspace)
-                .inviteCodeHash(inviteCodeHash)
+                .inviteCodeEncrypted(encryptedInviteCode)
+                .inviteCodeHash(hashedInviteCode)
                 .build();
 
         workspaceInviteCodeRepository.save(workspaceInviteCode);
@@ -208,39 +212,43 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     }
 
     /**
-     * Returns workspace invite code metadata (enabled status and creation time).
-     * The raw invite code is not exposed for security reasons.
+     * Returns workspace invite code details for the owner of the workspace.
      */
     @Override
     public WorkspaceInviteCodeResponse getInviteCode(Long workspaceId, Long userId) {
 
         WorkspaceInviteCode workspaceInviteCode = loadWorkspaceInviteCodeWithOwnerAccess(workspaceId, userId);
 
-        return workspaceInviteCodeMapper.toWorkspaceInviteCodeResponse(workspaceInviteCode);
+        String rawInviteCode =
+                workspaceInviteCodeSecurityService.decrypt(workspaceInviteCode.getInviteCodeEncrypted());
+
+        return workspaceInviteCodeMapper.toWorkspaceInviteCodeResponse(workspaceInviteCode, rawInviteCode);
     }
 
     @Transactional
     @Override
-    public WorkspaceInviteCodeResponse activateInviteCode(Long workspaceId, Long userId) {
+    public WorkspaceInviteCodeStatusResponse activateInviteCode(Long workspaceId, Long userId) {
 
         WorkspaceInviteCode workspaceInviteCode = loadWorkspaceInviteCodeWithOwnerAccess(workspaceId, userId);
 
         workspaceInviteCode.setInviteEnabled(true);
         workspaceInviteCodeRepository.save(workspaceInviteCode);
 
-        return workspaceInviteCodeMapper.toWorkspaceInviteCodeResponse(workspaceInviteCode);
+        return workspaceInviteCodeMapper
+                .toWorkspaceInviteCodeStatusResponse(workspaceInviteCode);
     }
 
     @Transactional
     @Override
-    public WorkspaceInviteCodeResponse deactivateInviteCode(Long workspaceId, Long userId) {
+    public WorkspaceInviteCodeStatusResponse deactivateInviteCode(Long workspaceId, Long userId) {
 
         WorkspaceInviteCode workspaceInviteCode = loadWorkspaceInviteCodeWithOwnerAccess(workspaceId, userId);
 
         workspaceInviteCode.setInviteEnabled(false);
         workspaceInviteCodeRepository.save(workspaceInviteCode);
 
-        return workspaceInviteCodeMapper.toWorkspaceInviteCodeResponse(workspaceInviteCode);
+        return workspaceInviteCodeMapper
+                .toWorkspaceInviteCodeStatusResponse(workspaceInviteCode);
     }
 
     /**
@@ -249,19 +257,21 @@ public class WorkspaceServiceImpl implements WorkspaceService {
      */
     @Transactional
     @Override
-    public WorkspaceInviteCodeRegenerateResponse regenerateInviteCode(Long workspaceId, Long userId) {
+    public WorkspaceInviteCodeResponse regenerateInviteCode(Long workspaceId, Long userId) {
 
         WorkspaceInviteCode workspaceInviteCode =
                 loadWorkspaceInviteCodeWithOwnerAccess(workspaceId, userId);
 
         String rawInviteCode = workspaceInviteCodeGenerator.generate();
-        String inviteCodeHash = hash(rawInviteCode);
+        String encryptedInviteCode = workspaceInviteCodeSecurityService.encrypt(rawInviteCode);
+        String hashedInviteCode = hash(rawInviteCode);
 
-        workspaceInviteCode.setInviteCodeHash(inviteCodeHash);
+        workspaceInviteCode.setInviteCodeEncrypted(encryptedInviteCode);
+        workspaceInviteCode.setInviteCodeHash(hashedInviteCode);
         workspaceInviteCodeRepository.save(workspaceInviteCode);
 
         return workspaceInviteCodeMapper
-                .toWorkspaceInviteCodeRegenerateResponse(workspaceInviteCode, rawInviteCode);
+                .toWorkspaceInviteCodeResponse(workspaceInviteCode, rawInviteCode);
     }
 
     /**
@@ -366,7 +376,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
      */
     private void validateWorkspaceCapacity(Workspace workspace) {
 
-        int maxCapacity = workspaceProperties.getMaxUsers();
+        int maxCapacity = workspaceConstraintsProperties.getMaxUsers();
         long currentUserCount = workspaceUserRepository.countByWorkspaceId(workspace.getId());
 
         if (currentUserCount >= maxCapacity) {

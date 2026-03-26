@@ -35,26 +35,25 @@ public interface WorkspaceService {
     void deleteWorkspace(Long workspaceId, Long userId);
 
     /**
-     * Retrieves workspace invite code metadata (enabled status and creation time).
-     * The raw invite code is not exposed.
+     * Retrieves workspace invite code.
      */
     WorkspaceInviteCodeResponse getInviteCode(Long workspaceId, Long userId);
 
     /**
      * Enables the workspace invite code.
      */
-    WorkspaceInviteCodeResponse activateInviteCode(Long workspaceId, Long userId);
+    WorkspaceInviteCodeStatusResponse activateInviteCode(Long workspaceId, Long userId);
 
     /**
      * Disables the workspace invite code.
      */
-    WorkspaceInviteCodeResponse deactivateInviteCode(Long workspaceId, Long userId);
+    WorkspaceInviteCodeStatusResponse deactivateInviteCode(Long workspaceId, Long userId);
 
     /**
      * Regenerates the workspace invite code.
      * Returns the new invite code along with its status and creation timestamp.
      */
-    WorkspaceInviteCodeRegenerateResponse regenerateInviteCode(Long workspaceId, Long userId);
+    WorkspaceInviteCodeResponse regenerateInviteCode(Long workspaceId, Long userId);
 
     /**
      * Joins a workspace using a valid invitation code.
