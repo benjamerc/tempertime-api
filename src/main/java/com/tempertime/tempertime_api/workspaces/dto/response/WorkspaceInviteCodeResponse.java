@@ -7,6 +7,7 @@ import java.time.Instant;
  */
 public record WorkspaceInviteCodeResponse(
 
+        String inviteCode,
         Boolean inviteEnabled,
         Instant createdAt
 ) {}
