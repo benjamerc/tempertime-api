@@ -138,7 +138,7 @@ public class WorkspaceController {
 
     @PatchMapping("/{workspaceId}/invite-code/enable")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<WorkspaceInviteCodeResponse> activateInviteCode(
+    public ResponseEntity<WorkspaceInviteCodeStatusResponse> activateInviteCode(
             @PathVariable Long workspaceId
     ) {
 
@@ -152,7 +152,7 @@ public class WorkspaceController {
 
     @PatchMapping("/{workspaceId}/invite-code/disable")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<WorkspaceInviteCodeResponse> deactivateInviteCode(
+    public ResponseEntity<WorkspaceInviteCodeStatusResponse> deactivateInviteCode(
             @PathVariable Long workspaceId
     ) {
 
@@ -166,7 +166,7 @@ public class WorkspaceController {
 
     @PatchMapping("/{workspaceId}/invite-code/regenerate")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<WorkspaceInviteCodeRegenerateResponse> regenerateInviteCode(
+    public ResponseEntity<WorkspaceInviteCodeResponse> regenerateInviteCode(
             @PathVariable Long workspaceId
     ) {
 
