@@ -208,6 +208,25 @@ public class GlobalExceptionHandler {
         );
     }
 
+    // ===================== Workspace Invite Code Crypto Exceptions =====================
+
+    @ExceptionHandler({
+            InviteCodeCryptoException.class,
+            InvalidEncryptedInviteCodeException.class})
+    public ResponseEntity<ApiError> handleCryptoFailed(
+            RuntimeException ex,
+            HttpServletRequest request
+    ) {
+        log.error("Invite code crypto error", ex);
+
+        return buildErrorResponse(
+                ErrorCode.INTERNAL_ERROR,
+                ErrorCode.INTERNAL_ERROR.getDefaultMessage(),
+                HttpStatus.INTERNAL_SERVER_ERROR,
+                request
+        );
+    }
+
     // ===================== Event Exceptions =====================
 
     @ExceptionHandler(EventAccessDeniedException.class)
