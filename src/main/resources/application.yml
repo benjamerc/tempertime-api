@@ -28,7 +28,11 @@ application:
         expiration: ${JWT_REFRESH_EXPIRATION}
 
   workspaces:
-    max-users: 50
+    constraints:
+      max-users: 50
+    invite-code:
+      secret-key: ${WORKSPACE_INVITE_CODE_SECRET_KEY}
+
   events:
     constraints:
       max-months-ahead: 12
