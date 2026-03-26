@@ -1,8 +1,8 @@
 package com.tempertime.tempertime_api.workspaces.mapper;
 
-import com.tempertime.tempertime_api.workspaces.dto.response.WorkspaceInviteCodeRegenerateResponse;
 import com.tempertime.tempertime_api.workspaces.dto.response.WorkspaceInviteCodeResponse;
 import com.tempertime.tempertime_api.workspaces.domain.WorkspaceInviteCode;
+import com.tempertime.tempertime_api.workspaces.dto.response.WorkspaceInviteCodeStatusResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -12,17 +12,21 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface WorkspaceInviteCodeMapper {
 
-    WorkspaceInviteCodeResponse toWorkspaceInviteCodeResponse(WorkspaceInviteCode workspaceInviteCode);
-
     /**
-     * Maps a workspace invite code regeneration result.
-     * The inviteCode parameter represents the raw value and is not persisted.
+     * Maps to a workspace invite code result.
      */
     @Mapping(target = "inviteCode", source = "inviteCode")
     @Mapping(target = "inviteEnabled", source = "workspaceInviteCode.inviteEnabled")
     @Mapping(target = "createdAt", source = "workspaceInviteCode.createdAt")
-    WorkspaceInviteCodeRegenerateResponse toWorkspaceInviteCodeRegenerateResponse(
+    WorkspaceInviteCodeResponse toWorkspaceInviteCodeResponse(
             WorkspaceInviteCode workspaceInviteCode,
             String inviteCode
+    );
+
+    /**
+     * Maps to a status response indicating if invite code is enabled.
+     */
+    WorkspaceInviteCodeStatusResponse toWorkspaceInviteCodeStatusResponse(
+            WorkspaceInviteCode workspaceInviteCode
     );
 }
