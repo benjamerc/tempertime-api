@@ -13,20 +13,26 @@ import java.time.temporal.TemporalAdjusters;
 import java.util.Optional;
 
 /**
- * Resolves the natural time boundaries for a given EventPeriod
- * using the provided time zone.
+ * <p>Resolves the natural time boundaries for a given <code>EventPeriod</code>
+ * using the provided time zone and an optional base date.</p>
  *
- * The returned TimeRange represents the start of the period
- * and the start of the next period.
+ * <p>The returned <code>TimeRange</code> represents the start of the period
+ * and the start of the next period.</p>
  *
- * Examples:
- * - DAY   -> [start of current day, start of next day)
- * - WEEK  -> [start of current week, start of next week)
- * - MONTH -> [start of current month, start of next month)
+ * <p>If a base date is provided, the period is calculated relative to that date.
+ * Otherwise, the current date-time is used.</p>
  *
- * For ALL, no filtering is applied and an empty Optional is returned.
+ * <p>Examples:</p>
+ * <ul>
+ *   <li><code>DAY</code>   -&gt; [start of the day, start of next day)</li>
+ *   <li><code>WEEK</code>  -&gt; [start of the week, start of next week)</li>
+ *   <li><code>MONTH</code> -&gt; [start of the month, start of next month)</li>
+ * </ul>
  *
- * Note: EventRepository applies the range using ">= start" and "< end".
+ * <p>For <code>ALL</code>, no filtering is applied and an empty <code>Optional</code> is returned.</p>
+ *
+ * <p><strong>Note:</strong> <code>EventRepository</code> applies the range using
+ * <code>&gt;= start</code> and <code>&lt; end</code>.</p>
  */
 @Component
 public class EventPeriodResolver {

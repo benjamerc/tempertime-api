@@ -160,13 +160,18 @@ public class EventServiceImpl implements EventService {
     }
 
     /**
-     * Retrieves events within a workspace to which the user is assigned.
+     * <p>Retrieves events within a workspace to which the user is assigned.</p>
      *
-     * Behavior:
-     * - DAY/WEEK/MONTH: requires a non-null timeZone to calculate the time range.
-     * - ALL: ignores timeZone and returns all events in the workspace for the user.
+     * <p><strong>Behavior:</strong></p>
+     * <ul>
+     *   <li><code>DAY</code>/<code>WEEK</code>/<code>MONTH</code>: requires a non-null <code>timeZone</code> to calculate the time range.
+     *     If a date is provided, the period is calculated relative to that date.
+     *     Otherwise, the current date-time is used.</li>
+     *   <li><code>ALL</code>: ignores <code>timeZone</code> and returns all events in the workspace for the user.</li>
+     * </ul>
      *
-     * Throws InvalidEventPeriodException if timeZone is missing for DAY/WEEK/MONTH.
+     * <p>Throws <code>TimeZoneMissingException</code> if <code>timeZone</code> is missing for
+     * <code>DAY</code>/<code>WEEK</code>/<code>MONTH</code>.</p>
      */
     @Transactional(readOnly = true)
     @Override
