@@ -23,7 +23,13 @@ public class WorkspaceInviteCode {
     private Long id;
 
     /**
-     * Hashed value of the invite code.
+     * AES-encrypted invite code, stored to return the raw code to the owner when needed.
+     */
+    @Column(name = "invite_code_encrypted", nullable = false, length = 128, unique = true)
+    private String inviteCodeEncrypted;
+
+    /**
+     * SHA-256 hash of the invite code, used for efficient lookups and validation.
      */
     @Column(name = "invite_code_hash", nullable = false, length = 64, unique = true)
     private String inviteCodeHash;
