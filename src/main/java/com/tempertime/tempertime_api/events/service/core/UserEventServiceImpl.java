@@ -12,7 +12,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,7 +40,8 @@ public class UserEventServiceImpl implements UserEventService {
     public List<UserEventResponse> getUserEvents(
             Long userId,
             EventPeriod period,
-            ZoneId timeZone
+            ZoneId timeZone,
+            LocalDate date
     ) {
 
         // Validates that timeZone is provided for periods that require it
@@ -46,10 +49,14 @@ public class UserEventServiceImpl implements UserEventService {
             throw new TimeZoneMissingException();
         }
 
+        ZonedDateTime baseDate = (date != null)
+                ? date.atStartOfDay(timeZone)
+                : null;
+
         Optional<TimeRange> range =
                 (period == EventPeriod.ALL)
                         ? Optional.empty()
-                        : eventPeriodResolver.resolve(period, timeZone);
+                        : eventPeriodResolver.resolve(period, timeZone, baseDate);
 
         List<Event> events = range
                 .map(r -> eventRepository

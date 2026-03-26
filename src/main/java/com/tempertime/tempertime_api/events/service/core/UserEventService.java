@@ -3,6 +3,7 @@ package com.tempertime.tempertime_api.events.service.core;
 import com.tempertime.tempertime_api.events.dto.response.UserEventResponse;
 import com.tempertime.tempertime_api.events.domain.EventPeriod;
 
+import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.List;
 
@@ -17,6 +18,7 @@ public interface UserEventService {
     List<UserEventResponse> getUserEvents(
             Long userId,
             EventPeriod period,
-            ZoneId timeZone
+            ZoneId timeZone,
+            LocalDate date
     );
 }

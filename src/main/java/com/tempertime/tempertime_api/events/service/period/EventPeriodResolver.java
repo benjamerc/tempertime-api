@@ -31,13 +31,19 @@ import java.util.Optional;
 @Component
 public class EventPeriodResolver {
 
-    public Optional<TimeRange> resolve(EventPeriod period, ZoneId zone) {
+    public Optional<TimeRange> resolve(
+            EventPeriod period,
+            ZoneId zone,
+            ZonedDateTime baseDate) {
 
         if (period == EventPeriod.ALL) {
-            return Optional.empty(); // No time filtering
+            return Optional.empty();
         }
 
-        ZonedDateTime now = ZonedDateTime.now(zone);
+        ZonedDateTime now = (baseDate != null)
+                ? baseDate
+                : ZonedDateTime.now(zone);
+
         ZonedDateTime start;
         ZonedDateTime end;
 

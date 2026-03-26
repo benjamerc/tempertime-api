@@ -5,12 +5,14 @@ import com.tempertime.tempertime_api.events.domain.EventPeriod;
 import com.tempertime.tempertime_api.events.service.core.UserEventService;
 import com.tempertime.tempertime_api.security.core.CurrentUserProvider;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.List;
 
@@ -29,14 +31,18 @@ public class UserEventController {
     @GetMapping
     public ResponseEntity<List<UserEventResponse>> getUserEvents(
             @RequestParam(defaultValue = "MONTH") EventPeriod period,
-            @RequestParam(required = false) ZoneId timeZone
+            @RequestParam(required = false) ZoneId timeZone,
+            @RequestParam(required = false)
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+            LocalDate date
     ) {
 
         return ResponseEntity.ok(
                 userEventService.getUserEvents(
                         currentUserProvider.getUserId(),
                         period,
-                        timeZone
+                        timeZone,
+                        date
                 )
         );
     }

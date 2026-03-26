@@ -30,7 +30,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -172,20 +174,25 @@ public class EventServiceImpl implements EventService {
             Long workspaceId,
             Long userId,
             EventPeriod period,
-            ZoneId timeZone) {
+            ZoneId timeZone,
+            LocalDate date) {
 
         // Validate workspace exists and user has access to it
         workspaceAccessService.requireAccessibleWorkspace(workspaceId, userId);
 
-        // Validates that timeZone is provided for periods that require it
+        // Validate timeZone when required
         if (period != EventPeriod.ALL && timeZone == null) {
             throw new TimeZoneMissingException();
         }
 
+        ZonedDateTime baseDate = (date != null)
+                ? date.atStartOfDay(timeZone)
+                : null;
+
         Optional<TimeRange> range =
                 (period == EventPeriod.ALL)
                         ? Optional.empty()
-                        : eventPeriodResolver.resolve(period, timeZone);
+                        : eventPeriodResolver.resolve(period, timeZone, baseDate);
 
         List<Event> events = range
                 .map(r -> eventRepository

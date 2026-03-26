@@ -6,6 +6,7 @@ import com.tempertime.tempertime_api.events.dto.request.EventUpdateRequest;
 import com.tempertime.tempertime_api.events.dto.response.*;
 import com.tempertime.tempertime_api.events.domain.EventPeriod;
 
+import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.List;
 
@@ -40,7 +41,8 @@ public interface EventService {
             Long workspaceId,
             Long userId,
             EventPeriod period,
-            ZoneId timeZone
+            ZoneId timeZone,
+            LocalDate date
     );
 
     /**
