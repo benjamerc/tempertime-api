@@ -1,6 +1,7 @@
 package com.tempertime.tempertime_api.workspaces.service.core;
 
 import com.tempertime.tempertime_api.common.pagination.PageResponse;
+import com.tempertime.tempertime_api.workspaces.domain.WorkspaceRole;
 import com.tempertime.tempertime_api.workspaces.dto.request.WorkspaceCreateRequest;
 import com.tempertime.tempertime_api.workspaces.dto.request.WorkspaceUpdateRequest;
 import com.tempertime.tempertime_api.workspaces.dto.response.*;
@@ -21,6 +22,8 @@ public interface WorkspaceService {
      */
     PageResponse<WorkspaceListItemResponse> getUserWorkspaces(
             Long userId,
+            WorkspaceRole role,
+            Boolean archived,
             Pageable pageable
     );
 

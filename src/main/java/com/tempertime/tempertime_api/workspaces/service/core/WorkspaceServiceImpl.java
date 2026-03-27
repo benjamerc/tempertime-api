@@ -124,13 +124,20 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     @Override
     public PageResponse<WorkspaceListItemResponse> getUserWorkspaces(
             Long userId,
+            WorkspaceRole role,
+            Boolean archived,
             Pageable pageable
     ) {
 
         Pageable validatedPageable = paginationValidator.validate(pageable);
 
         Page<WorkspaceUser> page =
-                workspaceUserRepository.findAllByUserId(userId, validatedPageable);
+                workspaceUserRepository.findWorkspacesByUserAndOptionalFilters(
+                        userId,
+                        role,
+                        archived,
+                        validatedPageable
+                );
 
         Page<WorkspaceListItemResponse> mappedPage =
                 page.map(workspaceUserMapper::toWorkspaceListItemResponse);

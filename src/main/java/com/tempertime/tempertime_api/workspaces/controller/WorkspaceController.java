@@ -2,6 +2,7 @@ package com.tempertime.tempertime_api.workspaces.controller;
 
 import com.tempertime.tempertime_api.common.pagination.PageResponse;
 import com.tempertime.tempertime_api.security.core.CurrentUserProvider;
+import com.tempertime.tempertime_api.workspaces.domain.WorkspaceRole;
 import com.tempertime.tempertime_api.workspaces.dto.request.WorkspaceCreateRequest;
 import com.tempertime.tempertime_api.workspaces.dto.request.WorkspaceJoinRequest;
 import com.tempertime.tempertime_api.workspaces.dto.request.WorkspaceUpdateRequest;
@@ -44,6 +45,8 @@ public class WorkspaceController {
     @GetMapping
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<PageResponse<WorkspaceListItemResponse>> getUserWorkspaces(
+            @RequestParam(required = false) WorkspaceRole role,
+            @RequestParam(required = false) Boolean archived,
             @PageableDefault(
                     page = 0,
                     size = 20,
@@ -56,6 +59,8 @@ public class WorkspaceController {
         return ResponseEntity.ok(
                 workspaceService.getUserWorkspaces(
                         currentUserProvider.getUserId(),
+                        role,
+                        archived,
                         pageable
                 )
         );

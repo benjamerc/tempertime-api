@@ -1,10 +1,13 @@
 package com.tempertime.tempertime_api.workspaces.repository;
 
+import com.tempertime.tempertime_api.workspaces.domain.Workspace;
 import com.tempertime.tempertime_api.workspaces.domain.WorkspaceRole;
 import com.tempertime.tempertime_api.workspaces.domain.WorkspaceUser;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -14,14 +17,6 @@ import java.util.Optional;
  */
 @Repository
 public interface WorkspaceUserRepository extends JpaRepository<WorkspaceUser, Long> {
-
-    /**
-     * Repository for managing user memberships within workspaces.
-     */
-    Page<WorkspaceUser> findAllByUserId(
-            Long userId,
-            Pageable pageable
-    );
 
     /**
      * Finds a specific membership by workspace and user IDs.
@@ -50,4 +45,22 @@ public interface WorkspaceUserRepository extends JpaRepository<WorkspaceUser, Lo
      * Checks if the user has OWNER role in any workspace.
      */
     boolean existsByUserIdAndRole(Long userId, WorkspaceRole role);
+
+    /**
+     * Returns all workspaces for a user.
+     * Includes filters for role and archived status.
+     */
+    @Query("""
+        SELECT wu
+        FROM WorkspaceUser wu
+        WHERE wu.user.id = :userId
+            AND (:role IS NULL OR wu.role = :role)
+            AND (:archived IS NULL OR wu.workspace.archived = :archived)
+    """)
+    Page<WorkspaceUser> findWorkspacesByUserAndOptionalFilters(
+            @Param("userId") Long userId,
+            @Param("role") WorkspaceRole role,
+            @Param("archived") Boolean archived,
+            Pageable pageable
+    );
 }
