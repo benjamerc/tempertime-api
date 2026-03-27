@@ -1,5 +1,6 @@
 package com.tempertime.tempertime_api.events.controller;
 
+import com.tempertime.tempertime_api.common.pagination.PageResponse;
 import com.tempertime.tempertime_api.events.dto.request.EventAssignUserRequest;
 import com.tempertime.tempertime_api.events.dto.request.EventCreateRequest;
 import com.tempertime.tempertime_api.events.dto.request.EventUpdateRequest;
@@ -9,6 +10,9 @@ import com.tempertime.tempertime_api.events.service.core.EventService;
 import com.tempertime.tempertime_api.security.core.CurrentUserProvider;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +21,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/workspaces/{workspaceId}/events")
@@ -47,13 +50,20 @@ public class EventController {
 
     @GetMapping
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<List<EventListItemResponse>> getEvents(
+    public ResponseEntity<PageResponse<EventListItemResponse>> getEvents(
             @PathVariable Long workspaceId,
             @RequestParam(defaultValue = "MONTH") EventPeriod period,
             @RequestParam(required = false) ZoneId timeZone,
             @RequestParam(required = false)
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-            LocalDate date
+            LocalDate date,
+            @PageableDefault(
+                    page = 0,
+                    size = 20,
+                    sort = "eventDate",
+                    direction = Sort.Direction.ASC
+            )
+            Pageable pageable
     ) {
 
         return ResponseEntity.ok(
@@ -62,7 +72,8 @@ public class EventController {
                         currentUserProvider.getUserId(),
                         period,
                         timeZone,
-                        date
+                        date,
+                        pageable
                 )
         );
     }
@@ -139,16 +150,24 @@ public class EventController {
 
     @GetMapping("/{eventId}/users")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<List<EventAssignedUserResponse>> getEventAssignedUsers(
+    public ResponseEntity<PageResponse<EventAssignedUserResponse>> getEventAssignedUsers(
             @PathVariable Long workspaceId,
-            @PathVariable Long eventId
+            @PathVariable Long eventId,
+            @PageableDefault(
+                    page = 0,
+                    size = 20,
+                    sort = "firstName",
+                    direction = Sort.Direction.ASC
+            )
+            Pageable pageable
     ) {
 
         return ResponseEntity.ok(
                 eventService.getEventAssignedUsers(
                         workspaceId,
                         eventId,
-                        currentUserProvider.getUserId()
+                        currentUserProvider.getUserId(),
+                        pageable
                 )
         );
     }
