@@ -3,6 +3,10 @@ package com.tempertime.tempertime_api.workspaces.domain;
 import com.tempertime.tempertime_api.users.domain.User;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import java.time.Instant;
 
 /**
  * Links a user to a workspace and stores their role.
@@ -45,4 +49,12 @@ public class WorkspaceUser {
     @Enumerated(EnumType.STRING)
     @Column(name = "workspace_role", nullable = false, length = 20)
     private WorkspaceRole role = WorkspaceRole.MEMBER;
+
+    @Column(name = "created_at", nullable = false, updatable = false)
+    @CreationTimestamp
+    private Instant createdAt;
+
+    @Column(name = "updated_at")
+    @UpdateTimestamp
+    private Instant updatedAt;
 }
