@@ -2,6 +2,8 @@ package com.tempertime.tempertime_api.events.repository;
 
 import com.tempertime.tempertime_api.events.domain.Event;
 import com.tempertime.tempertime_api.events.domain.EventScope;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -39,10 +41,12 @@ public interface EventRepository extends JpaRepository<Event, Long> {
         JOIN EventUser eu ON eu.event = e
         WHERE e.workspace.id = :workspaceId
           AND eu.user.id = :userId
-    """)
-    List<Event> findEventsByWorkspaceAndUser(
+    """
+    )
+    Page<Event> findEventsByWorkspaceAndUser(
             @Param("workspaceId") Long workspaceId,
-            @Param("userId") Long userId
+            @Param("userId") Long userId,
+            Pageable pageable
     );
 
     /**
@@ -57,12 +61,14 @@ public interface EventRepository extends JpaRepository<Event, Long> {
           AND eu.user.id = :userId
           AND e.eventDate >= :start
           AND e.eventDate < :end
-    """)
-    List<Event> findEventsByWorkspaceAndUserAndDateRange(
+    """
+    )
+    Page<Event> findEventsByWorkspaceAndUserAndDateRange(
             @Param("workspaceId") Long workspaceId,
             @Param("userId") Long userId,
             @Param("start") Instant start,
-            @Param("end") Instant end
+            @Param("end") Instant end,
+            Pageable pageable
     );
 
     /**
@@ -74,8 +80,9 @@ public interface EventRepository extends JpaRepository<Event, Long> {
         JOIN EventUser eu ON eu.event = e
         WHERE eu.user.id = :userId
     """)
-    List<Event> findAllByUserId(
-            @Param("userId") Long userId
+    Page<Event> findAllByUserId(
+            @Param("userId") Long userId,
+            Pageable pageable
     );
 
     /**
@@ -90,9 +97,10 @@ public interface EventRepository extends JpaRepository<Event, Long> {
           AND e.eventDate >= :start
           AND e.eventDate < :end
     """)
-    List<Event> findAllByUserIdAndDateRange(
+    Page<Event> findAllByUserIdAndDateRange(
             @Param("userId") Long userId,
             @Param("start") Instant start,
-            @Param("end") Instant end
+            @Param("end") Instant end,
+            Pageable pageable
     );
 }

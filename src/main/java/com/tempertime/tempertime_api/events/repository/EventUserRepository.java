@@ -1,6 +1,8 @@
 package com.tempertime.tempertime_api.events.repository;
 
 import com.tempertime.tempertime_api.events.domain.EventUser;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -18,9 +20,19 @@ public interface EventUserRepository extends JpaRepository<EventUser, Long> {
     boolean existsByEventIdAndUserId(Long eventId, Long userId);
 
     /**
-     * Finds all assignments for an event.
+     * Returns all user assignments for a given event.
+     * Used internally in service logic.
      */
     List<EventUser> findAllByEventId(Long eventId);
+
+    /**
+     * Returns user assignments for a given event with pagination.
+     * Intended for API responses only.
+     */
+    Page<EventUser> findAllByEventId(
+            Long eventId,
+            Pageable pageable
+    );
 
     /**
      * Returns the number of users assigned to the given event.
