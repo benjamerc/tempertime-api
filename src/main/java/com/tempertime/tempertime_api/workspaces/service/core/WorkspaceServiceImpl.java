@@ -4,6 +4,7 @@ import com.tempertime.tempertime_api.common.hash.Hash;
 import com.tempertime.tempertime_api.common.normalizer.InputNormalizer;
 import com.tempertime.tempertime_api.common.pagination.PageMapper;
 import com.tempertime.tempertime_api.common.pagination.PageResponse;
+import com.tempertime.tempertime_api.common.pagination.PaginationValidator;
 import com.tempertime.tempertime_api.events.service.access.EventAccessService;
 import com.tempertime.tempertime_api.users.domain.User;
 import com.tempertime.tempertime_api.users.service.loader.UserLoader;
@@ -64,6 +65,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     private final ColorValidator colorValidator;
     private final WorkspaceInviteCodeGenerator workspaceInviteCodeGenerator;
     private final InputNormalizer inputNormalizer;
+    private final PaginationValidator paginationValidator;
 
     // Configuration Properties
     private final WorkspaceConstraintsProperties workspaceConstraintsProperties;
@@ -125,8 +127,10 @@ public class WorkspaceServiceImpl implements WorkspaceService {
             Pageable pageable
     ) {
 
+        Pageable validatedPageable = paginationValidator.validate(pageable);
+
         Page<WorkspaceUser> page =
-                workspaceUserRepository.findAllByUserId(userId, pageable);
+                workspaceUserRepository.findAllByUserId(userId, validatedPageable);
 
         Page<WorkspaceListItemResponse> mappedPage =
                 page.map(workspaceUserMapper::toWorkspaceListItemResponse);
@@ -326,10 +330,12 @@ public class WorkspaceServiceImpl implements WorkspaceService {
             Pageable pageable
     ) {
 
+        Pageable validatedPageable = paginationValidator.validate(pageable);
+
         workspaceAccessService.requireAccessibleWorkspace(workspaceId, userId);
 
         Page<WorkspaceUser> page =
-                workspaceUserRepository.findByWorkspaceId(workspaceId, pageable);
+                workspaceUserRepository.findByWorkspaceId(workspaceId, validatedPageable);
 
         Page<WorkspaceUserResponse> mappedPage =
                 page.map(workspaceUserMapper::toWorkspaceUserResponse);
