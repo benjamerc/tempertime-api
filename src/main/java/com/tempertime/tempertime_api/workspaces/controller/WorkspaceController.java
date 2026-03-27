@@ -1,5 +1,6 @@
 package com.tempertime.tempertime_api.workspaces.controller;
 
+import com.tempertime.tempertime_api.common.pagination.PageResponse;
 import com.tempertime.tempertime_api.security.core.CurrentUserProvider;
 import com.tempertime.tempertime_api.workspaces.dto.request.WorkspaceCreateRequest;
 import com.tempertime.tempertime_api.workspaces.dto.request.WorkspaceJoinRequest;
@@ -8,12 +9,13 @@ import com.tempertime.tempertime_api.workspaces.dto.response.*;
 import com.tempertime.tempertime_api.workspaces.service.core.WorkspaceService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/workspaces")
@@ -41,11 +43,20 @@ public class WorkspaceController {
 
     @GetMapping
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<List<WorkspaceListItemResponse>> getUserWorkspaces() {
+    public ResponseEntity<PageResponse<WorkspaceListItemResponse>> getUserWorkspaces(
+            @PageableDefault(
+                    page = 0,
+                    size = 20,
+                    sort = "workspace.name",
+                    direction = Sort.Direction.ASC
+            )
+            Pageable pageable
+    ) {
 
         return ResponseEntity.ok(
                 workspaceService.getUserWorkspaces(
-                        currentUserProvider.getUserId()
+                        currentUserProvider.getUserId(),
+                        pageable
                 )
         );
     }
@@ -194,14 +205,22 @@ public class WorkspaceController {
 
     @GetMapping("/{workspaceId}/users")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<List<WorkspaceUserResponse>> getWorkspaceUsers(
-            @PathVariable Long workspaceId
+    public ResponseEntity<PageResponse<WorkspaceUserResponse>> getWorkspaceUsers(
+            @PathVariable Long workspaceId,
+            @PageableDefault(
+                    page = 0,
+                    size = 20,
+                    sort = "user.firstName",
+                    direction = Sort.Direction.ASC
+            )
+            Pageable pageable
     ) {
 
         return ResponseEntity.ok(
                 workspaceService.getWorkspaceUsers(
                         workspaceId,
-                        currentUserProvider.getUserId()
+                        currentUserProvider.getUserId(),
+                        pageable
                 )
         );
     }
