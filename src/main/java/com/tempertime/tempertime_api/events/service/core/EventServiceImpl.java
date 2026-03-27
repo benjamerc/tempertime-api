@@ -6,6 +6,7 @@ import com.tempertime.tempertime_api.common.color.ColorValidator;
 import com.tempertime.tempertime_api.common.normalizer.InputNormalizer;
 import com.tempertime.tempertime_api.common.pagination.PageMapper;
 import com.tempertime.tempertime_api.common.pagination.PageResponse;
+import com.tempertime.tempertime_api.common.pagination.PaginationValidator;
 import com.tempertime.tempertime_api.events.dto.internal.TimeRange;
 import com.tempertime.tempertime_api.events.dto.request.EventAssignUserRequest;
 import com.tempertime.tempertime_api.events.dto.request.EventCreateRequest;
@@ -68,6 +69,7 @@ public class EventServiceImpl implements EventService {
     private final EventPeriodResolver eventPeriodResolver;
     private final EventDateRules eventDateRules;
     private final InputNormalizer inputNormalizer;
+    private final PaginationValidator paginationValidator;
 
     /**
      * Creates a new event within a workspace and assigns the creator to it.
@@ -191,6 +193,9 @@ public class EventServiceImpl implements EventService {
     ) {
 
         workspaceAccessService.requireAccessibleWorkspace(workspaceId, userId);
+
+        Pageable validatedPageable = paginationValidator.validate(pageable);
+
         if (period != EventPeriod.ALL && timeZone == null) {
             throw new TimeZoneMissingException();
         }
@@ -211,13 +216,13 @@ public class EventServiceImpl implements EventService {
                                 userId,
                                 r.start(),
                                 r.end(),
-                                pageable
+                                validatedPageable
                         ))
                 .orElseGet(() ->
                         eventRepository.findEventsByWorkspaceAndUser(
                                 workspaceId,
                                 userId,
-                                pageable
+                                validatedPageable
                         )
                 );
 
@@ -347,6 +352,8 @@ public class EventServiceImpl implements EventService {
         // Validate workspace exists and user has access
         workspaceAccessService.requireAccessibleWorkspace(workspaceId, userId);
 
+        Pageable validatedPageable = paginationValidator.validate(pageable);
+
         eventLoader.loadOrThrow(workspaceId, eventId);
 
         // Validate user has access to event
@@ -354,7 +361,7 @@ public class EventServiceImpl implements EventService {
             throw new EventAccessDeniedException();
         }
 
-        Page<EventUser> page = eventUserRepository.findAllByEventId(eventId, pageable);
+        Page<EventUser> page = eventUserRepository.findAllByEventId(eventId, validatedPageable);
 
         Page<EventAssignedUserResponse> mappedPage =
                 page.map(eventUserMapper::toEventAssignedUserResponse);

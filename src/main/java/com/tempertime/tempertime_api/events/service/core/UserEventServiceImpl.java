@@ -2,6 +2,7 @@ package com.tempertime.tempertime_api.events.service.core;
 
 import com.tempertime.tempertime_api.common.pagination.PageMapper;
 import com.tempertime.tempertime_api.common.pagination.PageResponse;
+import com.tempertime.tempertime_api.common.pagination.PaginationValidator;
 import com.tempertime.tempertime_api.events.exception.TimeZoneMissingException;
 import com.tempertime.tempertime_api.events.service.period.EventPeriodResolver;
 import com.tempertime.tempertime_api.events.domain.Event;
@@ -28,6 +29,7 @@ public class UserEventServiceImpl implements UserEventService {
     private final EventRepository eventRepository;
     private final UserEventMapper userEventMapper;
     private final EventPeriodResolver eventPeriodResolver;
+    private final PaginationValidator paginationValidator;
 
     /**
      * <p>Retrieves events assigned to a user within the specified period.</p>
@@ -53,6 +55,8 @@ public class UserEventServiceImpl implements UserEventService {
             Pageable pageable
     ) {
 
+        Pageable validatedPageable = paginationValidator.validate(pageable);
+
         // Validates that timeZone is provided for periods that require it
         if (period != EventPeriod.ALL && timeZone == null) {
             throw new TimeZoneMissingException();
@@ -73,12 +77,12 @@ public class UserEventServiceImpl implements UserEventService {
                                 userId,
                                 r.start(),
                                 r.end(),
-                                pageable
+                                validatedPageable
                         ))
                 .orElseGet(() ->
                         eventRepository.findAllByUserId(
                                 userId,
-                                pageable
+                                validatedPageable
                         )
                 );
 
