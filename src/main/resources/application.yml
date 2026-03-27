@@ -27,6 +27,9 @@ application:
       refresh-token:
         expiration: ${JWT_REFRESH_EXPIRATION}
 
+  pagination:
+    max-page-size: 100
+
   workspaces:
     constraints:
       max-users: 50
