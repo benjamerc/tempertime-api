@@ -1,10 +1,10 @@
 package com.tempertime.tempertime_api.workspaces.service.core;
 
+import com.tempertime.tempertime_api.common.pagination.PageResponse;
 import com.tempertime.tempertime_api.workspaces.dto.request.WorkspaceCreateRequest;
 import com.tempertime.tempertime_api.workspaces.dto.request.WorkspaceUpdateRequest;
 import com.tempertime.tempertime_api.workspaces.dto.response.*;
-
-import java.util.List;
+import org.springframework.data.domain.Pageable;
 
 /**
  * Workspace application service (user-scoped operations).
@@ -19,7 +19,10 @@ public interface WorkspaceService {
     /**
      * Retrieves the workspaces for a given user.
      */
-    List<WorkspaceListItemResponse> getUserWorkspaces(Long userId);
+    PageResponse<WorkspaceListItemResponse> getUserWorkspaces(
+            Long userId,
+            Pageable pageable
+    );
 
     /**
      * Retrieves workspace details scoped to the given user.
@@ -63,7 +66,11 @@ public interface WorkspaceService {
     /**
      * Retrieves all users of the workspace along with their roles.
      */
-    List<WorkspaceUserResponse> getWorkspaceUsers(Long workspaceId, Long userId);
+    PageResponse<WorkspaceUserResponse> getWorkspaceUsers(
+            Long workspaceId,
+            Long userId,
+            Pageable pageable
+    );
 
     /**
      * Removes a user from a workspace.

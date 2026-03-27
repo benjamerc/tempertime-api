@@ -2,6 +2,8 @@ package com.tempertime.tempertime_api.workspaces.service.core;
 
 import com.tempertime.tempertime_api.common.hash.Hash;
 import com.tempertime.tempertime_api.common.normalizer.InputNormalizer;
+import com.tempertime.tempertime_api.common.pagination.PageMapper;
+import com.tempertime.tempertime_api.common.pagination.PageResponse;
 import com.tempertime.tempertime_api.events.service.access.EventAccessService;
 import com.tempertime.tempertime_api.users.domain.User;
 import com.tempertime.tempertime_api.users.service.loader.UserLoader;
@@ -28,11 +30,12 @@ import com.tempertime.tempertime_api.workspaces.service.invitation.WorkspaceInvi
 import com.tempertime.tempertime_api.workspaces.service.loader.WorkspaceInviteCodeLoader;
 import com.tempertime.tempertime_api.workspaces.service.security.WorkspaceInviteCodeSecurityService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -117,14 +120,18 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     }
 
     @Override
-    public List<WorkspaceListItemResponse> getUserWorkspaces(Long userId) {
+    public PageResponse<WorkspaceListItemResponse> getUserWorkspaces(
+            Long userId,
+            Pageable pageable
+    ) {
 
-        List<WorkspaceUser> workspaceUsers =
-                workspaceUserRepository.findAllByUserId(userId);
+        Page<WorkspaceUser> page =
+                workspaceUserRepository.findAllByUserId(userId, pageable);
 
-        return workspaceUsers.stream()
-                .map(workspaceUserMapper::toWorkspaceListItemResponse)
-                .toList();
+        Page<WorkspaceListItemResponse> mappedPage =
+                page.map(workspaceUserMapper::toWorkspaceListItemResponse);
+
+        return PageMapper.toPageResponse(mappedPage);
     }
 
     /**
@@ -313,14 +320,21 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     }
 
     @Override
-    public List<WorkspaceUserResponse> getWorkspaceUsers(Long workspaceId, Long userId) {
+    public PageResponse<WorkspaceUserResponse> getWorkspaceUsers(
+            Long workspaceId,
+            Long userId,
+            Pageable pageable
+    ) {
 
         workspaceAccessService.requireAccessibleWorkspace(workspaceId, userId);
 
-        return workspaceUserRepository.findByWorkspaceId(workspaceId)
-                .stream()
-                .map(workspaceUserMapper::toWorkspaceUserResponse)
-                .toList();
+        Page<WorkspaceUser> page =
+                workspaceUserRepository.findByWorkspaceId(workspaceId, pageable);
+
+        Page<WorkspaceUserResponse> mappedPage =
+                page.map(workspaceUserMapper::toWorkspaceUserResponse);
+
+        return PageMapper.toPageResponse(mappedPage);
     }
 
     /**
