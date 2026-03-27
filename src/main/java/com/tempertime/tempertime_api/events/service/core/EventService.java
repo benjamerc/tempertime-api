@@ -1,14 +1,15 @@
 package com.tempertime.tempertime_api.events.service.core;
 
+import com.tempertime.tempertime_api.common.pagination.PageResponse;
 import com.tempertime.tempertime_api.events.dto.request.EventAssignUserRequest;
 import com.tempertime.tempertime_api.events.dto.request.EventCreateRequest;
 import com.tempertime.tempertime_api.events.dto.request.EventUpdateRequest;
 import com.tempertime.tempertime_api.events.dto.response.*;
 import com.tempertime.tempertime_api.events.domain.EventPeriod;
+import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.List;
 
 /**
  * Service for managing workspace events and user assignments.
@@ -37,12 +38,13 @@ public interface EventService {
     /**
      * Finds all events in a workspace assigned to the user.
      */
-    List<EventListItemResponse> getEvents(
+    PageResponse<EventListItemResponse> getEvents(
             Long workspaceId,
             Long userId,
             EventPeriod period,
             ZoneId timeZone,
-            LocalDate date
+            LocalDate date,
+            Pageable pageable
     );
 
     /**
@@ -73,10 +75,11 @@ public interface EventService {
     /**
      * Retrieves users assigned to an event.
      */
-    List<EventAssignedUserResponse> getEventAssignedUsers(
+    PageResponse<EventAssignedUserResponse> getEventAssignedUsers(
             Long workspaceId,
             Long eventId,
-            Long userId
+            Long userId,
+            Pageable pageable
     );
 
     /**

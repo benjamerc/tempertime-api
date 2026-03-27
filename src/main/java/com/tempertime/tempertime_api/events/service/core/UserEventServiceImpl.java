@@ -1,5 +1,7 @@
 package com.tempertime.tempertime_api.events.service.core;
 
+import com.tempertime.tempertime_api.common.pagination.PageMapper;
+import com.tempertime.tempertime_api.common.pagination.PageResponse;
 import com.tempertime.tempertime_api.events.exception.TimeZoneMissingException;
 import com.tempertime.tempertime_api.events.service.period.EventPeriodResolver;
 import com.tempertime.tempertime_api.events.domain.Event;
@@ -9,13 +11,14 @@ import com.tempertime.tempertime_api.events.mapper.UserEventMapper;
 import com.tempertime.tempertime_api.events.domain.EventPeriod;
 import com.tempertime.tempertime_api.events.repository.EventRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -42,11 +45,12 @@ public class UserEventServiceImpl implements UserEventService {
      */
     @Transactional(readOnly = true)
     @Override
-    public List<UserEventResponse> getUserEvents(
+    public PageResponse<UserEventResponse> getUserEvents(
             Long userId,
             EventPeriod period,
             ZoneId timeZone,
-            LocalDate date
+            LocalDate date,
+            Pageable pageable
     ) {
 
         // Validates that timeZone is provided for periods that require it
@@ -63,19 +67,24 @@ public class UserEventServiceImpl implements UserEventService {
                         ? Optional.empty()
                         : eventPeriodResolver.resolve(period, timeZone, baseDate);
 
-        List<Event> events = range
+        Page<Event> page = range
                 .map(r -> eventRepository
                         .findAllByUserIdAndDateRange(
                                 userId,
                                 r.start(),
-                                r.end()
+                                r.end(),
+                                pageable
                         ))
                 .orElseGet(() ->
-                        eventRepository.findAllByUserId(userId)
+                        eventRepository.findAllByUserId(
+                                userId,
+                                pageable
+                        )
                 );
 
-        return events.stream()
-                .map(userEventMapper::toUserEventResponse)
-                .toList();
+        Page<UserEventResponse> mappedPage =
+                page.map(userEventMapper::toUserEventResponse);
+
+        return PageMapper.toPageResponse(mappedPage);
     }
 }

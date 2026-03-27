@@ -4,6 +4,8 @@ import com.tempertime.tempertime_api.common.color.ColorGenerator;
 import com.tempertime.tempertime_api.common.color.ColorUtil;
 import com.tempertime.tempertime_api.common.color.ColorValidator;
 import com.tempertime.tempertime_api.common.normalizer.InputNormalizer;
+import com.tempertime.tempertime_api.common.pagination.PageMapper;
+import com.tempertime.tempertime_api.common.pagination.PageResponse;
 import com.tempertime.tempertime_api.events.dto.internal.TimeRange;
 import com.tempertime.tempertime_api.events.dto.request.EventAssignUserRequest;
 import com.tempertime.tempertime_api.events.dto.request.EventCreateRequest;
@@ -26,6 +28,9 @@ import com.tempertime.tempertime_api.workspaces.exception.WorkspaceAccessDeniedE
 import com.tempertime.tempertime_api.workspaces.service.authorization.WorkspaceAccessService;
 import com.tempertime.tempertime_api.workspaces.domain.Workspace;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,6 +46,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class EventServiceImpl implements EventService {
 
     // Repositories
@@ -175,17 +181,16 @@ public class EventServiceImpl implements EventService {
      */
     @Transactional(readOnly = true)
     @Override
-    public List<EventListItemResponse> getEvents(
+    public PageResponse<EventListItemResponse> getEvents(
             Long workspaceId,
             Long userId,
             EventPeriod period,
             ZoneId timeZone,
-            LocalDate date) {
+            LocalDate date,
+            Pageable pageable
+    ) {
 
-        // Validate workspace exists and user has access to it
         workspaceAccessService.requireAccessibleWorkspace(workspaceId, userId);
-
-        // Validate timeZone when required
         if (period != EventPeriod.ALL && timeZone == null) {
             throw new TimeZoneMissingException();
         }
@@ -199,24 +204,27 @@ public class EventServiceImpl implements EventService {
                         ? Optional.empty()
                         : eventPeriodResolver.resolve(period, timeZone, baseDate);
 
-        List<Event> events = range
+        Page<Event> page = range
                 .map(r -> eventRepository
                         .findEventsByWorkspaceAndUserAndDateRange(
                                 workspaceId,
                                 userId,
                                 r.start(),
-                                r.end()
+                                r.end(),
+                                pageable
                         ))
                 .orElseGet(() ->
                         eventRepository.findEventsByWorkspaceAndUser(
                                 workspaceId,
-                                userId
+                                userId,
+                                pageable
                         )
                 );
 
-        return events.stream()
-                .map(eventMapper::toEventListItemResponse)
-                .toList();
+        Page<EventListItemResponse> mappedPage =
+                page.map(eventMapper::toEventListItemResponse);
+
+        return PageMapper.toPageResponse(mappedPage);
     }
 
     @Transactional(readOnly = true)
@@ -329,10 +337,12 @@ public class EventServiceImpl implements EventService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<EventAssignedUserResponse> getEventAssignedUsers(
+    public PageResponse<EventAssignedUserResponse> getEventAssignedUsers(
             Long workspaceId,
             Long eventId,
-            Long userId) {
+            Long userId,
+            Pageable pageable
+    ) {
 
         // Validate workspace exists and user has access
         workspaceAccessService.requireAccessibleWorkspace(workspaceId, userId);
@@ -344,10 +354,12 @@ public class EventServiceImpl implements EventService {
             throw new EventAccessDeniedException();
         }
 
-        return eventUserRepository.findAllByEventId(eventId)
-                .stream()
-                .map(eventUserMapper::toEventAssignedUserResponse)
-                .toList();
+        Page<EventUser> page = eventUserRepository.findAllByEventId(eventId, pageable);
+
+        Page<EventAssignedUserResponse> mappedPage =
+                page.map(eventUserMapper::toEventAssignedUserResponse);
+
+        return PageMapper.toPageResponse(mappedPage);
     }
 
     @Transactional
