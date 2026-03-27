@@ -31,6 +31,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
@@ -268,6 +269,8 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
         workspaceInviteCode.setInviteCodeEncrypted(encryptedInviteCode);
         workspaceInviteCode.setInviteCodeHash(hashedInviteCode);
+        workspaceInviteCode.setLastRegeneratedAt(Instant.now());
+
         workspaceInviteCodeRepository.save(workspaceInviteCode);
 
         return workspaceInviteCodeMapper

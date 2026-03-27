@@ -9,5 +9,6 @@ public record WorkspaceInviteCodeResponse(
 
         String inviteCode,
         Boolean inviteEnabled,
-        Instant createdAt
+        Instant createdAt,
+        Instant lastRegeneratedAt
 ) {}
