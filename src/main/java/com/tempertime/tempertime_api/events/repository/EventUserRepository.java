@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -88,4 +89,20 @@ public interface EventUserRepository extends JpaRepository<EventUser, Long> {
        WHERE eu.user.id = :userId
        """)
     Set<Long> findEventIdsByUserId(Long userId);
+
+    /**
+     * Returns the number of users assigned to each event
+     * for the given collection of event ids.
+     * Note: Events with no assigned users will not be included in the result,
+     * so missing ids should be treated as having a count of 0.
+     */
+    @Query("""
+        SELECT eu.event.id, COUNT(eu)
+        FROM EventUser eu
+        WHERE eu.event.id IN :eventIds
+        GROUP BY eu.event.id
+    """)
+    List<Object[]> countUsersByEventIds(
+            @Param("eventIds") Collection<Long> eventIds
+    );
 }
