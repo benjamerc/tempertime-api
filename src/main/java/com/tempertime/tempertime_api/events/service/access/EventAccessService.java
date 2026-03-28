@@ -11,8 +11,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -63,6 +66,10 @@ public class EventAccessService {
                 .toList();
 
         eventUserRepository.saveAll(newAssignments);
+
+        updateHasActiveUsersByEventIds(
+                eventsToAssign.stream().map(Event::getId).toList()
+        );
     }
 
     /**
@@ -117,19 +124,38 @@ public class EventAccessService {
 
     /**
      * Updates the hasActiveUsers flag for the given events
-     * based on their current user assignments.
+     * based on the number of assigned users.
+     * True if there is at least one user besides the owner.
      */
-    private void updateHasActiveUsersByEventIds(Set<Long> eventIds) {
+    private void updateHasActiveUsersByEventIds(Collection<Long> eventIds) {
 
         List<Event> events = eventRepository.findAllById(eventIds);
 
-        for (Event event : events) {
-            long assignedCount =
-                    eventUserRepository.countByEventId(event.getId());
+        if (events.isEmpty()) {
+            return;
+        }
 
+        Map<Long, Long> countMap = getUserCountMap(eventIds);
+
+        for (Event event : events) {
+            long assignedCount = countMap.getOrDefault(event.getId(), 0L);
             event.setHasActiveUsers(assignedCount > 1);
         }
 
         eventRepository.saveAll(events);
+    }
+
+    /**
+     * Returns a map of eventId -> assigned user count
+     * for the given event ids.
+     */
+    private Map<Long, Long> getUserCountMap(Collection<Long> eventIds) {
+        return eventUserRepository
+                .countUsersByEventIds(eventIds)
+                .stream()
+                .collect(Collectors.toMap(
+                        row -> (Long) row[0],
+                        row -> (Long) row[1]
+                ));
     }
 }
