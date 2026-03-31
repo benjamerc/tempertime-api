@@ -105,4 +105,14 @@ public interface EventUserRepository extends JpaRepository<EventUser, Long> {
     List<Object[]> countUsersByEventIds(
             @Param("eventIds") Collection<Long> eventIds
     );
+
+    /**
+     * Returns user IDs linked to the specified event.
+     */
+    @Query("""
+        SELECT eu.user.id
+        FROM EventUser eu
+        WHERE eu.event.id = :eventId
+    """)
+    Set<Long> findUserIdsByEventId(@Param("eventId") Long eventId);
 }
