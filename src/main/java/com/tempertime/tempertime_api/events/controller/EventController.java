@@ -156,7 +156,7 @@ public class EventController {
             @PageableDefault(
                     page = 0,
                     size = 20,
-                    sort = "firstName",
+                    sort = "user.firstName",
                     direction = Sort.Direction.ASC
             )
             Pageable pageable
