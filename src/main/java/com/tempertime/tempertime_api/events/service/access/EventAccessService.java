@@ -7,6 +7,7 @@ import com.tempertime.tempertime_api.events.repository.EventRepository;
 import com.tempertime.tempertime_api.events.repository.EventUserRepository;
 import com.tempertime.tempertime_api.users.domain.User;
 import com.tempertime.tempertime_api.users.service.loader.UserLoader;
+import com.tempertime.tempertime_api.workspaces.repository.WorkspaceUserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +24,7 @@ public class EventAccessService {
 
     private final EventRepository  eventRepository;
     private final EventUserRepository eventUserRepository;
+    private final WorkspaceUserRepository workspaceUserRepository;
     private final UserLoader userLoader;
 
     /**
@@ -70,6 +72,39 @@ public class EventAccessService {
         updateHasActiveUsersByEventIds(
                 eventsToAssign.stream().map(Event::getId).toList()
         );
+    }
+
+    /**
+     * Assigns a GLOBAL event to all users within the specified workspace
+     * who are not already assigned to it.
+     */
+    @Transactional
+    public void assignGlobalEventToAllUsers(Long eventId, Long workspaceId) {
+
+        List<User> users = workspaceUserRepository.findUsersByWorkspaceId(workspaceId);
+
+        if (users.isEmpty()) {
+            return;
+        }
+
+        Set<Long> alreadyAssignedUserIds =
+                eventUserRepository.findUserIdsByEventId(eventId);
+
+        List<EventUser> newAssignments = users.stream()
+                .filter(user -> !alreadyAssignedUserIds.contains(user.getId()))
+                .map(user -> EventUser.builder()
+                        .event(Event.builder().id(eventId).build())
+                        .user(user)
+                        .build())
+                .toList();
+
+        if (newAssignments.isEmpty()) {
+            return;
+        }
+
+        eventUserRepository.saveAll(newAssignments);
+
+        updateHasActiveUsersByEventIds(List.of(eventId));
     }
 
     /**
