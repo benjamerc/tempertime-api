@@ -13,6 +13,7 @@ import com.tempertime.tempertime_api.events.dto.request.EventCreateRequest;
 import com.tempertime.tempertime_api.events.dto.request.EventUpdateRequest;
 import com.tempertime.tempertime_api.events.dto.response.*;
 import com.tempertime.tempertime_api.events.exception.*;
+import com.tempertime.tempertime_api.events.service.access.EventAccessService;
 import com.tempertime.tempertime_api.events.service.period.EventPeriodResolver;
 import com.tempertime.tempertime_api.events.mapper.EventMapper;
 import com.tempertime.tempertime_api.events.mapper.EventUserMapper;
@@ -56,6 +57,7 @@ public class EventServiceImpl implements EventService {
 
     // Loaders / Services
     private final WorkspaceAccessService workspaceAccessService;
+    private final EventAccessService eventAccessService;
     private final EventLoader eventLoader;
     private final UserLoader userLoader;
 
@@ -72,9 +74,10 @@ public class EventServiceImpl implements EventService {
     private final PaginationValidator paginationValidator;
 
     /**
-     * Creates a new event within a workspace and assigns the creator to it.
-     * This guarantees that every event always has at least one user assigned
-     * (the creator).
+     * Creates a new event within a workspace.
+     * GLOBAL events are assigned to all workspace users,
+     * while SPECIFIC events are assigned only to the creator.
+     * This guarantees that every event always has at least one user assigned.
      */
     @Transactional
     @Override
@@ -111,14 +114,25 @@ public class EventServiceImpl implements EventService {
         // Persist the event
         Event savedEvent = eventRepository.save(event);
 
-        // Assign the creator to the event
-        EventUser eventUser = EventUser.builder()
-                .event(savedEvent)
-                .user(userLoader.loadUserOrThrow(userId))
-                .build();
+        // GLOBAL events must be assigned to all workspace users
+        if (request.scope() == EventScope.GLOBAL) {
 
-        // Persist the event-user association
-        eventUserRepository.save(eventUser);
+            eventAccessService.assignGlobalEventToAllUsers(
+                    savedEvent.getId(),
+                    workspace.getId()
+            );
+
+        } else {
+
+            // Assign the creator to the SPECIFIC event
+            EventUser eventUser = EventUser.builder()
+                    .event(savedEvent)
+                    .user(userLoader.loadUserOrThrow(userId))
+                    .build();
+
+            // Persist the event-user association
+            eventUserRepository.save(eventUser);
+        }
 
         // Return the created event response
         return eventMapper.toEventCreateResponse(savedEvent);
