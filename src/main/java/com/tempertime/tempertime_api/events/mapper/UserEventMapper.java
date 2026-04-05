@@ -12,5 +12,7 @@ import org.mapstruct.Mapping;
 public interface UserEventMapper {
 
     @Mapping(target = "workspaceId", source = "workspace.id")
+    @Mapping(target = "workspaceName", source = "workspace.name")
+    @Mapping(target = "workspaceColor", source = "workspace.color")
     UserEventResponse toUserEventResponse(Event event);
 }

@@ -11,5 +11,7 @@ public record UserEventResponse(
         String title,
         Instant eventDate,
         String color,
-        Long workspaceId
+        Long workspaceId,
+        String workspaceName,
+        String workspaceColor
 ) {}
