@@ -62,7 +62,7 @@ public class UserEventServiceImpl implements UserEventService {
             throw new TimeZoneMissingException();
         }
 
-        ZonedDateTime baseDate = (date != null)
+        ZonedDateTime baseDate = (date != null && period != EventPeriod.ALL)
                 ? date.atStartOfDay(timeZone)
                 : null;
 
