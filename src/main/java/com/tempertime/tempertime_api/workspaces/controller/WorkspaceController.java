@@ -199,13 +199,14 @@ public class WorkspaceController {
     public ResponseEntity<WorkspaceJoinResponse> joinWorkspace(
             @Valid @RequestBody WorkspaceJoinRequest request
     ) {
-
-        return ResponseEntity.ok(
-                workspaceService.joinWorkspace(
-                        request.inviteCode(),
-                        currentUserProvider.getUserId()
-                )
-        );
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(
+                        workspaceService.joinWorkspace(
+                                request.inviteCode(),
+                                currentUserProvider.getUserId()
+                        )
+                );
     }
 
     @GetMapping("/{workspaceId}/users")
