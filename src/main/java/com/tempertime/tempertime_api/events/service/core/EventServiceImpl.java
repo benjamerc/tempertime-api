@@ -214,7 +214,7 @@ public class EventServiceImpl implements EventService {
             throw new TimeZoneMissingException();
         }
 
-        ZonedDateTime baseDate = (date != null)
+        ZonedDateTime baseDate = (date != null && period != EventPeriod.ALL)
                 ? date.atStartOfDay(timeZone)
                 : null;
 
@@ -257,7 +257,7 @@ public class EventServiceImpl implements EventService {
         workspaceAccessService.requireAccessibleWorkspace(workspaceId, userId);
 
         // Validate event exists and belongs to the workspace
-        eventLoader.loadOrThrow(workspaceId, eventId);
+        Event event = eventLoader.loadOrThrow(workspaceId, eventId);
 
         // Validate user has access to event
         if (!eventUserRepository.existsByEventIdAndUserId(eventId, userId)) {
@@ -265,7 +265,7 @@ public class EventServiceImpl implements EventService {
         }
 
         // Load and return event details
-        return eventMapper.toEventResponse(eventLoader.loadOrThrow(workspaceId, eventId));
+        return eventMapper.toEventResponse(event);
     }
 
     @Transactional
