@@ -1,4 +1,4 @@
-package com.tempertime.tempertime_api.events;
+package com.tempertime.tempertime_api.events.data;
 
 import com.tempertime.tempertime_api.events.domain.Event;
 import com.tempertime.tempertime_api.events.domain.EventScope;

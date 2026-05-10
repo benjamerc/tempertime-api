@@ -1,6 +1,6 @@
 package com.tempertime.tempertime_api.events.repository;
 
-import com.tempertime.tempertime_api.events.EventTestDataProvider;
+import com.tempertime.tempertime_api.events.data.EventTestDataProvider;
 import com.tempertime.tempertime_api.events.domain.Event;
 import com.tempertime.tempertime_api.events.domain.EventUser;
 import com.tempertime.tempertime_api.users.UserTestDataProvider;

@@ -6,7 +6,7 @@ import com.tempertime.tempertime_api.common.color.InvalidColorFormatException;
 import com.tempertime.tempertime_api.common.normalizer.InputNormalizer;
 import com.tempertime.tempertime_api.common.pagination.PageResponse;
 import com.tempertime.tempertime_api.common.pagination.PaginationValidator;
-import com.tempertime.tempertime_api.events.EventTestDataProvider;
+import com.tempertime.tempertime_api.events.data.EventTestDataProvider;
 import com.tempertime.tempertime_api.events.domain.Event;
 import com.tempertime.tempertime_api.events.domain.EventPeriod;
 import com.tempertime.tempertime_api.events.domain.EventScope;

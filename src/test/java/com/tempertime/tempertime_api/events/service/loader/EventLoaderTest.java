@@ -1,6 +1,6 @@
 package com.tempertime.tempertime_api.events.service.loader;
 
-import com.tempertime.tempertime_api.events.EventTestDataProvider;
+import com.tempertime.tempertime_api.events.data.EventTestDataProvider;
 import com.tempertime.tempertime_api.events.domain.Event;
 import com.tempertime.tempertime_api.events.exception.EventNotFoundException;
 import com.tempertime.tempertime_api.events.repository.EventRepository;

@@ -4,7 +4,7 @@ import com.tempertime.tempertime_api.common.error.ApiErrorBuilder;
 import com.tempertime.tempertime_api.common.error.GlobalExceptionHandler;
 import com.tempertime.tempertime_api.common.error.model.ErrorCode;
 import com.tempertime.tempertime_api.common.pagination.PageResponse;
-import com.tempertime.tempertime_api.events.EventTestDataProvider;
+import com.tempertime.tempertime_api.events.data.EventTestDataProvider;
 import com.tempertime.tempertime_api.events.domain.Event;
 import com.tempertime.tempertime_api.events.domain.EventPeriod;
 import com.tempertime.tempertime_api.events.dto.response.EventAssignedUserResponse;
