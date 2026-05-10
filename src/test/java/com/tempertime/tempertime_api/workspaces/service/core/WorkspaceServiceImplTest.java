@@ -7,7 +7,7 @@ import com.tempertime.tempertime_api.common.normalizer.InputNormalizer;
 import com.tempertime.tempertime_api.common.pagination.PageResponse;
 import com.tempertime.tempertime_api.common.pagination.PaginationValidator;
 import com.tempertime.tempertime_api.events.service.access.EventAccessService;
-import com.tempertime.tempertime_api.users.UserTestDataProvider;
+import com.tempertime.tempertime_api.users.data.UserTestDataProvider;
 import com.tempertime.tempertime_api.users.domain.User;
 import com.tempertime.tempertime_api.users.exception.UserNotFoundException;
 import com.tempertime.tempertime_api.users.service.loader.UserLoader;

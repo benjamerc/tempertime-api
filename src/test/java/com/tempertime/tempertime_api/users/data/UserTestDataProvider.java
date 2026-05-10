@@ -1,4 +1,4 @@
-package com.tempertime.tempertime_api.users;
+package com.tempertime.tempertime_api.users.data;
 
 import com.tempertime.tempertime_api.users.domain.User;
 import com.tempertime.tempertime_api.users.dto.response.UserProfileResponse;

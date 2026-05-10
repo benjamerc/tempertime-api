@@ -3,7 +3,7 @@ package com.tempertime.tempertime_api.events.repository;
 import com.tempertime.tempertime_api.events.data.EventTestDataProvider;
 import com.tempertime.tempertime_api.events.domain.Event;
 import com.tempertime.tempertime_api.events.domain.EventUser;
-import com.tempertime.tempertime_api.users.UserTestDataProvider;
+import com.tempertime.tempertime_api.users.data.UserTestDataProvider;
 import com.tempertime.tempertime_api.users.domain.User;
 import com.tempertime.tempertime_api.users.repository.UserRepository;
 import com.tempertime.tempertime_api.workspaces.data.WorkspaceTestDataProvider;

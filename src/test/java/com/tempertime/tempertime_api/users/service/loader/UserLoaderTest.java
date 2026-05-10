@@ -1,6 +1,6 @@
 package com.tempertime.tempertime_api.users.service.loader;
 
-import com.tempertime.tempertime_api.users.UserTestDataProvider;
+import com.tempertime.tempertime_api.users.data.UserTestDataProvider;
 import com.tempertime.tempertime_api.users.domain.User;
 import com.tempertime.tempertime_api.users.exception.UserNotFoundException;
 import com.tempertime.tempertime_api.users.repository.UserRepository;

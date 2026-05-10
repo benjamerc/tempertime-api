@@ -24,7 +24,7 @@ import com.tempertime.tempertime_api.security.core.CurrentUserProvider;
 import com.tempertime.tempertime_api.security.jwt.AccessTokenService;
 import com.tempertime.tempertime_api.security.jwt.JwtAuthenticationFilter;
 import com.tempertime.tempertime_api.events.support.EventTestDateFactory;
-import com.tempertime.tempertime_api.users.UserTestDataProvider;
+import com.tempertime.tempertime_api.users.data.UserTestDataProvider;
 import com.tempertime.tempertime_api.users.domain.User;
 import com.tempertime.tempertime_api.users.repository.UserRepository;
 import com.tempertime.tempertime_api.workspaces.data.WorkspaceTestDataProvider;

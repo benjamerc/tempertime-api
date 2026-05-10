@@ -8,7 +8,7 @@ import com.tempertime.tempertime_api.common.validator.InvalidPasswordFormatExcep
 import com.tempertime.tempertime_api.security.core.CurrentUserProvider;
 import com.tempertime.tempertime_api.security.jwt.AccessTokenService;
 import com.tempertime.tempertime_api.security.jwt.JwtAuthenticationFilter;
-import com.tempertime.tempertime_api.users.UserTestDataProvider;
+import com.tempertime.tempertime_api.users.data.UserTestDataProvider;
 import com.tempertime.tempertime_api.users.domain.User;
 import com.tempertime.tempertime_api.users.dto.request.UserDeleteAccountRequest;
 import com.tempertime.tempertime_api.users.dto.request.UserUpdatePasswordRequest;

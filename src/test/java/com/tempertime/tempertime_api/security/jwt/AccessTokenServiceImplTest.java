@@ -1,10 +1,7 @@
 package com.tempertime.tempertime_api.security.jwt;
 
-import com.tempertime.tempertime_api.events.dto.response.*;
-import com.tempertime.tempertime_api.events.exception.*;
-
 import com.tempertime.tempertime_api.security.config.JwtProperties;
-import com.tempertime.tempertime_api.users.UserTestDataProvider;
+import com.tempertime.tempertime_api.users.data.UserTestDataProvider;
 import com.tempertime.tempertime_api.users.domain.User;
 
 import com.tempertime.tempertime_api.users.domain.UserRole;

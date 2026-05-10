@@ -5,7 +5,7 @@ import com.tempertime.tempertime_api.events.domain.Event;
 import com.tempertime.tempertime_api.events.domain.EventScope;
 import com.tempertime.tempertime_api.events.repository.EventRepository;
 import com.tempertime.tempertime_api.events.repository.EventUserRepository;
-import com.tempertime.tempertime_api.users.UserTestDataProvider;
+import com.tempertime.tempertime_api.users.data.UserTestDataProvider;
 import com.tempertime.tempertime_api.users.domain.User;
 import com.tempertime.tempertime_api.users.service.loader.UserLoader;
 import com.tempertime.tempertime_api.workspaces.data.WorkspaceTestDataProvider;

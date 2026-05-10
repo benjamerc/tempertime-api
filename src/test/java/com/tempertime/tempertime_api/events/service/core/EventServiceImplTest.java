@@ -25,7 +25,7 @@ import com.tempertime.tempertime_api.events.service.access.EventAccessService;
 import com.tempertime.tempertime_api.events.service.loader.EventLoader;
 import com.tempertime.tempertime_api.events.service.period.EventPeriodResolver;
 import com.tempertime.tempertime_api.events.service.rules.EventDateRules;
-import com.tempertime.tempertime_api.users.UserTestDataProvider;
+import com.tempertime.tempertime_api.users.data.UserTestDataProvider;
 import com.tempertime.tempertime_api.users.domain.User;
 import com.tempertime.tempertime_api.users.service.loader.UserLoader;
 import com.tempertime.tempertime_api.workspaces.data.WorkspaceTestDataProvider;

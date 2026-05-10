@@ -17,7 +17,7 @@ import com.tempertime.tempertime_api.security.exception.RefreshTokenRevokedExcep
 import com.tempertime.tempertime_api.security.jwt.AccessTokenService;
 import com.tempertime.tempertime_api.security.refresh.RefreshToken;
 import com.tempertime.tempertime_api.security.refresh.RefreshTokenService;
-import com.tempertime.tempertime_api.users.UserTestDataProvider;
+import com.tempertime.tempertime_api.users.data.UserTestDataProvider;
 import com.tempertime.tempertime_api.users.domain.User;
 import com.tempertime.tempertime_api.users.repository.UserRepository;
 import org.junit.jupiter.api.Nested;
