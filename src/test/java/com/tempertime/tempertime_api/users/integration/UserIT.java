@@ -10,6 +10,7 @@ import com.tempertime.tempertime_api.security.refresh.RefreshTokenRepository;
 import com.tempertime.tempertime_api.support.IntegrationTestSupport;
 import com.tempertime.tempertime_api.users.dto.response.UserProfileResponse;
 import com.tempertime.tempertime_api.users.repository.UserRepository;
+import com.tempertime.tempertime_api.workspaces.client.WorkspaceTestClient;
 import com.tempertime.tempertime_api.workspaces.dto.response.WorkspaceCreateResponse;
 import com.tempertime.tempertime_api.workspaces.dto.response.WorkspaceListItemResponse;
 import com.tempertime.tempertime_api.workspaces.repository.WorkspaceInviteCodeRepository;
@@ -43,6 +44,8 @@ public class UserIT {
 
     @Autowired
     private IntegrationTestSupport integrationTestSupport;
+    @Autowired
+    private WorkspaceTestClient workspaceTestClient;
 
     @Autowired
     private EventUserRepository eventUserRepository;
@@ -75,7 +78,7 @@ public class UserIT {
 
         // Owner creates workspace
         AuthTokenResponse ownerTokens = integrationTestSupport.registerAndLogin("owner@mail.com", "Password123");
-        WorkspaceCreateResponse workspace = integrationTestSupport.createWorkspace(ownerTokens.accessToken());
+        WorkspaceCreateResponse workspace = workspaceTestClient.createWorkspace(ownerTokens.accessToken());
 
         assertThat(ownerTokens).isNotNull();
         assertThat(ownerTokens.accessToken()).isNotBlank();
