@@ -20,7 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 @Component
-public class IntegrationTestHelper {
+public class IntegrationTestSupport {
 
     @Autowired
     private TestRestTemplate restTemplate;

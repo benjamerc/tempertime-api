@@ -6,7 +6,7 @@ import com.tempertime.tempertime_api.auth.dto.request.AuthRegisterRequest;
 import com.tempertime.tempertime_api.auth.dto.response.AuthRegisterResponse;
 import com.tempertime.tempertime_api.auth.dto.response.AuthTokenResponse;
 import com.tempertime.tempertime_api.security.refresh.RefreshTokenRepository;
-import com.tempertime.tempertime_api.support.IntegrationTestHelper;
+import com.tempertime.tempertime_api.support.IntegrationTestSupport;
 import com.tempertime.tempertime_api.users.dto.response.UserProfileResponse;
 import com.tempertime.tempertime_api.users.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,7 +35,7 @@ public class AuthIT {
     private TestRestTemplate restTemplate;
 
     @Autowired
-    private IntegrationTestHelper testHelper;
+    private IntegrationTestSupport testHelper;
 
     @Autowired
     private UserRepository userRepository;

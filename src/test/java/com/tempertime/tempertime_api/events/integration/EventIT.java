@@ -8,7 +8,7 @@ import com.tempertime.tempertime_api.events.dto.response.EventResponse;
 import com.tempertime.tempertime_api.events.repository.EventRepository;
 import com.tempertime.tempertime_api.events.repository.EventUserRepository;
 import com.tempertime.tempertime_api.security.refresh.RefreshTokenRepository;
-import com.tempertime.tempertime_api.support.IntegrationTestHelper;
+import com.tempertime.tempertime_api.support.IntegrationTestSupport;
 import com.tempertime.tempertime_api.users.repository.UserRepository;
 import com.tempertime.tempertime_api.workspaces.dto.response.WorkspaceCreateResponse;
 import com.tempertime.tempertime_api.workspaces.dto.response.WorkspaceJoinResponse;
@@ -39,7 +39,7 @@ public class EventIT {
     private TestRestTemplate restTemplate;
 
     @Autowired
-    private IntegrationTestHelper testHelper;
+    private IntegrationTestSupport testHelper;
 
     @Autowired
     private EventUserRepository eventUserRepository;
