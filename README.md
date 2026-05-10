@@ -4,7 +4,7 @@
 ![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.5-6DB33F)
 ![MySQL](https://img.shields.io/badge/MySQL-8-4479A1)
 ![JWT](https://img.shields.io/badge/Auth-JWT-black)
-![Tests](https://img.shields.io/badge/Tests-527-success)
+![Tests](https://img.shields.io/badge/Tests-531-success)
 ![License](https://img.shields.io/badge/License-MIT-blue)
 
 ---
@@ -25,7 +25,7 @@ Tempertime allows users to create workspaces, manage group events, assign partic
 - Global and user-specific event management
 - Event filtering with timezone-aware date handling
 - Layered architecture using domain-oriented feature organization
-- Comprehensive testing strategy with 527 automated tests
+- Comprehensive testing strategy with 531 automated tests
 - RESTful API design with validation and global exception handling
 
 ---
@@ -34,7 +34,7 @@ Tempertime allows users to create workspaces, manage group events, assign partic
 
 ### Backend
 - Java 17
-- Spring Boot 3
+- Spring Boot 3.5
 - Spring Security
 - Spring Data JPA
 - Hibernate
@@ -114,9 +114,9 @@ The project includes a multi-layered testing strategy covering persistence, busi
 
 ### Metrics
 
-- 514 unit and integration tests
+- 518 unit and layered integration tests
 - 13 end-to-end tests
-- 527 total automated tests
+- 531 total automated tests
 
 ### Running Tests
 
