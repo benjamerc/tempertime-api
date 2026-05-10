@@ -6,6 +6,7 @@ import com.tempertime.tempertime_api.events.repository.EventUserRepository;
 import com.tempertime.tempertime_api.security.refresh.RefreshTokenRepository;
 import com.tempertime.tempertime_api.support.IntegrationTestSupport;
 import com.tempertime.tempertime_api.users.repository.UserRepository;
+import com.tempertime.tempertime_api.workspaces.client.WorkspaceTestClient;
 import com.tempertime.tempertime_api.workspaces.domain.WorkspaceRole;
 import com.tempertime.tempertime_api.workspaces.dto.request.WorkspaceJoinRequest;
 import com.tempertime.tempertime_api.workspaces.dto.response.WorkspaceCreateResponse;
@@ -39,6 +40,8 @@ public class WorkspaceIT {
 
     @Autowired
     private IntegrationTestSupport integrationTestSupport;
+    @Autowired
+    private WorkspaceTestClient workspaceTestClient;
 
     @Autowired
     private EventUserRepository eventUserRepository;
@@ -71,7 +74,7 @@ public class WorkspaceIT {
 
         // Owner creates workspace
         AuthTokenResponse ownerTokens = integrationTestSupport.registerAndLogin("owner@mail.com", "Password123");
-        WorkspaceCreateResponse workspace = integrationTestSupport.createWorkspace(ownerTokens.accessToken());
+        WorkspaceCreateResponse workspace = workspaceTestClient.createWorkspace(ownerTokens.accessToken());
 
         assertThat(workspace).isNotNull();
         assertThat(workspace.id()).isNotNull();
@@ -112,7 +115,7 @@ public class WorkspaceIT {
     void shouldReturn409_whenDeletingWorkspaceWithoutArchivingFirst() {
 
         AuthTokenResponse ownerTokens = integrationTestSupport.registerAndLogin("owner@mail.com", "Password123");
-        WorkspaceCreateResponse workspace = integrationTestSupport.createWorkspace(ownerTokens.accessToken());
+        WorkspaceCreateResponse workspace = workspaceTestClient.createWorkspace(ownerTokens.accessToken());
 
         ResponseEntity<Void> deleteResponse = restTemplate.exchange(
                 "/api/workspaces/" + workspace.id(),
@@ -138,7 +141,7 @@ public class WorkspaceIT {
     void shouldReturn403_whenOwnerTriesToLeaveWorkspace() {
 
         AuthTokenResponse ownerTokens = integrationTestSupport.registerAndLogin("owner@mail.com", "Password123");
-        WorkspaceCreateResponse workspace = integrationTestSupport.createWorkspace(ownerTokens.accessToken());
+        WorkspaceCreateResponse workspace = workspaceTestClient.createWorkspace(ownerTokens.accessToken());
 
         ResponseEntity<Void> leaveResponse = restTemplate.exchange(
                 "/api/workspaces/" + workspace.id() + "/users/me",
@@ -169,7 +172,7 @@ public class WorkspaceIT {
 
         // Owner creates workspace
         AuthTokenResponse ownerTokens = integrationTestSupport.registerAndLogin("owner@mail.com", "Password123");
-        WorkspaceCreateResponse workspace = integrationTestSupport.createWorkspace(ownerTokens.accessToken());
+        WorkspaceCreateResponse workspace = workspaceTestClient.createWorkspace(ownerTokens.accessToken());
 
         // Member joins
         AuthTokenResponse memberTokens = integrationTestSupport.registerAndLogin("member@mail.com", "Password123");
