@@ -15,4 +15,5 @@ import org.springframework.stereotype.Component;
 public class WorkspaceConstraintsProperties {
 
     private int maxUsers;
+    private int maxEvents;
 }
