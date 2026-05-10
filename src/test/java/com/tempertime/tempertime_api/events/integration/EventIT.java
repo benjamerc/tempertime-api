@@ -1,6 +1,7 @@
 package com.tempertime.tempertime_api.events.integration;
 
 import com.tempertime.tempertime_api.auth.dto.response.AuthTokenResponse;
+import com.tempertime.tempertime_api.events.client.EventTestClient;
 import com.tempertime.tempertime_api.events.domain.EventScope;
 import com.tempertime.tempertime_api.events.dto.response.EventAssignUserResponse;
 import com.tempertime.tempertime_api.events.dto.response.EventCreateResponse;
@@ -10,6 +11,7 @@ import com.tempertime.tempertime_api.events.repository.EventUserRepository;
 import com.tempertime.tempertime_api.security.refresh.RefreshTokenRepository;
 import com.tempertime.tempertime_api.support.IntegrationTestSupport;
 import com.tempertime.tempertime_api.users.repository.UserRepository;
+import com.tempertime.tempertime_api.workspaces.client.WorkspaceTestClient;
 import com.tempertime.tempertime_api.workspaces.dto.response.WorkspaceCreateResponse;
 import com.tempertime.tempertime_api.workspaces.dto.response.WorkspaceJoinResponse;
 import com.tempertime.tempertime_api.workspaces.repository.WorkspaceInviteCodeRepository;
@@ -40,6 +42,10 @@ public class EventIT {
 
     @Autowired
     private IntegrationTestSupport integrationTestSupport;
+    @Autowired
+    private EventTestClient eventTestClient;
+    @Autowired
+    private WorkspaceTestClient workspaceTestClient;
 
     @Autowired
     private EventUserRepository eventUserRepository;
@@ -74,7 +80,7 @@ public class EventIT {
         AuthTokenResponse ownerTokens = integrationTestSupport.registerAndLogin("owner@mail.com", "Password123");
         assertThat(ownerTokens).isNotNull();
 
-        WorkspaceCreateResponse workspace = integrationTestSupport.createWorkspace(ownerTokens.accessToken());
+        WorkspaceCreateResponse workspace = workspaceTestClient.createWorkspace(ownerTokens.accessToken());
         assertThat(workspace).isNotNull();
         assertThat(workspace.id()).isNotNull();
         assertThat(workspace.inviteCode()).isNotBlank();
@@ -83,10 +89,10 @@ public class EventIT {
         AuthTokenResponse memberTokens = integrationTestSupport.registerAndLogin("member@mail.com", "Password123");
         assertThat(memberTokens).isNotNull();
 
-        integrationTestSupport.joinWorkspace(memberTokens.accessToken(), workspace.inviteCode());
+        workspaceTestClient.joinWorkspace(memberTokens.accessToken(), workspace.inviteCode());
 
         // Owner creates GLOBAL event
-        EventCreateResponse event = integrationTestSupport.createEvent(
+        EventCreateResponse event = eventTestClient.createEvent(
                 ownerTokens.accessToken(),
                 workspace.id(),
                 EventScope.GLOBAL
@@ -133,7 +139,7 @@ public class EventIT {
         AuthTokenResponse ownerTokens = integrationTestSupport.registerAndLogin("owner@mail.com", "Password123");
         assertThat(ownerTokens).isNotNull();
 
-        WorkspaceCreateResponse workspace = integrationTestSupport.createWorkspace(ownerTokens.accessToken());
+        WorkspaceCreateResponse workspace = workspaceTestClient.createWorkspace(ownerTokens.accessToken());
         assertThat(workspace).isNotNull();
         assertThat(workspace.id()).isNotNull();
         assertThat(workspace.inviteCode()).isNotBlank();
@@ -142,12 +148,12 @@ public class EventIT {
         AuthTokenResponse memberTokens = integrationTestSupport.registerAndLogin("member@mail.com", "Password123");
         assertThat(memberTokens).isNotNull();
 
-        WorkspaceJoinResponse joinResponse = integrationTestSupport.joinWorkspace(memberTokens.accessToken(), workspace.inviteCode());
+        WorkspaceJoinResponse joinResponse = workspaceTestClient.joinWorkspace(memberTokens.accessToken(), workspace.inviteCode());
         assertThat(joinResponse).isNotNull();
         assertThat(joinResponse.userId()).isNotNull();
 
         // Owner creates SPECIFIC event
-        EventCreateResponse event = integrationTestSupport.createEvent(
+        EventCreateResponse event = eventTestClient.createEvent(
                 ownerTokens.accessToken(),
                 workspace.id(),
                 EventScope.SPECIFIC
@@ -209,14 +215,14 @@ public class EventIT {
 
         // Owner creates workspace
         AuthTokenResponse ownerTokens = integrationTestSupport.registerAndLogin("owner@mail.com", "Password123");
-        WorkspaceCreateResponse workspace = integrationTestSupport.createWorkspace(ownerTokens.accessToken());
+        WorkspaceCreateResponse workspace = workspaceTestClient.createWorkspace(ownerTokens.accessToken());
 
         // Member joins
         AuthTokenResponse memberTokens = integrationTestSupport.registerAndLogin("member@mail.com", "Password123");
-        WorkspaceJoinResponse joinResponse = integrationTestSupport.joinWorkspace(memberTokens.accessToken(), workspace.inviteCode());
+        WorkspaceJoinResponse joinResponse = workspaceTestClient.joinWorkspace(memberTokens.accessToken(), workspace.inviteCode());
 
         // Owner creates GLOBAL event - member is automatically assigned
-        EventCreateResponse event = integrationTestSupport.createEvent(ownerTokens.accessToken(), workspace.id(), EventScope.GLOBAL);
+        EventCreateResponse event = eventTestClient.createEvent(ownerTokens.accessToken(), workspace.id(), EventScope.GLOBAL);
 
         // Verify that member has access to the event
         ResponseEntity<EventResponse> beforeRemoveResponse = restTemplate.exchange(
@@ -262,7 +268,7 @@ public class EventIT {
         AuthTokenResponse ownerTokens = integrationTestSupport.registerAndLogin("owner@mail.com", "Password123");
         assertThat(ownerTokens).isNotNull();
 
-        WorkspaceCreateResponse workspace = integrationTestSupport.createWorkspace(ownerTokens.accessToken());
+        WorkspaceCreateResponse workspace = workspaceTestClient.createWorkspace(ownerTokens.accessToken());
         assertThat(workspace).isNotNull();
         assertThat(workspace.id()).isNotNull();
 
@@ -270,12 +276,12 @@ public class EventIT {
         AuthTokenResponse memberTokens = integrationTestSupport.registerAndLogin("member@mail.com", "Password123");
         assertThat(memberTokens).isNotNull();
 
-        WorkspaceJoinResponse joinResponse = integrationTestSupport.joinWorkspace(memberTokens.accessToken(), workspace.inviteCode());
+        WorkspaceJoinResponse joinResponse = workspaceTestClient.joinWorkspace(memberTokens.accessToken(), workspace.inviteCode());
         assertThat(joinResponse).isNotNull();
         assertThat(joinResponse.userId()).isNotNull();
 
         // Owner creates GLOBAL event
-        EventCreateResponse event = integrationTestSupport.createEvent(
+        EventCreateResponse event = eventTestClient.createEvent(
                 ownerTokens.accessToken(),
                 workspace.id(),
                 EventScope.GLOBAL
