@@ -27,7 +27,7 @@ import com.tempertime.tempertime_api.events.support.EventTestDateFactory;
 import com.tempertime.tempertime_api.users.UserTestDataProvider;
 import com.tempertime.tempertime_api.users.domain.User;
 import com.tempertime.tempertime_api.users.repository.UserRepository;
-import com.tempertime.tempertime_api.workspaces.WorkspaceTestDataProvider;
+import com.tempertime.tempertime_api.workspaces.data.WorkspaceTestDataProvider;
 import com.tempertime.tempertime_api.workspaces.domain.Workspace;
 import com.tempertime.tempertime_api.workspaces.exception.WorkspaceAccessDeniedException;
 import com.tempertime.tempertime_api.workspaces.exception.WorkspaceNotFoundException;

@@ -4,7 +4,7 @@ import com.tempertime.tempertime_api.events.data.EventTestDataProvider;
 import com.tempertime.tempertime_api.events.domain.Event;
 import com.tempertime.tempertime_api.events.exception.EventNotFoundException;
 import com.tempertime.tempertime_api.events.repository.EventRepository;
-import com.tempertime.tempertime_api.workspaces.WorkspaceTestDataProvider;
+import com.tempertime.tempertime_api.workspaces.data.WorkspaceTestDataProvider;
 import com.tempertime.tempertime_api.workspaces.domain.Workspace;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

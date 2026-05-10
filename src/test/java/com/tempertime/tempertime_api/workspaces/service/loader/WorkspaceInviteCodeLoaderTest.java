@@ -1,7 +1,7 @@
 package com.tempertime.tempertime_api.workspaces.service.loader;
 
 import com.tempertime.tempertime_api.common.hash.Hash;
-import com.tempertime.tempertime_api.workspaces.WorkspaceTestDataProvider;
+import com.tempertime.tempertime_api.workspaces.data.WorkspaceTestDataProvider;
 import com.tempertime.tempertime_api.workspaces.domain.Workspace;
 import com.tempertime.tempertime_api.workspaces.domain.WorkspaceInviteCode;
 import com.tempertime.tempertime_api.workspaces.exception.InvalidWorkspaceInviteCodeException;

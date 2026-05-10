@@ -13,7 +13,7 @@ import com.tempertime.tempertime_api.events.service.core.UserEventService;
 import com.tempertime.tempertime_api.security.core.CurrentUserProvider;
 import com.tempertime.tempertime_api.security.jwt.AccessTokenService;
 import com.tempertime.tempertime_api.security.jwt.JwtAuthenticationFilter;
-import com.tempertime.tempertime_api.workspaces.WorkspaceTestDataProvider;
+import com.tempertime.tempertime_api.workspaces.data.WorkspaceTestDataProvider;
 import com.tempertime.tempertime_api.workspaces.domain.Workspace;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;

@@ -2,7 +2,7 @@ package com.tempertime.tempertime_api.workspaces.service.authorization;
 
 import com.tempertime.tempertime_api.users.UserTestDataProvider;
 import com.tempertime.tempertime_api.users.domain.User;
-import com.tempertime.tempertime_api.workspaces.WorkspaceTestDataProvider;
+import com.tempertime.tempertime_api.workspaces.data.WorkspaceTestDataProvider;
 import com.tempertime.tempertime_api.workspaces.domain.Workspace;
 import com.tempertime.tempertime_api.workspaces.domain.WorkspaceRole;
 import com.tempertime.tempertime_api.workspaces.domain.WorkspaceUser;

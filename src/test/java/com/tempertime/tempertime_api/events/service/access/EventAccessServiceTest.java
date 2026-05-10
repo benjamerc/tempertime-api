@@ -8,7 +8,7 @@ import com.tempertime.tempertime_api.events.repository.EventUserRepository;
 import com.tempertime.tempertime_api.users.UserTestDataProvider;
 import com.tempertime.tempertime_api.users.domain.User;
 import com.tempertime.tempertime_api.users.service.loader.UserLoader;
-import com.tempertime.tempertime_api.workspaces.WorkspaceTestDataProvider;
+import com.tempertime.tempertime_api.workspaces.data.WorkspaceTestDataProvider;
 import com.tempertime.tempertime_api.workspaces.domain.Workspace;
 import com.tempertime.tempertime_api.workspaces.repository.WorkspaceUserRepository;
 import org.junit.jupiter.api.Nested;

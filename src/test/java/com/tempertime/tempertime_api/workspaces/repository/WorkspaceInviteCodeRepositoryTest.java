@@ -1,6 +1,6 @@
 package com.tempertime.tempertime_api.workspaces.repository;
 
-import com.tempertime.tempertime_api.workspaces.WorkspaceTestDataProvider;
+import com.tempertime.tempertime_api.workspaces.data.WorkspaceTestDataProvider;
 import com.tempertime.tempertime_api.workspaces.domain.Workspace;
 import com.tempertime.tempertime_api.workspaces.domain.WorkspaceInviteCode;
 import org.junit.jupiter.api.BeforeEach;

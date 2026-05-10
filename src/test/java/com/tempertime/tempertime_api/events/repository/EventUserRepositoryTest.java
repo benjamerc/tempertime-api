@@ -6,7 +6,7 @@ import com.tempertime.tempertime_api.events.domain.EventUser;
 import com.tempertime.tempertime_api.users.UserTestDataProvider;
 import com.tempertime.tempertime_api.users.domain.User;
 import com.tempertime.tempertime_api.users.repository.UserRepository;
-import com.tempertime.tempertime_api.workspaces.WorkspaceTestDataProvider;
+import com.tempertime.tempertime_api.workspaces.data.WorkspaceTestDataProvider;
 import com.tempertime.tempertime_api.workspaces.domain.Workspace;
 import com.tempertime.tempertime_api.workspaces.repository.WorkspaceRepository;
 import org.junit.jupiter.api.BeforeEach;

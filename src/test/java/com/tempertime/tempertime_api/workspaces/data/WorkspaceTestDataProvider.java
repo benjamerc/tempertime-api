@@ -1,4 +1,4 @@
-package com.tempertime.tempertime_api.workspaces;
+package com.tempertime.tempertime_api.workspaces.data;
 
 import com.tempertime.tempertime_api.users.domain.User;
 import com.tempertime.tempertime_api.workspaces.domain.Workspace;

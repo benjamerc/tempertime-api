@@ -11,7 +11,7 @@ import com.tempertime.tempertime_api.events.exception.*;
 import com.tempertime.tempertime_api.events.mapper.UserEventMapper;
 import com.tempertime.tempertime_api.events.repository.EventRepository;
 import com.tempertime.tempertime_api.events.service.period.EventPeriodResolver;
-import com.tempertime.tempertime_api.workspaces.WorkspaceTestDataProvider;
+import com.tempertime.tempertime_api.workspaces.data.WorkspaceTestDataProvider;
 import com.tempertime.tempertime_api.workspaces.domain.Workspace;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
