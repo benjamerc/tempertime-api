@@ -42,7 +42,7 @@ public class UserIT {
     private TestRestTemplate restTemplate;
 
     @Autowired
-    private IntegrationTestSupport testHelper;
+    private IntegrationTestSupport integrationTestSupport;
 
     @Autowired
     private EventUserRepository eventUserRepository;
@@ -74,8 +74,8 @@ public class UserIT {
     void shouldReturn409_whenOwnerTriesToDeleteAccountWithOwnedWorkspace() {
 
         // Owner creates workspace
-        AuthTokenResponse ownerTokens = testHelper.registerAndLogin("owner@mail.com", "Password123");
-        WorkspaceCreateResponse workspace = testHelper.createWorkspace(ownerTokens.accessToken());
+        AuthTokenResponse ownerTokens = integrationTestSupport.registerAndLogin("owner@mail.com", "Password123");
+        WorkspaceCreateResponse workspace = integrationTestSupport.createWorkspace(ownerTokens.accessToken());
 
         assertThat(ownerTokens).isNotNull();
         assertThat(ownerTokens.accessToken()).isNotBlank();
@@ -93,7 +93,7 @@ public class UserIT {
         ResponseEntity<Void> deleteResponse = restTemplate.exchange(
                 "/api/users/me",
                 HttpMethod.DELETE,
-                new HttpEntity<>(deleteBody, testHelper.bearerHeaders(ownerTokens.accessToken())),
+                new HttpEntity<>(deleteBody, integrationTestSupport.bearerHeaders(ownerTokens.accessToken())),
                 Void.class
         );
 
@@ -107,7 +107,7 @@ public class UserIT {
         ResponseEntity<PageResponse<WorkspaceListItemResponse>> workspacesResponse = restTemplate.exchange(
                 "/api/workspaces",
                 HttpMethod.GET,
-                new HttpEntity<>(testHelper.bearerHeaders(ownerTokens.accessToken())),
+                new HttpEntity<>(integrationTestSupport.bearerHeaders(ownerTokens.accessToken())),
                 new ParameterizedTypeReference<>() {}
         );
 
@@ -121,7 +121,7 @@ public class UserIT {
     void shouldRevokeAllTokens_whenPasswordIsChanged() {
 
         // Register and login
-        AuthTokenResponse tokens = testHelper.registerAndLogin("user@mail.com", "Password123");
+        AuthTokenResponse tokens = integrationTestSupport.registerAndLogin("user@mail.com", "Password123");
 
         assertThat(tokens).isNotNull();
         assertThat(tokens.accessToken()).isNotBlank();
@@ -134,7 +134,7 @@ public class UserIT {
         ResponseEntity<UserProfileResponse> beforeResponse = restTemplate.exchange(
                 "/api/users/me",
                 HttpMethod.GET,
-                new HttpEntity<>(testHelper.bearerHeaders(originalAccessToken)),
+                new HttpEntity<>(integrationTestSupport.bearerHeaders(originalAccessToken)),
                 UserProfileResponse.class
         );
 
@@ -153,7 +153,7 @@ public class UserIT {
         ResponseEntity<Void> updatePasswordResponse = restTemplate.exchange(
                 "/api/users/me/password",
                 HttpMethod.PATCH,
-                new HttpEntity<>(updatePasswordBody, testHelper.bearerHeaders(originalAccessToken)),
+                new HttpEntity<>(updatePasswordBody, integrationTestSupport.bearerHeaders(originalAccessToken)),
                 Void.class
         );
 
@@ -192,7 +192,7 @@ public class UserIT {
         ResponseEntity<UserProfileResponse> afterResponse = restTemplate.exchange(
                 "/api/users/me",
                 HttpMethod.GET,
-                new HttpEntity<>(testHelper.bearerHeaders(newAccessToken)),
+                new HttpEntity<>(integrationTestSupport.bearerHeaders(newAccessToken)),
                 UserProfileResponse.class
         );
 
