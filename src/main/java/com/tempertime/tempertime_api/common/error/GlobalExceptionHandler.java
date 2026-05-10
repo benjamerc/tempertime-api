@@ -141,6 +141,19 @@ public class GlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler(WorkspaceEventLimitExceededException.class)
+    public ResponseEntity<ApiError> handleWorkspaceEventLimitExceeded(
+            WorkspaceEventLimitExceededException ex,
+            HttpServletRequest request
+    ) {
+        return buildErrorResponse(
+                ErrorCode.WORKSPACE_EVENT_LIMIT_EXCEEDED,
+                ErrorCode.WORKSPACE_EVENT_LIMIT_EXCEEDED.getDefaultMessage(),
+                HttpStatus.CONFLICT,
+                request
+        );
+    }
+
     @ExceptionHandler(WorkspaceOwnerExistsException.class)
     public ResponseEntity<ApiError> handleWorkspaceOwnerExists(
             WorkspaceOwnerExistsException ex,

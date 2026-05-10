@@ -22,6 +22,7 @@ public enum ErrorCode {
     WORKSPACE_USER_NOT_FOUND("User not found in this workspace"),
     WORKSPACE_OPERATION_NOT_ALLOWED("This workspace operation is not allowed"),
     WORKSPACE_CAPACITY_EXCEEDED("This workspace has reached its maximum user capacity"),
+    WORKSPACE_EVENT_LIMIT_EXCEEDED("This workspace has reached its maximum event limit"),
     WORKSPACE_OWNER_RESTRICTION("Account deletion is restricted while owning one or more workspaces."),
 
     // Event
