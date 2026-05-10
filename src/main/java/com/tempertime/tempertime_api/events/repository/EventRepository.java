@@ -28,6 +28,11 @@ public interface EventRepository extends JpaRepository<Event, Long> {
     List<Event> findByWorkspaceIdAndScope(Long workspaceId, EventScope scope);
 
     /**
+     * Counts all events within a workspace.
+     */
+    long countByWorkspaceId(Long workspaceId);
+
+    /**
      * Deletes all events within a workspace.
      */
     void deleteByWorkspaceId(Long workspaceId);

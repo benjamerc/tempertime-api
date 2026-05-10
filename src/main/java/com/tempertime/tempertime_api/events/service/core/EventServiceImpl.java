@@ -26,7 +26,9 @@ import com.tempertime.tempertime_api.events.repository.EventUserRepository;
 import com.tempertime.tempertime_api.events.service.loader.EventLoader;
 import com.tempertime.tempertime_api.events.service.rules.EventDateRules;
 import com.tempertime.tempertime_api.users.service.loader.UserLoader;
+import com.tempertime.tempertime_api.workspaces.config.WorkspaceConstraintsProperties;
 import com.tempertime.tempertime_api.workspaces.exception.WorkspaceAccessDeniedException;
+import com.tempertime.tempertime_api.workspaces.exception.WorkspaceEventLimitExceededException;
 import com.tempertime.tempertime_api.workspaces.service.authorization.WorkspaceAccessService;
 import com.tempertime.tempertime_api.workspaces.domain.Workspace;
 import lombok.RequiredArgsConstructor;
@@ -73,6 +75,9 @@ public class EventServiceImpl implements EventService {
     private final InputNormalizer inputNormalizer;
     private final PaginationValidator paginationValidator;
 
+    // Configuration Properties
+    private final WorkspaceConstraintsProperties workspaceConstraintsProperties;
+
     /**
      * Creates a new event within a workspace.
      * GLOBAL events are assigned to all workspace users,
@@ -89,6 +94,8 @@ public class EventServiceImpl implements EventService {
         // Loads the workspace and verifies OWNER permissions
         Workspace workspace =
                 workspaceAccessService.loadWorkspaceWithOwnerAccess(workspaceId, userId);
+
+        validateWorkspaceEventLimit(workspace);
 
         eventDateRules.validateDateRange(request.eventDate());
 
@@ -422,5 +429,18 @@ public class EventServiceImpl implements EventService {
         event.setHasActiveUsers(assignedUserCount > 1);
 
         eventRepository.save(event);
+    }
+
+    /**
+     * Validates that the workspace has not exceeded the maximum allowed events.
+     */
+    private void validateWorkspaceEventLimit(Workspace workspace) {
+
+        int maxEvents = workspaceConstraintsProperties.getMaxEvents();
+        long currentEventCount = eventRepository.countByWorkspaceId(workspace.getId());
+
+        if (currentEventCount >= maxEvents) {
+            throw new WorkspaceEventLimitExceededException();
+        }
     }
 }
