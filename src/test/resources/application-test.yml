@@ -35,6 +35,8 @@ application:
   workspaces:
     constraints:
       max-users: 50
+      max-events: 100
+
     invite-code:
       secret-key: MDEyMzQ1Njc4OWFiY2RlZjAxMjM0NTY3ODlhYmNkZWY=
 
