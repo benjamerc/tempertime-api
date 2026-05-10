@@ -38,7 +38,7 @@ public class WorkspaceIT {
     private TestRestTemplate restTemplate;
 
     @Autowired
-    private IntegrationTestSupport testHelper;
+    private IntegrationTestSupport integrationTestSupport;
 
     @Autowired
     private EventUserRepository eventUserRepository;
@@ -70,15 +70,15 @@ public class WorkspaceIT {
     void shouldCreateWorkspaceJoinWithInviteCodeAndVerifyMembership() {
 
         // Owner creates workspace
-        AuthTokenResponse ownerTokens = testHelper.registerAndLogin("owner@mail.com", "Password123");
-        WorkspaceCreateResponse workspace = testHelper.createWorkspace(ownerTokens.accessToken());
+        AuthTokenResponse ownerTokens = integrationTestSupport.registerAndLogin("owner@mail.com", "Password123");
+        WorkspaceCreateResponse workspace = integrationTestSupport.createWorkspace(ownerTokens.accessToken());
 
         assertThat(workspace).isNotNull();
         assertThat(workspace.id()).isNotNull();
         assertThat(workspace.inviteCode()).isNotBlank();
 
         // Member registers
-        AuthTokenResponse memberTokens = testHelper.registerAndLogin("member@mail.com", "Password123");
+        AuthTokenResponse memberTokens = integrationTestSupport.registerAndLogin("member@mail.com", "Password123");
 
         // Member joins with invite code
         WorkspaceJoinRequest joinRequest = new WorkspaceJoinRequest(workspace.inviteCode());
@@ -86,7 +86,7 @@ public class WorkspaceIT {
         ResponseEntity<WorkspaceJoinResponse> joinResponse = restTemplate.exchange(
                 "/api/workspaces/join",
                 HttpMethod.POST,
-                new HttpEntity<>(joinRequest, testHelper.bearerHeaders(memberTokens.accessToken())),
+                new HttpEntity<>(joinRequest, integrationTestSupport.bearerHeaders(memberTokens.accessToken())),
                 WorkspaceJoinResponse.class
         );
 
@@ -99,7 +99,7 @@ public class WorkspaceIT {
         ResponseEntity<WorkspaceDetailResponse> detailResponse = restTemplate.exchange(
                 "/api/workspaces/" + workspace.id(),
                 HttpMethod.GET,
-                new HttpEntity<>(testHelper.bearerHeaders(memberTokens.accessToken())),
+                new HttpEntity<>(integrationTestSupport.bearerHeaders(memberTokens.accessToken())),
                 WorkspaceDetailResponse.class
         );
 
@@ -111,13 +111,13 @@ public class WorkspaceIT {
     @Test
     void shouldReturn409_whenDeletingWorkspaceWithoutArchivingFirst() {
 
-        AuthTokenResponse ownerTokens = testHelper.registerAndLogin("owner@mail.com", "Password123");
-        WorkspaceCreateResponse workspace = testHelper.createWorkspace(ownerTokens.accessToken());
+        AuthTokenResponse ownerTokens = integrationTestSupport.registerAndLogin("owner@mail.com", "Password123");
+        WorkspaceCreateResponse workspace = integrationTestSupport.createWorkspace(ownerTokens.accessToken());
 
         ResponseEntity<Void> deleteResponse = restTemplate.exchange(
                 "/api/workspaces/" + workspace.id(),
                 HttpMethod.DELETE,
-                new HttpEntity<>(testHelper.bearerHeaders(ownerTokens.accessToken())),
+                new HttpEntity<>(integrationTestSupport.bearerHeaders(ownerTokens.accessToken())),
                 Void.class
         );
 
@@ -127,7 +127,7 @@ public class WorkspaceIT {
         ResponseEntity<WorkspaceDetailResponse> detailResponse = restTemplate.exchange(
                 "/api/workspaces/" + workspace.id(),
                 HttpMethod.GET,
-                new HttpEntity<>(testHelper.bearerHeaders(ownerTokens.accessToken())),
+                new HttpEntity<>(integrationTestSupport.bearerHeaders(ownerTokens.accessToken())),
                 WorkspaceDetailResponse.class
         );
 
@@ -137,13 +137,13 @@ public class WorkspaceIT {
     @Test
     void shouldReturn403_whenOwnerTriesToLeaveWorkspace() {
 
-        AuthTokenResponse ownerTokens = testHelper.registerAndLogin("owner@mail.com", "Password123");
-        WorkspaceCreateResponse workspace = testHelper.createWorkspace(ownerTokens.accessToken());
+        AuthTokenResponse ownerTokens = integrationTestSupport.registerAndLogin("owner@mail.com", "Password123");
+        WorkspaceCreateResponse workspace = integrationTestSupport.createWorkspace(ownerTokens.accessToken());
 
         ResponseEntity<Void> leaveResponse = restTemplate.exchange(
                 "/api/workspaces/" + workspace.id() + "/users/me",
                 HttpMethod.DELETE,
-                new HttpEntity<>(testHelper.bearerHeaders(ownerTokens.accessToken())),
+                new HttpEntity<>(integrationTestSupport.bearerHeaders(ownerTokens.accessToken())),
                 Void.class
         );
 
@@ -153,7 +153,7 @@ public class WorkspaceIT {
         ResponseEntity<WorkspaceDetailResponse> detailResponse = restTemplate.exchange(
                 "/api/workspaces/" + workspace.id(),
                 HttpMethod.GET,
-                new HttpEntity<>(testHelper.bearerHeaders(ownerTokens.accessToken())),
+                new HttpEntity<>(integrationTestSupport.bearerHeaders(ownerTokens.accessToken())),
                 WorkspaceDetailResponse.class
         );
 
@@ -168,17 +168,17 @@ public class WorkspaceIT {
     void shouldLeaveWorkspace_whenUserIsMember() {
 
         // Owner creates workspace
-        AuthTokenResponse ownerTokens = testHelper.registerAndLogin("owner@mail.com", "Password123");
-        WorkspaceCreateResponse workspace = testHelper.createWorkspace(ownerTokens.accessToken());
+        AuthTokenResponse ownerTokens = integrationTestSupport.registerAndLogin("owner@mail.com", "Password123");
+        WorkspaceCreateResponse workspace = integrationTestSupport.createWorkspace(ownerTokens.accessToken());
 
         // Member joins
-        AuthTokenResponse memberTokens = testHelper.registerAndLogin("member@mail.com", "Password123");
+        AuthTokenResponse memberTokens = integrationTestSupport.registerAndLogin("member@mail.com", "Password123");
         WorkspaceJoinRequest joinRequest = new WorkspaceJoinRequest(workspace.inviteCode());
 
         restTemplate.exchange(
                 "/api/workspaces/join",
                 HttpMethod.POST,
-                new HttpEntity<>(joinRequest, testHelper.bearerHeaders(memberTokens.accessToken())),
+                new HttpEntity<>(joinRequest, integrationTestSupport.bearerHeaders(memberTokens.accessToken())),
                 WorkspaceJoinResponse.class
         );
 
@@ -186,7 +186,7 @@ public class WorkspaceIT {
         ResponseEntity<Void> leaveResponse = restTemplate.exchange(
                 "/api/workspaces/" + workspace.id() + "/users/me",
                 HttpMethod.DELETE,
-                new HttpEntity<>(testHelper.bearerHeaders(memberTokens.accessToken())),
+                new HttpEntity<>(integrationTestSupport.bearerHeaders(memberTokens.accessToken())),
                 Void.class
         );
 
@@ -196,7 +196,7 @@ public class WorkspaceIT {
         ResponseEntity<Void> detailResponse = restTemplate.exchange(
                 "/api/workspaces/" + workspace.id(),
                 HttpMethod.GET,
-                new HttpEntity<>(testHelper.bearerHeaders(memberTokens.accessToken())),
+                new HttpEntity<>(integrationTestSupport.bearerHeaders(memberTokens.accessToken())),
                 Void.class
         );
 
