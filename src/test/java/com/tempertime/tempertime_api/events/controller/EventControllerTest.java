@@ -23,6 +23,7 @@ import com.tempertime.tempertime_api.common.color.InvalidColorFormatException;
 import com.tempertime.tempertime_api.security.core.CurrentUserProvider;
 import com.tempertime.tempertime_api.security.jwt.AccessTokenService;
 import com.tempertime.tempertime_api.security.jwt.JwtAuthenticationFilter;
+import com.tempertime.tempertime_api.events.support.EventTestDateFactory;
 import com.tempertime.tempertime_api.users.UserTestDataProvider;
 import com.tempertime.tempertime_api.users.domain.User;
 import com.tempertime.tempertime_api.users.repository.UserRepository;
@@ -95,12 +96,12 @@ public class EventControllerTest {
                             .content("""
                                 {
                                   "title": "Test Event",
-                                  "eventDate": "2027-05-02T10:30-03:00",
+                                  "eventDate": "%s",
                                   "description": "Test Description",
                                   "scope": "GLOBAL",
                                   "color": "#A3B4C5"
                                 }
-                                """))
+                                """.formatted(EventTestDateFactory.futureDate())))
                     .andExpect(status().isCreated())
                     .andExpect(jsonPath("$.id").value(response.id()))
                     .andExpect(jsonPath("$.title").value(response.title()))
@@ -119,10 +120,10 @@ public class EventControllerTest {
                             .contentType(MediaType.APPLICATION_JSON)
                             .content("""
                                 {
-                                  "eventDate": "2027-05-02T10:30-03:00",
+                                  "eventDate": "%s",
                                   "scope": "GLOBAL"
                                 }
-                                """))
+                                """.formatted(EventTestDateFactory.futureDate())))
                     .andExpect(status().isBadRequest())
                     .andExpect(jsonPath("$.code").value(ErrorCode.VALIDATION_ERROR.name()));
 
@@ -139,10 +140,10 @@ public class EventControllerTest {
                             .content("""
                                 {
                                   "title": "AB",
-                                  "eventDate": "2027-05-02T10:30-03:00",
+                                  "eventDate": "%s",
                                   "scope": "GLOBAL"
                                 }
-                                """))
+                                """.formatted(EventTestDateFactory.futureDate())))
                     .andExpect(status().isBadRequest())
                     .andExpect(jsonPath("$.code").value(ErrorCode.VALIDATION_ERROR.name()));
 
@@ -159,9 +160,9 @@ public class EventControllerTest {
                             .content("""
                                 {
                                   "title": "Test Event",
-                                  "eventDate": "2027-05-02T10:30-03:00"
+                                  "eventDate": "%s"
                                 }
-                                """))
+                                """.formatted(EventTestDateFactory.futureDate())))
                     .andExpect(status().isBadRequest())
                     .andExpect(jsonPath("$.code").value(ErrorCode.VALIDATION_ERROR.name()));
 
@@ -185,11 +186,11 @@ public class EventControllerTest {
                             .content("""
                                 {
                                   "title": "Test Event",
-                                  "eventDate": "2027-05-02T10:30-03:00",
+                                  "eventDate": "%s",
                                   "scope": "GLOBAL",
                                   "color": "blue"
                                 }
-                                """))
+                                """.formatted(EventTestDateFactory.futureDate())))
                     .andExpect(status().isBadRequest())
                     .andExpect(jsonPath("$.code").value(ErrorCode.INVALID_COLOR_FORMAT.name()));
 
@@ -213,10 +214,10 @@ public class EventControllerTest {
                             .content("""
                                 {
                                   "title": "Test Event",
-                                  "eventDate": "2027-05-02T10:30-03:00",
+                                  "eventDate": "%s",
                                   "scope": "GLOBAL"
                                 }
-                                """))
+                                """.formatted(EventTestDateFactory.futureDate())))
                     .andExpect(status().isBadRequest())
                     .andExpect(jsonPath("$.code").value(ErrorCode.EVENT_DATE_LIMIT_EXCEEDED.name()));
 
@@ -240,10 +241,10 @@ public class EventControllerTest {
                             .content("""
                                 {
                                   "title": "Test Event",
-                                  "eventDate": "2027-05-02T10:30-03:00",
+                                  "eventDate": "%s",
                                   "scope": "GLOBAL"
                                 }
-                                """))
+                                """.formatted(EventTestDateFactory.futureDate())))
                     .andExpect(status().isForbidden())
                     .andExpect(jsonPath("$.code").value(ErrorCode.WORKSPACE_ACCESS_DENIED.name()));
 
@@ -267,10 +268,10 @@ public class EventControllerTest {
                             .content("""
                                 {
                                   "title": "Test Event",
-                                  "eventDate": "2027-05-02T10:30-03:00",
+                                  "eventDate": "%s",
                                   "scope": "GLOBAL"
                                 }
-                                """))
+                                """.formatted(EventTestDateFactory.futureDate())))
                     .andExpect(status().isForbidden())
                     .andExpect(jsonPath("$.code").value(ErrorCode.WORKSPACE_ROLE_DENIED.name()));
 
@@ -294,10 +295,10 @@ public class EventControllerTest {
                             .content("""
                                 {
                                   "title": "Test Event",
-                                  "eventDate": "2027-05-02T10:30-03:00",
+                                  "eventDate": "%s",
                                   "scope": "GLOBAL"
                                 }
-                                """))
+                                """.formatted(EventTestDateFactory.futureDate())))
                     .andExpect(status().isNotFound())
                     .andExpect(jsonPath("$.code").value(ErrorCode.WORKSPACE_NOT_FOUND.name()));
 
@@ -565,10 +566,10 @@ public class EventControllerTest {
                             .content("""
                                 {
                                   "title": "Updated Title",
-                                  "eventDate": "2027-05-02T10:30-03:00",
+                                  "eventDate": "%s",
                                   "color": "#B2C3D4"
                                 }
-                                """))
+                                """.formatted(EventTestDateFactory.futureDate())))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.id").value(eventId))
                     .andExpect(jsonPath("$.title").value(response.title()))
@@ -643,9 +644,9 @@ public class EventControllerTest {
                             .contentType(MediaType.APPLICATION_JSON)
                             .content("""
                                 {
-                                  "eventDate": "2027-05-02T10:30-03:00"
+                                  "eventDate": "%s"
                                 }
-                                """))
+                                """.formatted(EventTestDateFactory.futureDate())))
                     .andExpect(status().isBadRequest())
                     .andExpect(jsonPath("$.code").value(ErrorCode.EVENT_DATE_LIMIT_EXCEEDED.name()));
 
