@@ -35,7 +35,7 @@ public class AuthIT {
     private TestRestTemplate restTemplate;
 
     @Autowired
-    private IntegrationTestSupport testHelper;
+    private IntegrationTestSupport integrationTestSupport;
 
     @Autowired
     private UserRepository userRepository;
@@ -85,7 +85,7 @@ public class AuthIT {
         assertThat(accessToken).isNotBlank();
 
         // Access to protected endpoint
-        HttpEntity<Void> request = new HttpEntity<>(testHelper.bearerHeaders(accessToken));
+        HttpEntity<Void> request = new HttpEntity<>(integrationTestSupport.bearerHeaders(accessToken));
 
         ResponseEntity<UserProfileResponse> profileResponse = restTemplate.exchange(
                 "/api/users/me",
@@ -197,7 +197,7 @@ public class AuthIT {
         assertThat(reuseResponse.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
 
         // Verify that the new access token works
-        HttpEntity<Void> protectedRequest = new HttpEntity<>(testHelper.bearerHeaders(newAccessToken));
+        HttpEntity<Void> protectedRequest = new HttpEntity<>(integrationTestSupport.bearerHeaders(newAccessToken));
 
         ResponseEntity<UserProfileResponse> profileResponse = restTemplate.exchange(
                 "/api/users/me",
