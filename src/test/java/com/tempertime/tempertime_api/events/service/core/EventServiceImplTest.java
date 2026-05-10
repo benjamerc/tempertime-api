@@ -29,8 +29,10 @@ import com.tempertime.tempertime_api.users.UserTestDataProvider;
 import com.tempertime.tempertime_api.users.domain.User;
 import com.tempertime.tempertime_api.users.service.loader.UserLoader;
 import com.tempertime.tempertime_api.workspaces.WorkspaceTestDataProvider;
+import com.tempertime.tempertime_api.workspaces.config.WorkspaceConstraintsProperties;
 import com.tempertime.tempertime_api.workspaces.domain.Workspace;
 import com.tempertime.tempertime_api.workspaces.exception.WorkspaceAccessDeniedException;
+import com.tempertime.tempertime_api.workspaces.exception.WorkspaceEventLimitExceededException;
 import com.tempertime.tempertime_api.workspaces.exception.WorkspaceNotFoundException;
 import com.tempertime.tempertime_api.workspaces.exception.WorkspaceRoleDeniedException;
 import com.tempertime.tempertime_api.workspaces.service.authorization.WorkspaceAccessService;
@@ -96,6 +98,10 @@ public class EventServiceImplTest {
     @Mock
     private PaginationValidator paginationValidator;
 
+   // Configuration Properties
+    @Mock
+    private WorkspaceConstraintsProperties workspaceConstraintsProperties;
+
     // Class under test
     @InjectMocks
     private EventServiceImpl eventService;
@@ -116,6 +122,8 @@ public class EventServiceImplTest {
 
             when(workspaceAccessService.loadWorkspaceWithOwnerAccess(workspaceId, userId))
                     .thenReturn(workspace);
+            when(workspaceConstraintsProperties.getMaxEvents()).thenReturn(100);
+            when(eventRepository.countByWorkspaceId(workspaceId)).thenReturn(0L);
             doNothing().when(eventDateRules).validateDateRange(request.eventDate());
             when(colorValidator.isColorMissing(request.color())).thenReturn(false);
             when(colorValidator.isHexColor(request.color())).thenReturn(true);
@@ -164,6 +172,8 @@ public class EventServiceImplTest {
 
             when(workspaceAccessService.loadWorkspaceWithOwnerAccess(workspaceId, userId))
                     .thenReturn(workspace);
+            when(workspaceConstraintsProperties.getMaxEvents()).thenReturn(100);
+            when(eventRepository.countByWorkspaceId(workspaceId)).thenReturn(0L);
             doNothing().when(eventDateRules).validateDateRange(request.eventDate());
             when(colorValidator.isColorMissing(request.color())).thenReturn(false);
             when(colorValidator.isHexColor(request.color())).thenReturn(true);
@@ -208,6 +218,8 @@ public class EventServiceImplTest {
 
             when(workspaceAccessService.loadWorkspaceWithOwnerAccess(workspaceId, userId))
                     .thenReturn(workspace);
+            when(workspaceConstraintsProperties.getMaxEvents()).thenReturn(100);
+            when(eventRepository.countByWorkspaceId(workspaceId)).thenReturn(0L);
             doNothing().when(eventDateRules).validateDateRange(request.eventDate());
             when(colorValidator.isColorMissing(null)).thenReturn(true);
             when(colorGenerator.generate()).thenReturn(EventTestDataProvider.COLOR);
@@ -245,6 +257,8 @@ public class EventServiceImplTest {
 
             when(workspaceAccessService.loadWorkspaceWithOwnerAccess(workspaceId, userId))
                     .thenReturn(workspace);
+            when(workspaceConstraintsProperties.getMaxEvents()).thenReturn(100);
+            when(eventRepository.countByWorkspaceId(workspaceId)).thenReturn(0L);
             doNothing().when(eventDateRules).validateDateRange(request.eventDate());
             when(colorValidator.isColorMissing(request.color())).thenReturn(false);
             when(colorValidator.isHexColor(request.color())).thenReturn(true);
@@ -278,6 +292,8 @@ public class EventServiceImplTest {
 
             when(workspaceAccessService.loadWorkspaceWithOwnerAccess(workspaceId, userId))
                     .thenReturn(workspace);
+            when(workspaceConstraintsProperties.getMaxEvents()).thenReturn(100);
+            when(eventRepository.countByWorkspaceId(workspaceId)).thenReturn(0L);
             doNothing().when(eventDateRules).validateDateRange(request.eventDate());
             when(colorValidator.isColorMissing("blue")).thenReturn(false);
             when(colorValidator.isHexColor("blue")).thenReturn(false);
@@ -301,6 +317,8 @@ public class EventServiceImplTest {
 
             when(workspaceAccessService.loadWorkspaceWithOwnerAccess(workspaceId, userId))
                     .thenReturn(workspace);
+            when(workspaceConstraintsProperties.getMaxEvents()).thenReturn(100);
+            when(eventRepository.countByWorkspaceId(workspaceId)).thenReturn(0L);
             doThrow(new EventDateLimitExceededException())
                     .when(eventDateRules).validateDateRange(request.eventDate());
 
@@ -345,6 +363,29 @@ public class EventServiceImplTest {
 
             assertThatThrownBy(() -> eventService.createEvent(workspaceId, userId, request))
                     .isInstanceOf(WorkspaceRoleDeniedException.class);
+
+            verify(eventDateRules, never()).validateDateRange(any());
+            verify(eventRepository, never()).save(any());
+            verify(eventAccessService, never()).assignGlobalEventToAllUsers(any(), any());
+            verify(eventUserRepository, never()).save(any());
+        }
+
+        @Test
+        void shouldThrowWorkspaceEventLimitExceededException_whenWorkspaceEventLimitIsReached() {
+
+            Long workspaceId = 1L;
+            Long userId = 1L;
+
+            Workspace workspace = WorkspaceTestDataProvider.workspace(workspaceId);
+            EventCreateRequest request = EventTestDataProvider.eventCreateRequest();
+
+            when(workspaceAccessService.loadWorkspaceWithOwnerAccess(workspaceId, userId))
+                    .thenReturn(workspace);
+            when(workspaceConstraintsProperties.getMaxEvents()).thenReturn(100);
+            when(eventRepository.countByWorkspaceId(workspaceId)).thenReturn(100L);
+
+            assertThatThrownBy(() -> eventService.createEvent(workspaceId, userId, request))
+                    .isInstanceOf(WorkspaceEventLimitExceededException.class);
 
             verify(eventDateRules, never()).validateDateRange(any());
             verify(eventRepository, never()).save(any());

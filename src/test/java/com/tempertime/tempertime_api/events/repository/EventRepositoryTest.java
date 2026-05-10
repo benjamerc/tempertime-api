@@ -154,6 +154,44 @@ public class EventRepositoryTest {
     }
 
     @Nested
+    class CountByWorkspaceIdTests {
+
+        @Test
+        void shouldReturnCorrectCount_whenWorkspaceHasEvents() {
+
+            eventRepository.save(EventTestDataProvider.event(null, savedWorkspace));
+            eventRepository.save(EventTestDataProvider.event(null, savedWorkspace));
+
+            long count = eventRepository.countByWorkspaceId(savedWorkspace.getId());
+
+            assertThat(count).isEqualTo(2);
+        }
+
+        @Test
+        void shouldReturnZero_whenWorkspaceHasNoEvents() {
+
+            long count = eventRepository.countByWorkspaceId(savedWorkspace.getId());
+
+            assertThat(count).isEqualTo(0);
+        }
+
+        @Test
+        void shouldReturnOnlyCountFromGivenWorkspace_whenMultipleWorkspacesExist() {
+
+            Workspace otherWorkspace = workspaceRepository.save(
+                    WorkspaceTestDataProvider.workspace(null)
+            );
+
+            eventRepository.save(EventTestDataProvider.event(null, savedWorkspace));
+            eventRepository.save(EventTestDataProvider.event(null, otherWorkspace));
+
+            long count = eventRepository.countByWorkspaceId(savedWorkspace.getId());
+
+            assertThat(count).isEqualTo(1);
+        }
+    }
+
+    @Nested
     class DeleteByWorkspaceIdTests {
 
         @Test
