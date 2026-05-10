@@ -39,7 +39,7 @@ public class EventIT {
     private TestRestTemplate restTemplate;
 
     @Autowired
-    private IntegrationTestSupport testHelper;
+    private IntegrationTestSupport integrationTestSupport;
 
     @Autowired
     private EventUserRepository eventUserRepository;
@@ -71,22 +71,22 @@ public class EventIT {
     void shouldAssignGlobalEventToAllWorkspaceMembers() {
 
         // Owner creates workspace
-        AuthTokenResponse ownerTokens = testHelper.registerAndLogin("owner@mail.com", "Password123");
+        AuthTokenResponse ownerTokens = integrationTestSupport.registerAndLogin("owner@mail.com", "Password123");
         assertThat(ownerTokens).isNotNull();
 
-        WorkspaceCreateResponse workspace = testHelper.createWorkspace(ownerTokens.accessToken());
+        WorkspaceCreateResponse workspace = integrationTestSupport.createWorkspace(ownerTokens.accessToken());
         assertThat(workspace).isNotNull();
         assertThat(workspace.id()).isNotNull();
         assertThat(workspace.inviteCode()).isNotBlank();
 
         // Member joins
-        AuthTokenResponse memberTokens = testHelper.registerAndLogin("member@mail.com", "Password123");
+        AuthTokenResponse memberTokens = integrationTestSupport.registerAndLogin("member@mail.com", "Password123");
         assertThat(memberTokens).isNotNull();
 
-        testHelper.joinWorkspace(memberTokens.accessToken(), workspace.inviteCode());
+        integrationTestSupport.joinWorkspace(memberTokens.accessToken(), workspace.inviteCode());
 
         // Owner creates GLOBAL event
-        EventCreateResponse event = testHelper.createEvent(
+        EventCreateResponse event = integrationTestSupport.createEvent(
                 ownerTokens.accessToken(),
                 workspace.id(),
                 EventScope.GLOBAL
@@ -101,7 +101,7 @@ public class EventIT {
         ResponseEntity<EventResponse> ownerEventResponse = restTemplate.exchange(
                 eventUrl,
                 HttpMethod.GET,
-                new HttpEntity<>(testHelper.bearerHeaders(ownerTokens.accessToken())),
+                new HttpEntity<>(integrationTestSupport.bearerHeaders(ownerTokens.accessToken())),
                 EventResponse.class
         );
 
@@ -115,7 +115,7 @@ public class EventIT {
         ResponseEntity<EventResponse> memberEventResponse = restTemplate.exchange(
                 eventUrl,
                 HttpMethod.GET,
-                new HttpEntity<>(testHelper.bearerHeaders(memberTokens.accessToken())),
+                new HttpEntity<>(integrationTestSupport.bearerHeaders(memberTokens.accessToken())),
                 EventResponse.class
         );
 
@@ -130,24 +130,24 @@ public class EventIT {
     void shouldAssignUsersToSpecificEvent() {
 
         // Owner creates workspace
-        AuthTokenResponse ownerTokens = testHelper.registerAndLogin("owner@mail.com", "Password123");
+        AuthTokenResponse ownerTokens = integrationTestSupport.registerAndLogin("owner@mail.com", "Password123");
         assertThat(ownerTokens).isNotNull();
 
-        WorkspaceCreateResponse workspace = testHelper.createWorkspace(ownerTokens.accessToken());
+        WorkspaceCreateResponse workspace = integrationTestSupport.createWorkspace(ownerTokens.accessToken());
         assertThat(workspace).isNotNull();
         assertThat(workspace.id()).isNotNull();
         assertThat(workspace.inviteCode()).isNotBlank();
 
         // Member joins
-        AuthTokenResponse memberTokens = testHelper.registerAndLogin("member@mail.com", "Password123");
+        AuthTokenResponse memberTokens = integrationTestSupport.registerAndLogin("member@mail.com", "Password123");
         assertThat(memberTokens).isNotNull();
 
-        WorkspaceJoinResponse joinResponse = testHelper.joinWorkspace(memberTokens.accessToken(), workspace.inviteCode());
+        WorkspaceJoinResponse joinResponse = integrationTestSupport.joinWorkspace(memberTokens.accessToken(), workspace.inviteCode());
         assertThat(joinResponse).isNotNull();
         assertThat(joinResponse.userId()).isNotNull();
 
         // Owner creates SPECIFIC event
-        EventCreateResponse event = testHelper.createEvent(
+        EventCreateResponse event = integrationTestSupport.createEvent(
                 ownerTokens.accessToken(),
                 workspace.id(),
                 EventScope.SPECIFIC
@@ -163,7 +163,7 @@ public class EventIT {
         ResponseEntity<Void> beforeAssignResponse = restTemplate.exchange(
                 eventUrl,
                 HttpMethod.GET,
-                new HttpEntity<>(testHelper.bearerHeaders(memberTokens.accessToken())),
+                new HttpEntity<>(integrationTestSupport.bearerHeaders(memberTokens.accessToken())),
                 Void.class
         );
 
@@ -179,7 +179,7 @@ public class EventIT {
         ResponseEntity<EventAssignUserResponse> assignResponse = restTemplate.exchange(
                 assignUsersUrl,
                 HttpMethod.POST,
-                new HttpEntity<>(assignBody, testHelper.bearerHeaders(ownerTokens.accessToken())),
+                new HttpEntity<>(assignBody, integrationTestSupport.bearerHeaders(ownerTokens.accessToken())),
                 EventAssignUserResponse.class
         );
 
@@ -193,7 +193,7 @@ public class EventIT {
         ResponseEntity<EventResponse> afterAssignResponse = restTemplate.exchange(
                 eventUrl,
                 HttpMethod.GET,
-                new HttpEntity<>(testHelper.bearerHeaders(memberTokens.accessToken())),
+                new HttpEntity<>(integrationTestSupport.bearerHeaders(memberTokens.accessToken())),
                 EventResponse.class
         );
 
@@ -208,21 +208,21 @@ public class EventIT {
     void shouldLoseEventAccess_whenUserIsRemovedFromWorkspace() {
 
         // Owner creates workspace
-        AuthTokenResponse ownerTokens = testHelper.registerAndLogin("owner@mail.com", "Password123");
-        WorkspaceCreateResponse workspace = testHelper.createWorkspace(ownerTokens.accessToken());
+        AuthTokenResponse ownerTokens = integrationTestSupport.registerAndLogin("owner@mail.com", "Password123");
+        WorkspaceCreateResponse workspace = integrationTestSupport.createWorkspace(ownerTokens.accessToken());
 
         // Member joins
-        AuthTokenResponse memberTokens = testHelper.registerAndLogin("member@mail.com", "Password123");
-        WorkspaceJoinResponse joinResponse = testHelper.joinWorkspace(memberTokens.accessToken(), workspace.inviteCode());
+        AuthTokenResponse memberTokens = integrationTestSupport.registerAndLogin("member@mail.com", "Password123");
+        WorkspaceJoinResponse joinResponse = integrationTestSupport.joinWorkspace(memberTokens.accessToken(), workspace.inviteCode());
 
         // Owner creates GLOBAL event - member is automatically assigned
-        EventCreateResponse event = testHelper.createEvent(ownerTokens.accessToken(), workspace.id(), EventScope.GLOBAL);
+        EventCreateResponse event = integrationTestSupport.createEvent(ownerTokens.accessToken(), workspace.id(), EventScope.GLOBAL);
 
         // Verify that member has access to the event
         ResponseEntity<EventResponse> beforeRemoveResponse = restTemplate.exchange(
                 "/api/workspaces/" + workspace.id() + "/events/" + event.id(),
                 HttpMethod.GET,
-                new HttpEntity<>(testHelper.bearerHeaders(memberTokens.accessToken())),
+                new HttpEntity<>(integrationTestSupport.bearerHeaders(memberTokens.accessToken())),
                 EventResponse.class
         );
 
@@ -232,7 +232,7 @@ public class EventIT {
         ResponseEntity<Void> removeResponse = restTemplate.exchange(
                 "/api/workspaces/" + workspace.id() + "/users/" + joinResponse.userId(),
                 HttpMethod.DELETE,
-                new HttpEntity<>(testHelper.bearerHeaders(ownerTokens.accessToken())),
+                new HttpEntity<>(integrationTestSupport.bearerHeaders(ownerTokens.accessToken())),
                 Void.class
         );
 
@@ -242,7 +242,7 @@ public class EventIT {
         ResponseEntity<Void> workspaceResponse = restTemplate.exchange(
                 "/api/workspaces/" + workspace.id(),
                 HttpMethod.GET,
-                new HttpEntity<>(testHelper.bearerHeaders(memberTokens.accessToken())),
+                new HttpEntity<>(integrationTestSupport.bearerHeaders(memberTokens.accessToken())),
                 Void.class
         );
 
@@ -259,23 +259,23 @@ public class EventIT {
     void shouldCleanupAllData_whenUserDeletesAccount() {
 
         // Owner creates workspace
-        AuthTokenResponse ownerTokens = testHelper.registerAndLogin("owner@mail.com", "Password123");
+        AuthTokenResponse ownerTokens = integrationTestSupport.registerAndLogin("owner@mail.com", "Password123");
         assertThat(ownerTokens).isNotNull();
 
-        WorkspaceCreateResponse workspace = testHelper.createWorkspace(ownerTokens.accessToken());
+        WorkspaceCreateResponse workspace = integrationTestSupport.createWorkspace(ownerTokens.accessToken());
         assertThat(workspace).isNotNull();
         assertThat(workspace.id()).isNotNull();
 
         // Member joins
-        AuthTokenResponse memberTokens = testHelper.registerAndLogin("member@mail.com", "Password123");
+        AuthTokenResponse memberTokens = integrationTestSupport.registerAndLogin("member@mail.com", "Password123");
         assertThat(memberTokens).isNotNull();
 
-        WorkspaceJoinResponse joinResponse = testHelper.joinWorkspace(memberTokens.accessToken(), workspace.inviteCode());
+        WorkspaceJoinResponse joinResponse = integrationTestSupport.joinWorkspace(memberTokens.accessToken(), workspace.inviteCode());
         assertThat(joinResponse).isNotNull();
         assertThat(joinResponse.userId()).isNotNull();
 
         // Owner creates GLOBAL event
-        EventCreateResponse event = testHelper.createEvent(
+        EventCreateResponse event = integrationTestSupport.createEvent(
                 ownerTokens.accessToken(),
                 workspace.id(),
                 EventScope.GLOBAL
@@ -297,7 +297,7 @@ public class EventIT {
         ResponseEntity<Void> deleteResponse = restTemplate.exchange(
                 "/api/users/me",
                 HttpMethod.DELETE,
-                new HttpEntity<>(deleteBody, testHelper.bearerHeaders(memberTokens.accessToken())),
+                new HttpEntity<>(deleteBody, integrationTestSupport.bearerHeaders(memberTokens.accessToken())),
                 Void.class
         );
 
