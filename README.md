@@ -139,8 +139,13 @@ Key capabilities:
 - Pagination, sorting, and filtering mechanisms
 - Timezone-aware event querying (ISO 8601)
 
-📄 Full API Reference (Spanish):  
-https://docs.google.com/document/d/1aFoLhDu4_C5HzPP3dLGIhqt4AXCrgz1lTsfwG3gBl_4/edit
+### Documentation (Spanish)
+
+- API reference (Google Docs):  
+  https://docs.google.com/document/d/1R9-2Gw6VUBjBQMVe5Jg1e5ZjyboWMcSxQgum1Riyetc/edit?usp=sharing
+
+- PDF version:  
+  https://drive.google.com/file/d/10X_37pL1V-T367wsqL-Zi9xBNV8k4Lup/view?usp=sharing
 
 ---
 
