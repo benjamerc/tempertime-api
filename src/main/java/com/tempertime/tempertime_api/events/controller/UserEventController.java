@@ -1,6 +1,7 @@
 package com.tempertime.tempertime_api.events.controller;
 
 import com.tempertime.tempertime_api.common.pagination.PageResponse;
+import com.tempertime.tempertime_api.events.controller.docs.UserEventControllerDocs;
 import com.tempertime.tempertime_api.events.dto.response.UserEventResponse;
 import com.tempertime.tempertime_api.events.domain.EventPeriod;
 import com.tempertime.tempertime_api.events.service.core.UserEventService;
@@ -22,7 +23,7 @@ import java.time.ZoneId;
 @RestController
 @RequestMapping("/api/users/me/events")
 @RequiredArgsConstructor
-public class UserEventController {
+public class UserEventController implements UserEventControllerDocs {
 
     private final UserEventService userEventService;
     private final CurrentUserProvider currentUserProvider;
@@ -31,6 +32,7 @@ public class UserEventController {
      * Returns all events assigned to the authenticated user
      * within the requested period.
      */
+    @Override
     @GetMapping
     public ResponseEntity<PageResponse<UserEventResponse>> getUserEvents(
             @RequestParam(defaultValue = "MONTH") EventPeriod period,

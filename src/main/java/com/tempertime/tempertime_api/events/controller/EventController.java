@@ -1,6 +1,7 @@
 package com.tempertime.tempertime_api.events.controller;
 
 import com.tempertime.tempertime_api.common.pagination.PageResponse;
+import com.tempertime.tempertime_api.events.controller.docs.EventControllerDocs;
 import com.tempertime.tempertime_api.events.dto.request.EventAssignUserRequest;
 import com.tempertime.tempertime_api.events.dto.request.EventCreateRequest;
 import com.tempertime.tempertime_api.events.dto.request.EventUpdateRequest;
@@ -25,11 +26,12 @@ import java.time.ZoneId;
 @RestController
 @RequestMapping("/api/workspaces/{workspaceId}/events")
 @RequiredArgsConstructor
-public class EventController {
+public class EventController implements EventControllerDocs {
 
     private final EventService eventService;
     private final CurrentUserProvider currentUserProvider;
 
+    @Override
     @PostMapping
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<EventCreateResponse> createEvent(
@@ -48,6 +50,7 @@ public class EventController {
                 );
     }
 
+    @Override
     @GetMapping
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<PageResponse<EventListItemResponse>> getEvents(
@@ -78,6 +81,7 @@ public class EventController {
         );
     }
 
+    @Override
     @GetMapping("/{eventId}")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<EventResponse> getEvent(
@@ -94,6 +98,7 @@ public class EventController {
         );
     }
 
+    @Override
     @PatchMapping("/{eventId}")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<EventResponse> updateEvent(
@@ -112,6 +117,7 @@ public class EventController {
         );
     }
 
+    @Override
     @DeleteMapping("/{eventId}")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Void> deleteEvent(
@@ -128,6 +134,7 @@ public class EventController {
         return ResponseEntity.noContent().build();
     }
 
+    @Override
     @PostMapping("/{eventId}/users")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<EventAssignUserResponse> assignUsersToEvent(
@@ -148,6 +155,7 @@ public class EventController {
                 );
     }
 
+    @Override
     @GetMapping("/{eventId}/users")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<PageResponse<EventAssignedUserResponse>> getEventAssignedUsers(
@@ -172,6 +180,7 @@ public class EventController {
         );
     }
 
+    @Override
     @DeleteMapping("/{eventId}/users/{userId}")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Void> deleteUserFromEvent(
