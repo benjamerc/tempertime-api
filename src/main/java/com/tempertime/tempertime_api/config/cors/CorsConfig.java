@@ -1,4 +1,4 @@
-package com.tempertime.tempertime_api.security.config;
+package com.tempertime.tempertime_api.config.cors;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;

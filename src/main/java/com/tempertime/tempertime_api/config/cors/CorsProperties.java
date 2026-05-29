@@ -1,4 +1,4 @@
-package com.tempertime.tempertime_api.security.config;
+package com.tempertime.tempertime_api.config.cors;
 
 import lombok.Getter;
 import lombok.Setter;
