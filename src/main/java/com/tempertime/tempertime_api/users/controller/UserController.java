@@ -1,6 +1,7 @@
 package com.tempertime.tempertime_api.users.controller;
 
 import com.tempertime.tempertime_api.security.core.CurrentUserProvider;
+import com.tempertime.tempertime_api.users.controller.docs.UserControllerDocs;
 import com.tempertime.tempertime_api.users.dto.request.UserDeleteAccountRequest;
 import com.tempertime.tempertime_api.users.dto.request.UserUpdatePasswordRequest;
 import com.tempertime.tempertime_api.users.dto.request.UserUpdateProfileRequest;
@@ -18,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
-public class UserController {
+public class UserController implements UserControllerDocs {
 
     private final UserService userService;
     private final CurrentUserProvider currentUserProvider;
@@ -26,6 +27,7 @@ public class UserController {
     /**
      * Returns the profile of the currently authenticated user.
      */
+    @Override
     @GetMapping("/me")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<UserProfileResponse> userProfile() {
@@ -40,6 +42,7 @@ public class UserController {
     /**
      * Updates the profile of the currently authenticated user.
      */
+    @Override
     @PatchMapping("/me")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<UserProfileResponse> updateProfile(
@@ -57,6 +60,7 @@ public class UserController {
     /**
      * Updates the password of the currently authenticated user.
      */
+    @Override
     @PatchMapping("/me/password")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Void> updatePassword(
@@ -74,6 +78,7 @@ public class UserController {
     /**
      * Deletes the account of the currently authenticated user.
      */
+    @Override
     @DeleteMapping("/me")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Void> deleteAccount(
