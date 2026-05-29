@@ -2,6 +2,7 @@ package com.tempertime.tempertime_api.workspaces.controller;
 
 import com.tempertime.tempertime_api.common.pagination.PageResponse;
 import com.tempertime.tempertime_api.security.core.CurrentUserProvider;
+import com.tempertime.tempertime_api.workspaces.controller.docs.WorkspaceControllerDocs;
 import com.tempertime.tempertime_api.workspaces.domain.WorkspaceRole;
 import com.tempertime.tempertime_api.workspaces.dto.request.WorkspaceCreateRequest;
 import com.tempertime.tempertime_api.workspaces.dto.request.WorkspaceJoinRequest;
@@ -21,11 +22,12 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/workspaces")
 @RequiredArgsConstructor
-public class WorkspaceController {
+public class WorkspaceController implements WorkspaceControllerDocs {
 
     private final WorkspaceService workspaceService;
     private final CurrentUserProvider  currentUserProvider;
 
+    @Override
     @PostMapping
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<WorkspaceCreateResponse> createWorkspace(
@@ -42,6 +44,7 @@ public class WorkspaceController {
                 );
     }
 
+    @Override
     @GetMapping
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<PageResponse<WorkspaceListItemResponse>> getUserWorkspaces(
@@ -66,6 +69,7 @@ public class WorkspaceController {
         );
     }
 
+    @Override
     @GetMapping("/{workspaceId}")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<WorkspaceDetailResponse> getWorkspaceById(
@@ -80,6 +84,7 @@ public class WorkspaceController {
         );
     }
 
+    @Override
     @PatchMapping("/{workspaceId}")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<WorkspaceUpdateResponse> updateWorkspace(
@@ -96,6 +101,7 @@ public class WorkspaceController {
         );
     }
 
+    @Override
     @PatchMapping("/{workspaceId}/archive")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Void> archiveWorkspace(
@@ -110,6 +116,7 @@ public class WorkspaceController {
         return ResponseEntity.noContent().build();
     }
 
+    @Override
     @PatchMapping("/{workspaceId}/unarchive")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Void> unarchiveWorkspace(
@@ -124,6 +131,7 @@ public class WorkspaceController {
         return ResponseEntity.noContent().build();
     }
 
+    @Override
     @DeleteMapping("/{workspaceId}")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Void> deleteWorkspace(
@@ -138,6 +146,7 @@ public class WorkspaceController {
         return ResponseEntity.noContent().build();
     }
 
+    @Override
     @GetMapping("/{workspaceId}/invite-code")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<WorkspaceInviteCodeResponse> getInviteCode(
@@ -152,6 +161,7 @@ public class WorkspaceController {
         );
     }
 
+    @Override
     @PatchMapping("/{workspaceId}/invite-code/enable")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<WorkspaceInviteCodeStatusResponse> activateInviteCode(
@@ -166,6 +176,7 @@ public class WorkspaceController {
         );
     }
 
+    @Override
     @PatchMapping("/{workspaceId}/invite-code/disable")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<WorkspaceInviteCodeStatusResponse> deactivateInviteCode(
@@ -180,6 +191,7 @@ public class WorkspaceController {
         );
     }
 
+    @Override
     @PatchMapping("/{workspaceId}/invite-code/regenerate")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<WorkspaceInviteCodeResponse> regenerateInviteCode(
@@ -194,6 +206,7 @@ public class WorkspaceController {
         );
     }
 
+    @Override
     @PostMapping("/join")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<WorkspaceJoinResponse> joinWorkspace(
@@ -209,6 +222,7 @@ public class WorkspaceController {
                 );
     }
 
+    @Override
     @GetMapping("/{workspaceId}/users")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<PageResponse<WorkspaceUserResponse>> getWorkspaceUsers(
@@ -231,6 +245,7 @@ public class WorkspaceController {
         );
     }
 
+    @Override
     @DeleteMapping("/{workspaceId}/users/{userId}")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Void> removeWorkspaceUser(
@@ -247,6 +262,7 @@ public class WorkspaceController {
         return ResponseEntity.noContent().build();
     }
 
+    @Override
     @DeleteMapping("/{workspaceId}/users/me")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Void> leaveWorkspace(
