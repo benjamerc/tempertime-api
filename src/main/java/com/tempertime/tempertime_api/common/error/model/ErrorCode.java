@@ -23,7 +23,7 @@ public enum ErrorCode {
     WORKSPACE_OPERATION_NOT_ALLOWED("This workspace operation is not allowed"),
     WORKSPACE_CAPACITY_EXCEEDED("This workspace has reached its maximum user capacity"),
     WORKSPACE_EVENT_LIMIT_EXCEEDED("This workspace has reached its maximum event limit"),
-    WORKSPACE_OWNER_RESTRICTION("Account deletion is restricted while owning one or more workspaces."),
+    WORKSPACE_OWNER_RESTRICTION("Account deletion is restricted while owning one or more workspaces"),
 
     // Event
     INVALID_EVENT_DATE_FORMAT("The event date format is invalid. Use yyyy-MM-dd'T'HH:mm±HH:mm"),
@@ -58,7 +58,7 @@ public enum ErrorCode {
     // Common
     INVALID_COLOR_FORMAT("Invalid color format. Use a valid hexadecimal color code (#RRGGBB or #RGB)"),
     INVALID_PASSWORD_FORMAT(
-            "The password must be at least 8 characters long, include at least one uppercase letter, one lowercase letter, one number, and must not contain whitespace characters."
+            "The password must be at least 8 characters long, include at least one uppercase letter, one lowercase letter, one number, and must not contain whitespace characters"
     ),
 
     // Generic (Request layer)
