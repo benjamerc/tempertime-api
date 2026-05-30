@@ -4,6 +4,7 @@
 ![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.5-6DB33F)
 ![MySQL](https://img.shields.io/badge/MySQL-8-4479A1)
 ![JWT](https://img.shields.io/badge/Auth-JWT-black)
+![OpenAPI](https://img.shields.io/badge/OpenAPI-3.0.1-6BA539)
 ![Tests](https://img.shields.io/badge/Tests-531-success)
 ![License](https://img.shields.io/badge/License-MIT-blue)
 
@@ -85,6 +86,7 @@ The project is organized by feature domains rather than technical layers, improv
 | events     | Event management, assignments and filtering                    |
 | security   | Security infrastructure (JWT, Spring Security, access control) |
 | common     | Shared utilities, validation and reusable components           |
+| config     | Application configuration (CORS, OpenAPI setup)                |
 
 ---
 
@@ -139,7 +141,11 @@ Key capabilities:
 - Pagination, sorting, and filtering mechanisms
 - Timezone-aware event querying (ISO 8601)
 
-### Documentation (Spanish)
+### Interactive Documentation (Swagger UI)
+
+- Available at `/swagger-ui/index.html` when running locally.
+
+### Manual Documentation (Spanish)
 
 - API reference (Google Docs):  
   https://docs.google.com/document/d/1R9-2Gw6VUBjBQMVe5Jg1e5ZjyboWMcSxQgum1Riyetc/edit?usp=sharing
